@@ -36,12 +36,16 @@ image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 
+before_build:
+  - nuget restore
+
 build:
   parallel: true
 
 after_build:
-  - cmd: rename TpacTool\bin\Release\ TpacTool\bin\TpacTool\
-  - cmd: 7z a TpacTool_${exe_version}.zip -r TpacTool\bin\
+  - ps: Rename-Item TpacTool\bin\Release TpacTool
+  - ps: $env:ARTIFACT_NAME = "TpacTool_" + $env:exe_version + ".zip"
+  - ps: 7z a $env:ARTIFACT_NAME -r TpacTool\bin\
   
 artifacts:
   - path: TpacTool_${exe_version}.zip
