@@ -1,10 +1,10 @@
-version: 0.0.2.{build}
+version: 0.0.3.{build}
 
 environment:
-  exe_version: 0.0.2
-  lib_version: 0.0.2
+  exe_version: 0.0.3
+  lib_version: 0.0.3
   github_token:
-    secure: 6yPPyo6+WkUQUpcOhTIFoAskeMrd2BkB1Rj7Fz95OrO/C2kYOjY0R+DdxqkRicWe
+    secure: jOTXxzUtlwQDuTuXm9bA/ZKqWOAsu8aiEkBZIor/Fh4j6I9SULqFq9uTCkFDNuh1
   appveyor_token:
     secure: IV7vyJWe55+8yxcfF7+dUEHN2b4yGL0RDsgH9T7kZQE=
 
@@ -45,7 +45,9 @@ build:
 after_build:
   - ps: Rename-Item TpacTool\bin\Release TpacTool
   - ps: $env:ARTIFACT_NAME = "TpacTool_" + $env:exe_version + ".zip"
-  - ps: 7z a $env:ARTIFACT_NAME -r TpacTool\bin\
+  - ps: cd TpacTool\bin
+  - ps: 7z a $env:ARTIFACT_NAME -r .\
+  - ps: Copy-Item $env:ARTIFACT_NAME ..\..\
   
 artifacts:
   - path: TpacTool_${exe_version}.zip
