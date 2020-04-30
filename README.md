@@ -1,6 +1,18 @@
 # TpacTool
 ### An unofficial asset explorer for *Mount&Blade II: Bannerlord*
 
+<a href="https://ci.appveyor.com/project/szszss/TpacTool">
+		<img src="https://img.shields.io/appveyor/build/szszss/TpacTool/master.svg" />
+</a>
+
+<a href="../../releases/latest">
+		<img src="https://img.shields.io/github/v/release/szszss/TpacTool.svg?style=flat" />
+</a>
+
+<a href="../../blob/master/LICENSE">
+		<img src="https://img.shields.io/github/license/szszss/TpacTool.svg?style=flat" />
+</a>
+
 -------------------
 
 #### About
