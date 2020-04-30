@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="TpacTool.Vec4Box"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TpacTool"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="200">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox Name="CompX" Grid.Column="0" TextWrapping="NoWrap" Text="" VerticalContentAlignment="Center" Margin="0,0,3,0"/>
+        <TextBox Name="CompY" Grid.Column="1" TextWrapping="NoWrap" Text="" VerticalContentAlignment="Center" Margin="1,0,2,0"/>
+        <TextBox Name="CompZ" Grid.Column="2" TextWrapping="NoWrap" Text="" VerticalContentAlignment="Center" Margin="2,0,1,0"/>
+        <TextBox Name="CompW" Grid.Column="3" TextWrapping="NoWrap" Text="" VerticalContentAlignment="Center" Margin="3,0,0,0"/>
+    </Grid>
+</UserControl>

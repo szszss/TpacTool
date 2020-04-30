@@ -1,0 +1,61 @@
+version: 0.0.1.{build}
+
+environment:
+  exe_version: 0.0.1
+  lib_version: 0.0.1
+  github_token:
+    secure: 6yPPyo6+WkUQUpcOhTIFoAskeMrd2BkB1Rj7Fz95OrO/C2kYOjY0R+DdxqkRicWe
+  appveyor_token:
+    secure: IV7vyJWe55+8yxcfF7+dUEHN2b4yGL0RDsgH9T7kZQE=
+
+shallow_clone: true
+clone_depth: 5  
+
+cache:
+  - packages -> **\packages.config
+  - '%LocalAppData%\NuGet\Cache'
+  - '%LocalAppData%\NuGet\v3-cache'
+
+assembly_info:
+  patch: true
+  file: TpacTool\Properties\AssemblyInfo.cs
+  assembly_version: $(exe_version)
+  assembly_file_version: $(exe_version)
+  assembly_informational_version: $(exe_version)
+
+dotnet_csproj:
+  patch: true
+  file: '**\TpacTool.Lib.csproj;**\TpacTool.IO.csproj'
+  version: $(lib_version)
+  package_version: $(lib_version)
+  assembly_version: $(lib_version)
+  file_version: $(lib_version)
+  informational_version: $(lib_version)
+
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+
+build:
+  parallel: true
+
+after_build:
+  - cmd: rename TpacTool\bin\Release\ TpacTool\bin\TpacTool\
+  - cmd: 7z a TpacTool_${exe_version}.zip -r TpacTool\bin\
+  
+artifacts:
+  - path: TpacTool_${exe_version}.zip
+    name: TpacToolExe
+    type: zip
+
+deploy:
+  - provider: GitHub
+    tag: $(APPVEYOR_REPO_TAG_NAME)
+    description: ''
+    auth_token: $(github_token)
+    artifact: TpacToolExe
+    draft: false
+    prerelease: false
+    on:
+      branch: master
+      APPVEYOR_REPO_TAG: true

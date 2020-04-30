@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About_Author" xml:space="preserve">
+    <value>Author: szszss</value>
+  </data>
+  <data name="About_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="About_Intro" xml:space="preserve">
+    <value>    TpacTool is a software for viewing and unpacking the tpac files of Mount&amp;Blade II: Bannerlord.</value>
+  </data>
+  <data name="About_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="About_Website" xml:space="preserve">
+    <value>Website:</value>
+  </data>
+  <data name="AssetTree_Grouped_Tooltip" xml:space="preserve">
+    <value>Grouped by package</value>
+  </data>
+  <data name="Asset_Type_Geometry" xml:space="preserve">
+    <value>Geometry</value>
+  </data>
+  <data name="Asset_Type_Material" xml:space="preserve">
+    <value>Material</value>
+  </data>
+  <data name="Asset_Type_Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Asset_Type_MorphAnimation" xml:space="preserve">
+    <value>Morph</value>
+  </data>
+  <data name="Asset_Type_Particle" xml:space="preserve">
+    <value>Particle</value>
+  </data>
+  <data name="Asset_Type_PhysicsShape" xml:space="preserve">
+    <value>Physics Shape</value>
+  </data>
+  <data name="Asset_Type_ProceduralVectorField" xml:space="preserve">
+    <value>PVF</value>
+  </data>
+  <data name="Asset_Type_Shader" xml:space="preserve">
+    <value>Shader</value>
+  </data>
+  <data name="Asset_Type_SkeletalAnimation" xml:space="preserve">
+    <value>Animation</value>
+  </data>
+  <data name="Asset_Type_Skeleton" xml:space="preserve">
+    <value>Skeleton</value>
+  </data>
+  <data name="Asset_Type_Texture" xml:space="preserve">
+    <value>Texture</value>
+  </data>
+  <data name="Loading_Title" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="Main_Dialog_SelectAssetPackages" xml:space="preserve">
+    <value>Select the AssetPackages folder</value>
+  </data>
+  <data name="Main_Menu_File" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="Main_Menu_File_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="Main_Menu_File_OpenAssetFolder" xml:space="preserve">
+    <value>Open AssetPackages Folder ...</value>
+  </data>
+  <data name="Main_Menu_Settings" xml:space="preserve">
+    <value>Setti_ngs</value>
+  </data>
+  <data name="Main_Menu_Settings_About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Main_Menu_Settings_Languages" xml:space="preserve">
+    <value>Languages</value>
+  </data>
+  <data name="Main_Menu_Settings_Languages_Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="Material_Dialog_SelectExportDir" xml:space="preserve">
+    <value>Export all non-tileset textures to ...</value>
+  </data>
+  <data name="Material_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Material_Export_PreferredFormat" xml:space="preserve">
+    <value>Preferred format</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Any" xml:space="preserve">
+    <value>Any</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Dds" xml:space="preserve">
+    <value>DDS first</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Png" xml:space="preserve">
+    <value>PNG first</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Tooltip" xml:space="preserve">
+    <value>Which format is preferred for export.</value>
+  </data>
+  <data name="Material_Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="Material_Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="Material_Properties_AlphaTest" xml:space="preserve">
+    <value>Alpha Test:</value>
+  </data>
+  <data name="Material_Properties_BlendMode" xml:space="preserve">
+    <value>Blend Mode:</value>
+  </data>
+  <data name="Material_Properties_Flags" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="Material_Properties_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Material_Properties_Shader" xml:space="preserve">
+    <value>Shader:</value>
+  </data>
+  <data name="Material_Properties_ShaderHints" xml:space="preserve">
+    <value>Shader Hints</value>
+  </data>
+  <data name="Material_Properties_ShowEmptySlots" xml:space="preserve">
+    <value>Show empty slots</value>
+  </data>
+  <data name="Material_Properties_ShowEmptySlots_Tooltip" xml:space="preserve">
+    <value>Show the texture slots which aren't assigned texture</value>
+  </data>
+  <data name="Material_Properties_Textures" xml:space="preserve">
+    <value>Textures:</value>
+  </data>
+  <data name="Material_Properties_VertexLayoutHints" xml:space="preserve">
+    <value>Vertex Layout Hints</value>
+  </data>
+  <data name="Model_Dialog_SelectExportFile" xml:space="preserve">
+    <value>Export model to ...</value>
+  </data>
+  <data name="Model_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Model_Export_Material" xml:space="preserve">
+    <value>Material &amp; Texture</value>
+  </data>
+  <data name="Model_Export_Material_DiffuseOnly" xml:space="preserve">
+    <value>Only export diffuse (color) texture</value>
+  </data>
+  <data name="Model_Export_Material_DiffuseOnly_Tooltip" xml:space="preserve">
+    <value>Only the diffuse (ie color) texture will be exported. Note that this option will also affect the model file itself. The materials in the model file will no longer include textures other than diffuse.</value>
+  </data>
+  <data name="Model_Export_Material_ExportSame" xml:space="preserve">
+    <value>Export to same folder</value>
+  </data>
+  <data name="Model_Export_Material_ExportSame_Tooltip" xml:space="preserve">
+    <value>Export the texture files to the same folder with the exported model.</value>
+  </data>
+  <data name="Model_Export_Material_ExportSub" xml:space="preserve">
+    <value>Export to sub folder</value>
+  </data>
+  <data name="Model_Export_Material_ExportSub_Tooltip" xml:space="preserve">
+    <value>Export the texture files to a folder named after the exported model.</value>
+  </data>
+  <data name="Model_Export_Material_NoExport" xml:space="preserve">
+    <value>Don't export</value>
+  </data>
+  <data name="Model_Export_Material_NoExport_Tooltip" xml:space="preserve">
+    <value>Do not export the texture files which the model uses.</value>
+  </data>
+  <data name="Model_Export_Misc" xml:space="preserve">
+    <value>Misc</value>
+  </data>
+  <data name="Model_Export_Misc_FixBoneConnect" xml:space="preserve">
+    <value>DAE: Fix the bone connections for Blender</value>
+  </data>
+  <data name="Model_Export_Misc_FixBoneConnect_Tooltip" xml:space="preserve">
+    <value>Add metadata for Blender to identify bone connections. Even if you do not check this option, the connection can be repaired by adjusting the configuration of the DAE importer of Blender.</value>
+  </data>
+  <data name="Model_Export_Misc_LargerScale" xml:space="preserve">
+    <value>Larger scale</value>
+  </data>
+  <data name="Model_Export_Misc_LargerScale_Tooltip" xml:space="preserve">
+    <value>Enlarging the size of the exported model. For the formats which support node (eg DAE) it will enlarge the scale of root node.  For others (eg OBJ) it will directly enlarge the mesh.</value>
+  </data>
+  <data name="Model_Export_Misc_YUpAxis" xml:space="preserve">
+    <value>OBJ: Y-upward axis</value>
+  </data>
+  <data name="Model_Export_Misc_YUpAxis_Tooltip" xml:space="preserve">
+    <value>By default, the exported model uses the Z axis as the upward axis. However, some OBJ importers use the Y axis as the upward axis. Check this option to export the OBJ model with Y-upward axis style.</value>
+  </data>
+  <data name="Model_Export_Skeleton" xml:space="preserve">
+    <value>Skeleton</value>
+  </data>
+  <data name="Model_Export_Skeleton_Horse" xml:space="preserve">
+    <value>Horse</value>
+  </data>
+  <data name="Model_Export_Skeleton_Human" xml:space="preserve">
+    <value>Human</value>
+  </data>
+  <data name="Model_Export_Skeleton_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Model_Export_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Model_Export_Type_Rigged" xml:space="preserve">
+    <value>Rigged</value>
+  </data>
+  <data name="Model_Export_Type_Static" xml:space="preserve">
+    <value>Static</value>
+  </data>
+  <data name="Model_PerMeshProperties" xml:space="preserve">
+    <value>Per-mesh Properties</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM" xml:space="preserve">
+    <value>Clothing Material</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_ADM" xml:space="preserve">
+    <value>Air Drag Multiplier:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_AS" xml:space="preserve">
+    <value>Anchor Stiffness:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_BS" xml:space="preserve">
+    <value>Bending Stiffness:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Damping" xml:space="preserve">
+    <value>Damping:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Gravity" xml:space="preserve">
+    <value>Gravity:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_LI" xml:space="preserve">
+    <value>Linear Inertia:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_LVM" xml:space="preserve">
+    <value>Linear Velocity Multiplier:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_MLV" xml:space="preserve">
+    <value>Max Linear Velocity:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_ShS" xml:space="preserve">
+    <value>Shearing Stiffness:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_StS" xml:space="preserve">
+    <value>Stretching Stiffness:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Wind" xml:space="preserve">
+    <value>Wind:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Face" xml:space="preserve">
+    <value>Face:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Flags" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="Model_PerMeshProperties_HasMorph" xml:space="preserve">
+    <value>Has Morph</value>
+  </data>
+  <data name="Model_PerMeshProperties_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Model_PerMeshProperties_IsRigged" xml:space="preserve">
+    <value>Is Ragged</value>
+  </data>
+  <data name="Model_PerMeshProperties_Lod" xml:space="preserve">
+    <value>Lod:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Material" xml:space="preserve">
+    <value>Material:</value>
+  </data>
+  <data name="Model_PerMeshProperties_MaterialHints" xml:space="preserve">
+    <value>Material Hints</value>
+  </data>
+  <data name="Model_PerMeshProperties_Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="Model_PerMeshProperties_SecMat" xml:space="preserve">
+    <value>SecMat:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Vertex" xml:space="preserve">
+    <value>Vertex:</value>
+  </data>
+  <data name="Model_Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="Model_Preview_Lod" xml:space="preserve">
+    <value>LOD:</value>
+  </data>
+  <data name="Model_Preview_Show" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="Msgbox_DirNotExisting" xml:space="preserve">
+    <value>The directory doesn't exist</value>
+  </data>
+  <data name="Msgbox_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Msgbox_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Msgbox_TpacNotFound" xml:space="preserve">
+    <value>No tpac file found in the directory</value>
+  </data>
+  <data name="Preview_Msg_TextureFormatUnsupported" xml:space="preserve">
+    <value>Cannot preview this texture because its format is unsupported: {0}</value>
+  </data>
+  <data name="Preview_Msg_TextureHasNoData" xml:space="preserve">
+    <value>Cannot preview nor export this texture because its data are stored in the external TileSets file.</value>
+  </data>
+  <data name="Preview_Msg_TextureSizeTooLarge" xml:space="preserve">
+    <value>Cannot preview this texture because of its size (&gt;100MB)</value>
+  </data>
+  <data name="Texture_Dialog_SelectExportFile" xml:space="preserve">
+    <value>Export texture to ...</value>
+  </data>
+  <data name="Texture_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Texture_Export_SuggestedFormat" xml:space="preserve">
+    <value>Suggested format: {0}</value>
+  </data>
+  <data name="Texture_Flags" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="Texture_Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="Texture_Preview_Channel" xml:space="preserve">
+    <value>Channal</value>
+  </data>
+  <data name="Texture_Preview_Channel_Alpha" xml:space="preserve">
+    <value>Alpha</value>
+  </data>
+  <data name="Texture_Preview_Channel_Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="Texture_Preview_Channel_RGray" xml:space="preserve">
+    <value>R as Gray</value>
+  </data>
+  <data name="Texture_Preview_Channel_Tooltip" xml:space="preserve">
+    <value>Which color channels are displayed during preview.</value>
+  </data>
+  <data name="Texture_Preview_Clamp" xml:space="preserve">
+    <value>Clamp</value>
+  </data>
+  <data name="Texture_Preview_Clamp_Full" xml:space="preserve">
+    <value>Full Size</value>
+  </data>
+  <data name="Texture_Preview_Clamp_Tooltip" xml:space="preserve">
+    <value>Restrict the size of the preview texture. Smaller clamp size can make the texture load faster.</value>
+  </data>
+  <data name="Texture_Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="Texture_Properties_Array" xml:space="preserve">
+    <value>Array:</value>
+  </data>
+  <data name="Texture_Properties_Format" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="Texture_Properties_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Texture_Properties_Mipmap" xml:space="preserve">
+    <value>Mipmap:</value>
+  </data>
+  <data name="Texture_Properties_Size" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+  <data name="Texture_System_Flags" xml:space="preserve">
+    <value>System Flags</value>
+  </data>
+</root>

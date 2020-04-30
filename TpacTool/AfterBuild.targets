@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <!-- Copy/clean native dependencies only for projects that don't output a *.deps.json file (netframework projects). Netcore projects will
+       copy out the native dependencies during publish, and during development debugging/running, the binaries will be loaded from the nuget cache.
+       Optionally, the property $(ForceCopyNativeAssimp) can be set to true to always run these targets. -->
+  
+  <Target Name="MoveDlls" AfterTargets="AfterBuild">
+    <ItemGroup>
+        <Dlls Include="$(OutputPath)\*.dll"/>
+    </ItemGroup>  
+    <Message Text="Moving dll..." Importance="high" />
+    <Move SourceFiles="@(Dlls)" DestinationFolder="$(OutputPath)\bin\" />
+  </Target>
+  
+  <!--Target Name="MoveAssimpNatives" AfterTargets="CopyNativeAssimp">
+    <ItemGroup>
+        <NativeAssimpLibX86 Include="$(OutputPath)\runtimes\win-x86\native\assimp.dll"/>
+        <NativeAssimpLibX64 Include="$(OutputPath)\runtimes\win-x64\native\assimp.dll"/>
+    </ItemGroup>  
+    <Message Text="Moving native Assimp libraries..." Importance="high" />
+    <Move SourceFiles="@(NativeAssimpLibX86)" DestinationFolder="$(OutputPath)\bin\win-x86\native\" />
+    <Move SourceFiles="@(NativeAssimpLibX64)" DestinationFolder="$(OutputPath)\bin\win-x64\native\" />
+  </Target-->
+  
+  <!--DependsOnTargets="MoveAssimpNatives"-->
+  <Target Name="CleanMisc" AfterTargets="MoveDlls"  Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+        <Misc Include="$(OutputPath)\*.*;$(OutputPath)\runtimes\**\*.*" Exclude="$(OutputPath)\*.exe;$(OutputPath)\*.config"/>
+    </ItemGroup>  
+    <Message Text="Clean misc..." Importance="high" />
+    <Delete Files="@(Misc)" />
+	<RemoveDir Directories="$(OutputPath)\zh-CN;$(OutputPath)\runtimes" />
+  </Target>
+ 
+  <Target Name="CleanBin" BeforeTargets="BeforeClean">
+    <Message Text="Cleaning bin..." Importance="high" />
+    <ItemGroup>
+	      <Bin Include="$(TargetDir)bin\" />
+    </ItemGroup>
+    <Delete Files="@(Bin)" />
+  </Target>
+</Project>

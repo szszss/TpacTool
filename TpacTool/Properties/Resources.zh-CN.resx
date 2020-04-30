@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About_Author" xml:space="preserve">
+    <value>作者: szszss</value>
+  </data>
+  <data name="About_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="About_Intro" xml:space="preserve">
+    <value>    TpacTool是一个用于查看《骑马与砍杀2：领主》的tpac格式资源文件并对其解包的软件。</value>
+  </data>
+  <data name="About_Version" xml:space="preserve">
+    <value>版本:</value>
+  </data>
+  <data name="About_Website" xml:space="preserve">
+    <value>网站:</value>
+  </data>
+  <data name="AssetTree_Grouped_Tooltip" xml:space="preserve">
+    <value>按照包来分组</value>
+  </data>
+  <data name="Asset_Type_Geometry" xml:space="preserve">
+    <value>几何体</value>
+  </data>
+  <data name="Asset_Type_Material" xml:space="preserve">
+    <value>材质</value>
+  </data>
+  <data name="Asset_Type_Model" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="Asset_Type_MorphAnimation" xml:space="preserve">
+    <value>变形</value>
+  </data>
+  <data name="Asset_Type_Particle" xml:space="preserve">
+    <value>粒子</value>
+  </data>
+  <data name="Asset_Type_PhysicsShape" xml:space="preserve">
+    <value>碰撞</value>
+  </data>
+  <data name="Asset_Type_ProceduralVectorField" xml:space="preserve">
+    <value>过程生成矢量场</value>
+  </data>
+  <data name="Asset_Type_Shader" xml:space="preserve">
+    <value>着色器</value>
+  </data>
+  <data name="Asset_Type_SkeletalAnimation" xml:space="preserve">
+    <value>动作</value>
+  </data>
+  <data name="Asset_Type_Skeleton" xml:space="preserve">
+    <value>骨骼</value>
+  </data>
+  <data name="Asset_Type_Texture" xml:space="preserve">
+    <value>纹理</value>
+  </data>
+  <data name="Loading_Title" xml:space="preserve">
+    <value>少女祈祷中</value>
+  </data>
+  <data name="Main_Dialog_SelectAssetPackages" xml:space="preserve">
+    <value>选择AssetPackages目录</value>
+  </data>
+  <data name="Main_Menu_File" xml:space="preserve">
+    <value>文件(_F)</value>
+  </data>
+  <data name="Main_Menu_File_Exit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="Main_Menu_File_OpenAssetFolder" xml:space="preserve">
+    <value>选择AssetPackages目录 ...</value>
+  </data>
+  <data name="Main_Menu_Settings" xml:space="preserve">
+    <value>设置(_N)</value>
+  </data>
+  <data name="Main_Menu_Settings_About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="Main_Menu_Settings_Languages" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="Main_Menu_Settings_Languages_Default" xml:space="preserve">
+    <value>系统默认</value>
+  </data>
+  <data name="Material_Dialog_SelectExportDir" xml:space="preserve">
+    <value>将使用到的非Tileset纹理导出到 ...</value>
+  </data>
+  <data name="Material_Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="Material_Export_PreferredFormat" xml:space="preserve">
+    <value>倾向的格式</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Any" xml:space="preserve">
+    <value>任意</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Dds" xml:space="preserve">
+    <value>DDS优先</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Png" xml:space="preserve">
+    <value>PNG优先</value>
+  </data>
+  <data name="Material_Export_PreferredFormat_Tooltip" xml:space="preserve">
+    <value>优先以哪种格式导出。</value>
+  </data>
+  <data name="Material_Preview" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="Material_Properties" xml:space="preserve">
+    <value>属性</value>
+  </data>
+  <data name="Material_Properties_AlphaTest" xml:space="preserve">
+    <value>透明度阈值:</value>
+  </data>
+  <data name="Material_Properties_BlendMode" xml:space="preserve">
+    <value>混合模式:</value>
+  </data>
+  <data name="Material_Properties_Flags" xml:space="preserve">
+    <value>标志</value>
+  </data>
+  <data name="Material_Properties_Info" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Material_Properties_Shader" xml:space="preserve">
+    <value>着色器:</value>
+  </data>
+  <data name="Material_Properties_ShaderHints" xml:space="preserve">
+    <value>着色器参数</value>
+  </data>
+  <data name="Material_Properties_ShowEmptySlots" xml:space="preserve">
+    <value>显示空缺的纹理槽</value>
+  </data>
+  <data name="Material_Properties_ShowEmptySlots_Tooltip" xml:space="preserve">
+    <value>显示未被分配纹理的纹理槽</value>
+  </data>
+  <data name="Material_Properties_Textures" xml:space="preserve">
+    <value>纹理:</value>
+  </data>
+  <data name="Material_Properties_VertexLayoutHints" xml:space="preserve">
+    <value>顶点布局参数</value>
+  </data>
+  <data name="Model_Dialog_SelectExportFile" xml:space="preserve">
+    <value>将模型导出到 ...</value>
+  </data>
+  <data name="Model_Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="Model_Export_Material" xml:space="preserve">
+    <value>材质与纹理</value>
+  </data>
+  <data name="Model_Export_Material_DiffuseOnly" xml:space="preserve">
+    <value>只导出漫反射(颜色)纹理</value>
+  </data>
+  <data name="Model_Export_Material_DiffuseOnly_Tooltip" xml:space="preserve">
+    <value>只导出漫反射(即颜色)纹理，注意这个选项也会影响模型文件本身，即模型文件中的材质将不再包括除漫反射以外的纹理。</value>
+  </data>
+  <data name="Model_Export_Material_ExportSame" xml:space="preserve">
+    <value>导出至同一目录</value>
+  </data>
+  <data name="Model_Export_Material_ExportSame_Tooltip" xml:space="preserve">
+    <value>将模型使用到的纹理导出到同一目录下。</value>
+  </data>
+  <data name="Model_Export_Material_ExportSub" xml:space="preserve">
+    <value>导出至子目录</value>
+  </data>
+  <data name="Model_Export_Material_ExportSub_Tooltip" xml:space="preserve">
+    <value>将模型使用到的纹理导出到与模型同名的子目录下。</value>
+  </data>
+  <data name="Model_Export_Material_NoExport" xml:space="preserve">
+    <value>不导出</value>
+  </data>
+  <data name="Model_Export_Material_NoExport_Tooltip" xml:space="preserve">
+    <value>不导出模型使用到的纹理文件。</value>
+  </data>
+  <data name="Model_Export_Misc" xml:space="preserve">
+    <value>杂项</value>
+  </data>
+  <data name="Model_Export_Misc_FixBoneConnect" xml:space="preserve">
+    <value>DAE: 为Blender修复骨骼连接</value>
+  </data>
+  <data name="Model_Export_Misc_FixBoneConnect_Tooltip" xml:space="preserve">
+    <value>添加供Blender识别骨骼链接的元信息，即使你不勾选这个选项，通过调整Blender的DAE导入器的配置也能修复连接。</value>
+  </data>
+  <data name="Model_Export_Misc_LargerScale" xml:space="preserve">
+    <value>放大比例</value>
+  </data>
+  <data name="Model_Export_Misc_LargerScale_Tooltip" xml:space="preserve">
+    <value>放大导出模型的尺寸，对于诸如DAE之类的支持节点的格式，将会放大根节点的比例；对于OBJ这类不支持的，则会直接放大模型网格。</value>
+  </data>
+  <data name="Model_Export_Misc_YUpAxis" xml:space="preserve">
+    <value>OBJ: Y轴朝上</value>
+  </data>
+  <data name="Model_Export_Misc_YUpAxis_Tooltip" xml:space="preserve">
+    <value>默认导出的模型是以Z轴为上方向轴，然而一些OBJ导入器是以Y轴为上方向轴，勾选此选项将以Y轴朝上的格式导出OBJ模型。</value>
+  </data>
+  <data name="Model_Export_Skeleton" xml:space="preserve">
+    <value>骨骼</value>
+  </data>
+  <data name="Model_Export_Skeleton_Horse" xml:space="preserve">
+    <value>马</value>
+  </data>
+  <data name="Model_Export_Skeleton_Human" xml:space="preserve">
+    <value>人类</value>
+  </data>
+  <data name="Model_Export_Skeleton_Other" xml:space="preserve">
+    <value>其他</value>
+  </data>
+  <data name="Model_Export_Type" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="Model_Export_Type_Rigged" xml:space="preserve">
+    <value>含骨骼</value>
+  </data>
+  <data name="Model_Export_Type_Static" xml:space="preserve">
+    <value>静态</value>
+  </data>
+  <data name="Model_PerMeshProperties" xml:space="preserve">
+    <value>逐网格参数</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM" xml:space="preserve">
+    <value>布料材质</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_ADM" xml:space="preserve">
+    <value>空气拖拽系数:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_AS" xml:space="preserve">
+    <value>锚定强度:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_BS" xml:space="preserve">
+    <value>抗弯刚度:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Damping" xml:space="preserve">
+    <value>阻尼:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Gravity" xml:space="preserve">
+    <value>重力:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_LI" xml:space="preserve">
+    <value>线性惯性:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_LVM" xml:space="preserve">
+    <value>线速度系数:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_MLV" xml:space="preserve">
+    <value>最大线速度:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Name" xml:space="preserve">
+    <value>名称:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_ShS" xml:space="preserve">
+    <value>抗剪刚度:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_StS" xml:space="preserve">
+    <value>抗拉刚度:</value>
+  </data>
+  <data name="Model_PerMeshProperties_CM_Wind" xml:space="preserve">
+    <value>风力影响:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Face" xml:space="preserve">
+    <value>面数:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Flags" xml:space="preserve">
+    <value>标示</value>
+  </data>
+  <data name="Model_PerMeshProperties_HasMorph" xml:space="preserve">
+    <value>包含变形动画</value>
+  </data>
+  <data name="Model_PerMeshProperties_Info" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Model_PerMeshProperties_IsRigged" xml:space="preserve">
+    <value>支持骨骼动画</value>
+  </data>
+  <data name="Model_PerMeshProperties_Lod" xml:space="preserve">
+    <value>Lod:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Material" xml:space="preserve">
+    <value>材质:</value>
+  </data>
+  <data name="Model_PerMeshProperties_MaterialHints" xml:space="preserve">
+    <value>材质参数</value>
+  </data>
+  <data name="Model_PerMeshProperties_Name" xml:space="preserve">
+    <value>网格名:</value>
+  </data>
+  <data name="Model_PerMeshProperties_SecMat" xml:space="preserve">
+    <value>副材质:</value>
+  </data>
+  <data name="Model_PerMeshProperties_Vertex" xml:space="preserve">
+    <value>顶点数:</value>
+  </data>
+  <data name="Model_Preview" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="Model_Preview_Lod" xml:space="preserve">
+    <value>LOD:</value>
+  </data>
+  <data name="Model_Preview_Show" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="Msgbox_DirNotExisting" xml:space="preserve">
+    <value>目录不存在</value>
+  </data>
+  <data name="Msgbox_Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Msgbox_Info" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="Msgbox_TpacNotFound" xml:space="preserve">
+    <value>目录内不存在tpac文件</value>
+  </data>
+  <data name="Preview_Msg_TextureFormatUnsupported" xml:space="preserve">
+    <value>无法预览此格式的纹理: {0}</value>
+  </data>
+  <data name="Preview_Msg_TextureHasNoData" xml:space="preserve">
+    <value>这个纹理的数据储存于TileSets文件中，因此无法预览或导出。</value>
+  </data>
+  <data name="Preview_Msg_TextureSizeTooLarge" xml:space="preserve">
+    <value>纹理体积过大，无法预览 (&gt;100MB)</value>
+  </data>
+  <data name="Texture_Dialog_SelectExportFile" xml:space="preserve">
+    <value>将纹理导出到 ...</value>
+  </data>
+  <data name="Texture_Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="Texture_Export_SuggestedFormat" xml:space="preserve">
+    <value>建议的格式: {0}</value>
+  </data>
+  <data name="Texture_Flags" xml:space="preserve">
+    <value>标志</value>
+  </data>
+  <data name="Texture_Preview" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="Texture_Preview_Channel" xml:space="preserve">
+    <value>颜色通道</value>
+  </data>
+  <data name="Texture_Preview_Channel_Alpha" xml:space="preserve">
+    <value>Alpha (透明度)</value>
+  </data>
+  <data name="Texture_Preview_Channel_Auto" xml:space="preserve">
+    <value>自动</value>
+  </data>
+  <data name="Texture_Preview_Channel_RGray" xml:space="preserve">
+    <value>R (显示为灰度)</value>
+  </data>
+  <data name="Texture_Preview_Channel_Tooltip" xml:space="preserve">
+    <value>设置预览时显示哪些颜色。</value>
+  </data>
+  <data name="Texture_Preview_Clamp" xml:space="preserve">
+    <value>尺寸限制</value>
+  </data>
+  <data name="Texture_Preview_Clamp_Full" xml:space="preserve">
+    <value>全尺寸</value>
+  </data>
+  <data name="Texture_Preview_Clamp_Tooltip" xml:space="preserve">
+    <value>限制预览纹理的尺寸，尺寸越小加载越快。</value>
+  </data>
+  <data name="Texture_Properties" xml:space="preserve">
+    <value>属性</value>
+  </data>
+  <data name="Texture_Properties_Array" xml:space="preserve">
+    <value>数量:</value>
+  </data>
+  <data name="Texture_Properties_Format" xml:space="preserve">
+    <value>格式:</value>
+  </data>
+  <data name="Texture_Properties_Info" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Texture_Properties_Mipmap" xml:space="preserve">
+    <value>Mipmap:</value>
+  </data>
+  <data name="Texture_Properties_Size" xml:space="preserve">
+    <value>尺寸:</value>
+  </data>
+  <data name="Texture_System_Flags" xml:space="preserve">
+    <value>系统标志</value>
+  </data>
+</root>

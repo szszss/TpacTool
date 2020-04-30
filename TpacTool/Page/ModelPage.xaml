@@ -1,0 +1,196 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TpacTool"
+      xmlns:TpacTool="clr-namespace:TpacTool"
+      xmlns:loc="clr-namespace:TpacTool.Properties"
+      x:Class="TpacTool.ModelPage"
+      mc:Ignorable="d" 
+      d:DesignHeight="1500" d:DesignWidth="200"
+      Title="ModelPage">
+    <Page.Resources>
+        <TpacTool:BooleanFlipConverter x:Key="BooleanFlipConverter"/>
+    </Page.Resources>
+    <Page.DataContext>
+        <Binding Path="Model" Source="{StaticResource Locator}"/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+        </Grid.Background>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Expander Header="{x:Static loc:Resources.Model_Preview}" Margin="0" VerticalAlignment="Top" IsExpanded="True">
+                    <StackPanel Margin="0,5,0,0">
+                        <GroupBox Header="{x:Static loc:Resources.Model_Preview_Show}">
+                            <StackPanel>
+                                <Grid Margin="5,10,5,5">
+                                    <Label Content="{x:Static loc:Resources.Model_Preview_Lod}"/>
+                                    <Slider VerticalAlignment="Center" Margin="45,0,20,0" TickPlacement="TopLeft" SmallChange="1" Maximum="{Binding LodCount, Mode=OneWay}" Value="{Binding SelectedLod, Mode=TwoWay}"/>
+                                    <Label Content="{Binding SelectedLodValue, Mode=OneWay}" HorizontalAlignment="Right" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                                <ListBox Margin="5,0,5,5" Height="80" Visibility="Collapsed">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Name="CheckBoxZone" Content="{Binding TheText}" Tag="{Binding TheValue}" Margin="0,5,0,0"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </Expander>
+                <Expander Header="{x:Static loc:Resources.Model_PerMeshProperties}" Margin="0" VerticalAlignment="Top" IsExpanded="True">
+                    <StackPanel Margin="0,5,0,0">
+                        <ListBox Height="100" Margin="5,0,5,5" ItemsSource="{Binding Asset.Meshes}" SelectedIndex="{Binding SelectedMeshIndex, Mode=TwoWay}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"></TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Expander Header="{x:Static loc:Resources.Model_PerMeshProperties_Info}" Margin="5,0,5,5" IsExpanded="True" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <StackPanel Margin="0,0,4,0">
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_Name}"/>
+                                    <TextBox Text="{Binding SelectedMesh.Name, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_Lod}"/>
+                                    <TextBox Text="{Binding SelectedMesh.Lod, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_Material}"/>
+                                    <TextBox Text="{Binding SelectedMeshPrimaryMaterial.Name, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_SecMat}"/>
+                                    <TextBox Text="{Binding SelectedMeshSecondMaterial.Name, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_Vertex}"/>
+                                    <TextBox Text="{Binding SelectedMesh.VertexCount, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_Face}"/>
+                                    <TextBox Text="{Binding SelectedMesh.FaceCount, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <CheckBox Content="{x:Static loc:Resources.Model_PerMeshProperties_IsRigged}" Margin="10,2,10,5" IsEnabled="False" IsChecked="{Binding IsRigged, Mode=OneWay}"/>
+                                <CheckBox Content="{x:Static loc:Resources.Model_PerMeshProperties_HasMorph}" Margin="10,2,10,5" IsEnabled="False" IsChecked="{Binding HasMorph, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Expander>
+                        <Expander Header="{x:Static loc:Resources.Model_PerMeshProperties_Flags}" Margin="5,0,5,5" IsExpanded="False" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <ListBox Height="60" Margin="5,5,5,2" ItemsSource="{Binding SelectedMesh.Flags, Mode=OneWay}">
+                            </ListBox>
+                        </Expander>
+                        <Expander Header="{x:Static loc:Resources.Model_PerMeshProperties_MaterialHints}" Margin="5,0,5,5" IsExpanded="False" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <ListBox Height="60" Margin="5,5,5,2" ItemsSource="{Binding SelectedMesh.MaterialFlags, Mode=OneWay}">
+                            </ListBox>
+                        </Expander>
+                        <Expander Header="{x:Static loc:Resources.Model_PerMeshProperties_CM}" Margin="5,0,5,5" IsExpanded="False" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <StackPanel Margin="0,0,4,0">
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_Name}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.Name, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="60,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_BS}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.BendingStiffness, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_ShS}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.ShearingStiffness, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_StS}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.StretchingStiffness, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_AS}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.AnchorStiffness, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_Damping}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.Damping, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_Gravity}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.Gravity, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_LI}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.LinearInertia, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="120,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_MLV}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.MaxLinearVelocity, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="140,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_LVM}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.LinearVelocityMultiplier, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="140,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_ADM}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.AirDragMultiplier, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="140,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Model_PerMeshProperties_CM_Wind}"/>
+                                    <TextBox Text="{Binding SelectedMesh.ClothingMaterial.Wind, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="140,2,0,2" VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </Expander>
+                <Expander Header="{x:Static loc:Resources.Model_Export}" Margin="0" VerticalAlignment="Top" IsExpanded="True">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,10">
+                            <!--
+                            <Label Content="Dest:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+                            <TextBox Margin="54,11,39,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="24"/>
+                            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="24" Height="24" Margin="0,11,10,0"/>
+                            -->
+                            <Button VerticalAlignment="Top" Height="24" Margin="10,10,10,0" Content="{x:Static loc:Resources.Model_Export}" Command="{Binding ExportCommand, Mode=OneWay}" IsEnabled="{Binding CanExport, Mode=OneWay}"/>
+                        </Grid>
+                        <GroupBox Header="{x:Static loc:Resources.Model_Export_Type}">
+                            <StackPanel>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Type_Static}" Margin="5,10,5,5" Command="{Binding ChangeRiggedCommand, Mode=OneWay}" CommandParameter="false" IsChecked="{Binding ExportAsRigged, Converter={StaticResource BooleanFlipConverter}, Mode=OneWay}" IsEnabled="{Binding IsRigged, Mode=OneWay}"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Type_Rigged}" Margin="5" Command="{Binding ChangeRiggedCommand, Mode=OneWay}" CommandParameter="true" IsChecked="{Binding ExportAsRigged, Mode=OneWay}" IsEnabled="{Binding IsRigged, Mode=OneWay}"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="{x:Static loc:Resources.Model_Export_Skeleton}">
+                            <StackPanel>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Human}" Margin="5,10,5,5" IsChecked="{Binding IsSkeletonHuman, Mode=OneWay}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Human" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Horse}" Margin="5" IsChecked="{Binding IsSkeletonHorse, Mode=OneWay}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Horse" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Other}" Margin="5" IsChecked="{Binding IsSkeletonOther, Mode=OneWay}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Other" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
+                                <ComboBox Margin="5" IsEnabled="{Binding IsSkeletonOtherAndRigged, Mode=OneWay}" ItemsSource="{Binding Skeletons, Mode=OneWay}" SelectedIndex="{Binding SelectedSkeletonIndex, Mode=TwoWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="{x:Static loc:Resources.Model_Export_Material}">
+                            <StackPanel>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Material_NoExport}" ToolTip="{x:Static loc:Resources.Model_Export_Material_NoExport_Tooltip}" Margin="5,10,5,5" IsChecked="{Binding IsMaterialIgnored, Mode=OneWay}" Command="{Binding ChangeMaterialCommand, Mode=OneWay}" CommandParameter="None"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Material_ExportSame}" ToolTip="{x:Static loc:Resources.Model_Export_Material_ExportSame_Tooltip}" Margin="5" IsChecked="{Binding IsMaterialExportToSameFolder, Mode=OneWay}" Command="{Binding ChangeMaterialCommand, Mode=OneWay}" CommandParameter="Export"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Material_ExportSub}" ToolTip="{x:Static loc:Resources.Model_Export_Material_ExportSub_Tooltip}" Margin="5" IsChecked="{Binding IsMaterialExportToSubFolder, Mode=OneWay}" Command="{Binding ChangeMaterialCommand, Mode=OneWay}" CommandParameter="ExportToSubFolder"/>
+                                <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Material_DiffuseOnly}" ToolTip="{x:Static loc:Resources.Model_Export_Material_DiffuseOnly_Tooltip}" IsChecked="{Binding OnlyExportDiffuse, Mode=TwoWay}" IsEnabled="{Binding IsMaterialIgnored, Converter={StaticResource BooleanFlipConverter}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="{x:Static loc:Resources.Model_Export_Misc}">
+                            <StackPanel>
+                                <CheckBox Margin="5,10,5,5" Content="{x:Static loc:Resources.Model_Export_Misc_LargerScale}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_LargerScale_Tooltip}" IsChecked="{Binding UseLargerScale, Mode=TwoWay}"/>
+                                <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Misc_YUpAxis}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_YUpAxis_Tooltip}" IsChecked="{Binding UseYUpAxis, Mode=TwoWay}"/>
+                                <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Misc_FixBoneConnect}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_FixBoneConnect_Tooltip}" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}" IsChecked="{Binding FixBlenderBone, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -1,0 +1,81 @@
+﻿<Page x:Class="TpacTool.MaterialPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TpacTool"
+      xmlns:loc="clr-namespace:TpacTool.Properties"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="200"
+      Title="MaterialPage">
+
+    <Page.DataContext>
+        <Binding Path="Material" Source="{StaticResource Locator}"/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+        </Grid.Background>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Expander Header="{x:Static loc:Resources.Material_Preview}" Margin="0" VerticalAlignment="Top" IsExpanded="True">
+                    <StackPanel Margin="0,5,0,0">
+                        <GroupBox Header="{x:Static loc:Resources.Texture_Preview_Clamp}">
+                            <StackPanel>
+                                <ComboBox Margin="5,10,5,5" ToolTip="{x:Static loc:Resources.Texture_Preview_Clamp_Tooltip}" ItemsSource="{Binding ClampItems}" SelectedIndex="{Binding ClampMode}" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="{x:Static loc:Resources.Texture_Preview_Channel}">
+                            <StackPanel>
+                                <ComboBox Margin="5,10,5,5" ToolTip="{x:Static loc:Resources.Texture_Preview_Channel_Tooltip}" ItemsSource="{Binding ChannelItems}" SelectedIndex="{Binding ChannelMode}" />
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </Expander>
+                <Expander Header="{x:Static loc:Resources.Material_Properties}" Margin="0" VerticalAlignment="Top" IsExpanded="True">
+                    <StackPanel Margin="0,5,0,0">
+                        <Expander Header="{x:Static loc:Resources.Material_Properties_Info}" Margin="5,0,5,5" IsExpanded="True" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <StackPanel Margin="0,0,4,0">
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Material_Properties_Shader}"/>
+                                    <TextBox Text="{Binding Shader.Name, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="90,0,0,0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Material_Properties_BlendMode}"/>
+                                    <TextBox Text="{Binding Asset.BlendMode, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="90,0,0,0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Material_Properties_AlphaTest}"/>
+                                    <TextBox Text="{Binding Asset.AlphaTest, Mode=OneWay}" IsReadOnly="True" Height="22" Margin="90,0,0,0" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="{x:Static loc:Resources.Material_Properties_Textures}"/>
+                                    <CheckBox Height="22" Content="{x:Static loc:Resources.Material_Properties_ShowEmptySlots}" ToolTip="{x:Static loc:Resources.Material_Properties_ShowEmptySlots_Tooltip}" Margin="90,0,0,0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding ShowEmptySlots, Mode=TwoWay}"/>
+                                </Grid>
+                                <DataGrid Margin="3,3,0,3" Height="100" ItemsSource="{Binding Textures, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" SelectedIndex="{Binding SelectedTextureIndex, Mode=TwoWay}">
+                                </DataGrid>
+                            </StackPanel>
+                        </Expander>
+                        <Expander Header="{x:Static loc:Resources.Material_Properties_Flags}" Margin="5,0,5,5" IsExpanded="False" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <ListBox Height="50" Margin="5,10,5,5" ItemsSource="{Binding Asset.Flags}" />
+                        </Expander>
+                        <Expander Header="{x:Static loc:Resources.Material_Properties_ShaderHints}" Margin="5,0,5,5" IsExpanded="False" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <ListBox Height="70" Margin="5,10,5,5" ItemsSource="{Binding Asset.ShaderMaterialFlags}" />
+                        </Expander>
+                        <Expander Header="{x:Static loc:Resources.Material_Properties_VertexLayoutHints}" Margin="5,0,5,5" IsExpanded="False" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+                            <ListBox Height="50" Margin="5,10,5,5" ItemsSource="{Binding Asset.VertexLayoutFlags}" />
+                        </Expander>
+                    </StackPanel>
+                </Expander>
+                <Expander Header="{x:Static loc:Resources.Material_Export}" Margin="0" VerticalAlignment="Top" IsExpanded="True">
+                    <StackPanel>
+                        <Button VerticalAlignment="Top" Height="24" Margin="10,10,10,0" Content="{x:Static loc:Resources.Model_Export}" IsEnabled="{Binding IsExportable}" Command="{Binding ExportCommand, Mode=OneWay}"/>
+                        <GroupBox Margin="0,5,0,0" Header="{x:Static loc:Resources.Material_Export_PreferredFormat}" ToolTip="{x:Static loc:Resources.Material_Export_PreferredFormat_Tooltip}">
+                            <ComboBox Margin="5,10,5,5" ItemsSource="{Binding PreferredFormatItems}" ToolTip="{x:Static loc:Resources.Material_Export_PreferredFormat_Tooltip}" SelectedIndex="{Binding PreferredFormat}" />
+                        </GroupBox>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

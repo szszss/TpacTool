@@ -1,0 +1,73 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:betterwpfcontrols="clr-namespace:BetterWpfControls;assembly=BetterWpfControls"
+        xmlns:local="clr-namespace:TpacTool"
+        xmlns:loc="clr-namespace:TpacTool.Properties"
+        xmlns:Custom="BetterWpfControls" x:Class="TpacTool.MainWindow"
+        mc:Ignorable="d"
+        Title="TpacTool" Height="600" Width="1000" DataContext="{Binding Main, Source={StaticResource Locator}}">
+    <Window.Resources>
+        <local:StringEqualConverter x:Key="StringEqualConverter"/>
+        <local:ArrayGetterConverter x:Key="ArrayGetterConverter"/>
+        <local:IntThresholdConverter x:Key="IntThresholdConverter"/>
+        <Image x:Key="Icon_Language" Source="../Properties/Icon_Language.png"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="11*"/>
+        </Grid.ColumnDefinitions>
+        <StatusBar Margin="0" VerticalAlignment="Bottom" Height="26" Grid.ColumnSpan="3">
+            <TextBlock Margin="5,0,0,0" Text="{Binding StatusMsg, Mode=OneWay}" />
+        </StatusBar>
+        <Menu Height="26" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
+            <MenuItem Header="{x:Static loc:Resources.Main_Menu_File}" Height="24" Margin="0,1,0,0">
+                <MenuItem Header="{x:Static loc:Resources.Main_Menu_File_OpenAssetFolder}" InputGestureText="Ctrl+O" Command="{Binding OpenAssetFolderCommand}"/>
+                <Separator/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=0, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="0" Visibility="{Binding RecentDirCount, ConverterParameter=1, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=1, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="1" Visibility="{Binding RecentDirCount, ConverterParameter=2, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=2, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="2" Visibility="{Binding RecentDirCount, ConverterParameter=3, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=3, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="3" Visibility="{Binding RecentDirCount, ConverterParameter=4, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=4, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="4" Visibility="{Binding RecentDirCount, ConverterParameter=5, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=5, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="5" Visibility="{Binding RecentDirCount, ConverterParameter=6, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=6, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="6" Visibility="{Binding RecentDirCount, ConverterParameter=7, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=7, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="7" Visibility="{Binding RecentDirCount, ConverterParameter=8, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{Binding RecentDirStrings, ConverterParameter=8, Converter={StaticResource ArrayGetterConverter}}" Command="{Binding OpenRecentFolderCommand}" CommandParameter="8" Visibility="{Binding RecentDirCount, ConverterParameter=9, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <Separator Visibility="{Binding RecentDirCount, ConverterParameter=1, Converter={StaticResource IntThresholdConverter}, Mode=OneWay}"/>
+                <MenuItem Header="{x:Static loc:Resources.Main_Menu_File_Exit}" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="{x:Static loc:Resources.Main_Menu_Settings}" Height="24" Margin="0,1,0,0">
+                <MenuItem Icon="{StaticResource Icon_Language}" Header="{x:Static loc:Resources.Main_Menu_Settings_Languages}">
+                    <MenuItem Header="{x:Static loc:Resources.Main_Menu_Settings_Languages_Default}" IsCheckable="True" IsChecked="{Binding Settings.Language, ConverterParameter=default, Converter={StaticResource StringEqualConverter}}" Command="{Binding ChangeLanguageCommand}" CommandParameter="default"/>
+                    <Separator/>
+                    <MenuItem Header="English" IsCheckable="True" IsChecked="{Binding Settings.Language, ConverterParameter=en-US, Converter={StaticResource StringEqualConverter}}" Command="{Binding ChangeLanguageCommand}" CommandParameter="en-US"/>
+                    <MenuItem Header="中文" IsCheckable="True" IsChecked="{Binding Settings.Language, ConverterParameter=zh-CN, Converter={StaticResource StringEqualConverter}}" Command="{Binding ChangeLanguageCommand}" CommandParameter="zh-CN"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="{x:Static loc:Resources.Main_Menu_Settings_About}" Command="{Binding ShowAboutCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Column="0" Margin="0,26,5,26">
+            <betterwpfcontrols:TabControl Margin="0" MouseWheel="TabControl_MouseWheel" ItemsSource="{Binding TabPages}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ShowQuickLinksButton="False">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Header}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden"/>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </betterwpfcontrols:TabControl>
+        </Grid>
+        <GridSplitter Grid.Column="0" Width="5" Margin="0,26"/>
+        <Frame Grid.Column="1" Margin="0,26,5,26" NavigationUIVisibility="Hidden" Source="{Binding AssetPanelUri, Mode=OneWay}"/>
+        <GridSplitter Grid.Column="1" Width="5" Margin="0,26"/>
+        <Frame Grid.Column="2" Margin="0,26" Background="Gray" NavigationUIVisibility="Hidden" Source="{Binding AssetPreviewUri, Mode=OneWay}"/>
+    </Grid>
+</Window>
