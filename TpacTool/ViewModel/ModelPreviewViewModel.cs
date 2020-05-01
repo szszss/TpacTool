@@ -86,7 +86,14 @@ namespace TpacTool
 			{
 				Models.Children.Add(ResourceCache.GetModel(mesh));
 			}
-			Models.Children.Add(new AmbientLight(Colors.White));
+            if (Models.Children.First() != null) {
+                var target = Models.Children.First().Bounds.Location;
+                //Creates a fake ambient light that does not burn corners.
+                Models.Children.Add(new PointLight(Colors.White, new Point3D(50, 50, 0)));
+                Models.Children.Add(new PointLight(Colors.White, new Point3D(-50, -50, 0)));
+            } else {
+                Models.Children.Add(new AmbientLight(Colors.White));
+            }
 			RaisePropertyChanged("Models");
 		}
 
