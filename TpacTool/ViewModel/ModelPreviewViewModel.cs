@@ -86,7 +86,14 @@ namespace TpacTool
 			{
 				Models.Children.Add(ResourceCache.GetModel(mesh));
 			}
-			Models.Children.Add(new AmbientLight(Colors.White));
+            if (Models.Children.First() != null) {
+                var target = Models.Children.First().Bounds.Location;
+                //Creates a fake ambient light that does not burn corners.
+                Models.Children.Add(new PointLight(Colors.White, new Point3D(50, 50, 0)));
+                Models.Children.Add(new PointLight(Colors.White, new Point3D(-50, -50, 0)));
+            } else {
+                Models.Children.Add(new AmbientLight(Colors.White));
+            }
 			RaisePropertyChanged("Models");
 		}
 
@@ -118,12 +125,12 @@ namespace TpacTool
 			Quaternion zupfix_y = new Quaternion(new Vector3D(0, 1, 0), 180);
 			_viewMatrix.Rotate(zupfix_x);
 			_viewMatrix.Rotate(zupfix_y);
-			
 			Quaternion quat1 = new Quaternion(new Vector3D(1, 0, 0), CameraPitch);
 			Quaternion quat2 = new Quaternion(new Vector3D(0, 1, 0), CameraYaw);
 			_viewMatrix.Rotate(quat2);
 			_viewMatrix.Rotate(quat1);
-			_viewMatrix.Translate(new Vector3D(0, 0, -CameraDistance));
+            //center viewport on model center
+			_viewMatrix.Translate(new Vector3D(0, -1, -CameraDistance));
 			UpdateCamera();
 		}
 
