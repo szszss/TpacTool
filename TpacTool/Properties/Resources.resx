@@ -382,7 +382,7 @@
     <value>Info</value>
   </data>
   <data name="Model_PerMeshProperties_IsRigged" xml:space="preserve">
-    <value>Is Ragged</value>
+    <value>Is Rigged</value>
   </data>
   <data name="Model_PerMeshProperties_Lod" xml:space="preserve">
     <value>Lod:</value>

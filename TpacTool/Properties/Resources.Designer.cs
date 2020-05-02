@@ -853,7 +853,7 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Is Ragged 的本地化字符串。
+        ///   查找类似 Is Rigged 的本地化字符串。
         /// </summary>
         public static string Model_PerMeshProperties_IsRigged {
             get {
