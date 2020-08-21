@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace TpacTool.Lib
 {
@@ -28,6 +29,25 @@ namespace TpacTool.Lib
 		public virtual byte[] SaveData()
 		{
 			throw new NotImplementedException();
+		}
+
+		protected bool HasUserdata(IDictionary<object, object> userdata, [NotNull] object key, [CanBeNull] object value)
+		{
+			if (userdata == null)
+				return false;
+			if (userdata.TryGetValue(key, out object result))
+			{
+				if (value == null)
+					return result == null;
+				return value.Equals(result);
+			}
+
+			return false;
+		}
+
+		protected bool HasUserdataTag(IDictionary<object, object> userdata, [NotNull] object key)
+		{
+			return HasUserdata(userdata, key, true);
 		}
 	}
 }

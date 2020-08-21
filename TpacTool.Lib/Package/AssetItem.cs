@@ -15,6 +15,8 @@ namespace TpacTool.Lib
 
 		public List<AbstractExternalLoader> TypelessDataSegments { private set; get; }
 
+		public uint Version { protected internal set; get; }
+
 		public Guid Guid
 		{
 			internal protected set => _resourceGuid = value;

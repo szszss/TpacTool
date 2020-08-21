@@ -9,7 +9,12 @@ namespace TpacTool.Lib
 	{
 		public static readonly Guid TYPE_GUID = Guid.Parse("a08f8b97-197c-4bea-b95b-53846cae834e");
 
-		public Guid Material { set; get; } // not sure. but billboard texture will refs same guid
+		/*
+		 * Version 1: Since 1.4.3. Added tangent space transform quaternion (a.k.a Q-Tangent) for the vertex stream data.
+		 */
+		public static readonly uint LATEST_VERSION = 1;
+
+		public Guid Material { set; get; } // not sure. but billboard texture will ref the same guid
 
 		// maybe max rendering distance. float.max for most "big" models. 20~60 for many lod-less small things
 		public float UnknownFloat { set; get; }
@@ -56,6 +61,8 @@ namespace TpacTool.Lib
 			this.ClothString = String.Empty;
 			this.Variations = new List<Guid>();
 			this.Meshes = new List<Mesh>();
+
+			this.Version = LATEST_VERSION;
 		}
 
 		public override void ReadMetadata(BinaryReader stream, int totalSize)
@@ -126,8 +133,16 @@ namespace TpacTool.Lib
 
 			foreach (var mesh in Meshes)
 			{
+				if (mesh.VertexStream == null)
+					continue;
+
+				if (Version >= 1)
+				{
+					mesh.VertexStream.UserData[VertexStreamData.KEY_HAS_QTANGENT] = true;
+				}
+
 				var vertCount = mesh.VertexCount;
-				if (mesh.VertexStream != null && vertCount >= UInt16.MaxValue)
+				if (vertCount >= UInt16.MaxValue)
 				{
 					mesh.VertexStream.UserData[VertexStreamData.KEY_IS_32BIT_INDEX] = true;
 				}

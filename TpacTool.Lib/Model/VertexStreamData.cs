@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using SystemHalf;
+using JetBrains.Annotations;
 
 namespace TpacTool.Lib
 {
@@ -14,6 +15,8 @@ namespace TpacTool.Lib
 		public static readonly Guid TYPE_GUID = Guid.Parse("bb1df897-584f-4770-abf2-663fe449f247");
 
 		public const string KEY_IS_32BIT_INDEX = "is32bit";
+
+		public const string KEY_HAS_QTANGENT = "hasqtangent";
 
 		public int[] Indices { set; get; }
 
@@ -43,6 +46,9 @@ namespace TpacTool.Lib
 
 		public X10Y11Z10W1[] CompressedTangents { set; get; }
 
+		[CanBeNull]
+		public SnormShort4[] TangentTransform { set; get; }
+
 		public VertexStreamData() : base(TYPE_GUID)
 		{
 			Indices = CreateEmptyArray<int>();
@@ -50,7 +56,8 @@ namespace TpacTool.Lib
 
 		public override void ReadData(BinaryReader stream, IDictionary<object, object> userdata, int totalSize)
 		{
-			bool use32bit = userdata != null && userdata.TryGetValue(KEY_IS_32BIT_INDEX, out var value) && true.Equals(value);
+			bool use32bit = HasUserdataTag(userdata, KEY_IS_32BIT_INDEX);
+			bool hasQTangent = HasUserdataTag(userdata, KEY_HAS_QTANGENT);
 			int indexNum = stream.ReadInt32();
 			if (use32bit)
 			{
@@ -65,7 +72,11 @@ namespace TpacTool.Lib
 				}
 				Indices = temp;
 			}
-			var sizes = ReadStructArray<ulong>(stream, 26);
+
+			int arrayLength = 26;
+			if (hasQTangent)
+				arrayLength += 2;
+			var sizes = ReadStructArray<ulong>(stream, arrayLength);
 			Colors1 = ReadStructArray<Color>(stream, (int)(sizes[1] / 4));
 			Colors2 = ReadStructArray<Color>(stream, (int)(sizes[3] / 4));
 			Uv1 = ReadStructArray<Vector2>(stream, (int) (sizes[5] / 8));
@@ -79,6 +90,8 @@ namespace TpacTool.Lib
 			CompressedNormals = ReadStructArray<X11Y11Z10>(stream, (int) (sizes[21] / 4));
 			CompressedPositions = ReadStructArray<Half4>(stream, (int) (sizes[23] / 8));
 			CompressedTangents = ReadStructArray<X10Y11Z10W1>(stream, (int) (sizes[25] / 4));
+			if (hasQTangent)
+				TangentTransform = ReadStructArray<SnormShort4>(stream, (int)(sizes[27] / 8));
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -350,6 +363,80 @@ namespace TpacTool.Lib
 				stringBuilder.Append(Sign.ToString(format, formatProvider));
 				stringBuilder.Append('>');
 				return stringBuilder.ToString();
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct SnormShort4 : IFormattable
+		{			
+			public short RawX;
+			public short RawY;
+			public short RawZ;
+			public short RawW;
+
+			public float X
+			{
+				get { return RawX < 0 ? -((float)RawX / short.MinValue) : (float)RawX / short.MaxValue; }
+				set { RawX = (short) Math.Min(Math.Max((int) (value * short.MaxValue), short.MinValue), short.MaxValue); }
+				// there is a very little error when set a negative value
+				//(should be "-value * short.MinValue" for the negative values)
+			}
+
+			public float Y
+			{
+				get { return RawY < 0 ? -((float)RawY / short.MinValue) : (float)RawY / short.MaxValue; }
+				set { RawY = (short)Math.Min(Math.Max((int)(value * short.MaxValue), short.MinValue), short.MaxValue); }
+			}
+
+			public float Z
+			{
+				get { return RawZ < 0 ? -((float)RawZ / short.MinValue) : (float)RawZ / short.MaxValue; }
+				set { RawZ = (short)Math.Min(Math.Max((int)(value * short.MaxValue), short.MinValue), short.MaxValue); }
+			}
+
+			public float W
+			{
+				get { return RawW < 0 ? -((float)RawW / short.MinValue) : (float)RawW / short.MaxValue; }
+				set { RawW = (short)Math.Min(Math.Max((int)(value * short.MaxValue), short.MinValue), short.MaxValue); }
+			}
+
+			public override string ToString()
+			{
+				return ToString("G", CultureInfo.CurrentCulture);
+			}
+
+			public string ToString(string format)
+			{
+				return ToString(format, CultureInfo.CurrentCulture);
+			}
+
+			public string ToString(string format, IFormatProvider formatProvider)
+			{
+				StringBuilder stringBuilder = new StringBuilder();
+				string numberGroupSeparator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+				stringBuilder.Append('<');
+				stringBuilder.Append(((IFormattable)X).ToString(format, formatProvider));
+				stringBuilder.Append(numberGroupSeparator);
+				stringBuilder.Append(' ');
+				stringBuilder.Append(((IFormattable)Y).ToString(format, formatProvider));
+				stringBuilder.Append(numberGroupSeparator);
+				stringBuilder.Append(' ');
+				stringBuilder.Append(((IFormattable)Z).ToString(format, formatProvider));
+				stringBuilder.Append(numberGroupSeparator);
+				stringBuilder.Append(' ');
+				stringBuilder.Append(((IFormattable)W).ToString(format, formatProvider));
+				stringBuilder.Append('>');
+				return stringBuilder.ToString();
+			}
+
+			public static implicit operator Quaternion(SnormShort4 q)
+			{
+				return new Quaternion(q.X, q.Y, q.Z, q.W);
+			}
+
+			public static implicit operator SnormShort4(Quaternion v)
+			{
+				return new SnormShort4() { W = v.W, X = v.X, Y = v.Y, Z = v.Z };
 			}
 		}
 	}

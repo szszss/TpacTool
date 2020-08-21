@@ -98,6 +98,8 @@ namespace TpacTool.Lib
 			}
 		}
 
+		private static HashSet<string> tempStrs = new HashSet<string>();
+
 		protected virtual void Load(BinaryReader stream, bool loadDataIntoMemory)
 		{
 			if (loadDataIntoMemory && !stream.BaseStream.CanSeek)
@@ -105,11 +107,17 @@ namespace TpacTool.Lib
 									"the base stream must support random access (seek).");
 			HeaderLoaded = true;
 
-			uint version;
 			if (stream.ReadUInt32() != 0x43415054)
 				throw new IOException("Not a Tpac file: " + File.FullName);
-			if ((version = stream.ReadUInt32()) != 1)
-				throw new Exception("Unsupported Tpac version: " + version);
+			uint version = stream.ReadUInt32();
+			switch (version)
+			{
+				case 1: // 1.0.0~1.4.2
+				case 2: // since 1.4.3
+					break;
+				default:
+					throw new Exception("Unsupported Tpac version: " + version);
+			}
 			this.Guid = stream.ReadGuid();
 
 			uint resourceNum = stream.ReadUInt32();
@@ -119,11 +127,13 @@ namespace TpacTool.Lib
 			for (int i = 0; i < resourceNum; i++)
 			{
 				var typeGuid = stream.ReadGuid();
-				var resGuid = stream.ReadGuid();
-				var resName = stream.ReadSizedString();
 				TypedAssetFactory.CreateTypedAsset(typeGuid, out var assetItem);
-				assetItem.Guid = resGuid;
-				assetItem.Name = resName;
+				assetItem.Guid = stream.ReadGuid();
+				uint assetVersion = 0;
+				if (version > 1)
+					assetVersion = stream.ReadUInt32();
+				assetItem.Version = assetVersion;
+				assetItem.Name = stream.ReadSizedString();
 
 				var metadataSize = stream.ReadUInt64();
 				stream.RecordPosition();
