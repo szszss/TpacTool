@@ -67,6 +67,8 @@ namespace TpacTool.Lib
 		 is_cubemap 0x2000
 		 */
 
+		public List<Tuple<Guid, Guid>> UnknownGuidPairs { set; get; }
+
 		[CanBeNull]
 		public ExternalLoader<TexturePixelData> TexturePixels { set; get; }
 
@@ -85,6 +87,7 @@ namespace TpacTool.Lib
 
 		public override void ReadMetadata(BinaryReader stream, int totalSize)
 		{
+			var pos = stream.BaseStream.Position;
 			var version = stream.ReadUInt32();
 			BillboardMaterial = new AssetDependence<Material>(stream.ReadGuid());
 			UnknownUint1 = stream.ReadUInt32();
@@ -112,6 +115,19 @@ namespace TpacTool.Lib
 			}
 			UnknownUint5 = stream.ReadUInt32();
 			SystemFlags = stream.ReadStringList();
+
+			// dirty hack for 1.5.0
+			// TW introduced a new field for the metadata of texture since 1.5.0
+			// but they didn't bump the version of metadata
+			UnknownGuidPairs = new List<Tuple<Guid, Guid>>();
+			if (version >= 1 || totalSize - (stream.BaseStream.Position - pos) == 4)
+			{
+				var numPair = stream.ReadUInt32();
+				for (int i = 0; i < numPair; i++)
+				{
+					UnknownGuidPairs.Add(Tuple.Create(stream.ReadGuid(), stream.ReadGuid()));
+				}
+			}
 		}
 
 		public override void ConsumeDataSegments(AbstractExternalLoader[] externalData)
