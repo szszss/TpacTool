@@ -237,20 +237,22 @@ namespace TpacTool.IO
 					var sourcePose = new source() { id = controller.id + "-bind_poses" };
 					var posArray = new float_array() { id = sourcePose.id + "-array" };
 					posArray.count = (ulong) skelData.Bones.Count * 16;
-					bool isHuman = Skeleton.UserData != null && Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN;
+					bool ignoreScale = Skeleton.UserData != null && 
+										(Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN ||
+										Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
 					Matrix4x4[] invBindMatrices = new Matrix4x4[skelData.Bones.Count];
 					for (var i = 0; i < invBindMatrices.Length; i++)
 					{
 						var bone = skelData.Bones[i];
 						Matrix4x4 matrix = bone.RestFrame;
-						if (isHuman)
+						if (ignoreScale)
 							matrix.M44 = 1f;
 						Matrix4x4.Invert(matrix, out matrix);
 						BoneNode parentBone = null;
 						while ((parentBone = bone.Parent) != null)
 						{
 							var leftMatrix = parentBone.RestFrame;
-							if (isHuman)
+							if (ignoreScale)
 								leftMatrix.M44 = 1f;
 							Matrix4x4.Invert(leftMatrix, out leftMatrix);
 							matrix = Matrix4x4.Multiply(leftMatrix, matrix);
