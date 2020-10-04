@@ -45,5 +45,65 @@ namespace TpacTool.Properties {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int PreviewLight {
+            get {
+                return ((int)(this["PreviewLight"]));
+            }
+            set {
+                this["PreviewLight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int PreviewCenter {
+            get {
+                return ((int)(this["PreviewCenter"]));
+            }
+            set {
+                this["PreviewCenter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PreviewKeepScale {
+            get {
+                return ((bool)(this["PreviewKeepScale"]));
+            }
+            set {
+                this["PreviewKeepScale"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PreviewInertia {
+            get {
+                return ((bool)(this["PreviewInertia"]));
+            }
+            set {
+                this["PreviewInertia"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PreviewShowGrid {
+            get {
+                return ((bool)(this["PreviewShowGrid"]));
+            }
+            set {
+                this["PreviewShowGrid"] = value;
+            }
+        }
     }
 }

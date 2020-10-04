@@ -71,6 +71,12 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="HelixToolkit, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.2.11.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.2.11.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="LiteTreeView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WPFLiteTreeView.1.0.0\lib\net45\LiteTreeView.dll</HintPath>
     </Reference>
@@ -80,6 +86,12 @@
       <HintPath>..\packages\Ookii.Dialogs.Wpf.1.1.0\lib\net45\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -122,6 +134,9 @@
     <Compile Include="Page\MaterialPage.xaml.cs">
       <DependentUpon>MaterialPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Page\WpfPreviewPage.xaml.cs">
+      <DependentUpon>WpfPreviewPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Preview\ResourceCache.cs" />
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="UserControl\Vec4Box.xaml.cs">
@@ -132,7 +147,10 @@
     <Compile Include="Util\IntThresholdConverter.cs" />
     <Compile Include="Preview\MeshBaker.cs" />
     <Compile Include="Util\StringEqualConverter.cs" />
+    <Compile Include="Util\TypeHelper.cs" />
+    <Compile Include="ViewModel\AbstractPreviewViewModel.cs" />
     <Compile Include="ViewModel\AssetTreeViewModel.cs" />
+    <Compile Include="ViewModel\WpfPreviewViewModel.cs" />
     <Compile Include="ViewModel\LoadingViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MaterialViewModel.cs" />
@@ -169,6 +187,10 @@
       <DependentUpon>TexturePreviewPage.xaml</DependentUpon>
     </Compile>
     <Page Include="Page\MaterialPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Page\WpfPreviewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

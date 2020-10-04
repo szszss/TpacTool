@@ -32,7 +32,7 @@ namespace TpacTool
 
 		private static readonly Uri Uri_Page_Model = new Uri("../Page/ModelPage.xaml", UriKind.Relative);
 
-		private static readonly Uri Uri_Page_ModelPreview = new Uri("../Page/ModelPreviewPage.xaml", UriKind.Relative);
+		//private static readonly Uri Uri_Page_ModelPreview = new Uri("../Page/ModelPreviewPage.xaml", UriKind.Relative);
 
 		private static readonly Uri Uri_Page_Texture = new Uri("../Page/TexturePage.xaml", UriKind.Relative);
 
@@ -358,7 +358,7 @@ namespace TpacTool
 				if (AssetPanelUri != Uri_Page_Model)
 				{
 					AssetPanelUri = Uri_Page_Model;
-					AssetPreviewUri = Uri_Page_ModelPreview;
+					AssetPreviewUri = ServiceLocator.Current.GetInstance<WpfPreviewViewModel>().PageUri;
 				}
 				hasContent = true;
 			}

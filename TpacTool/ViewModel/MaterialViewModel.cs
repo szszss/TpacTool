@@ -40,7 +40,7 @@ namespace TpacTool
 			private set
 			{
 				_selectedTexture = value;
-				MessengerInstance.Send(_selectedTexture, TexturePreviewViewModel.PriviewTextureEvent);
+				MessengerInstance.Send(_selectedTexture, TexturePreviewViewModel.PreviewTextureEvent);
 			}
 			get => _selectedTexture;
 		}
@@ -62,7 +62,7 @@ namespace TpacTool
 			set
 			{
 				TextureViewModel._clampMode = value;
-				MessengerInstance.Send(_selectedTexture, TexturePreviewViewModel.PriviewTextureEvent);
+				MessengerInstance.Send(_selectedTexture, TexturePreviewViewModel.PreviewTextureEvent);
 			}
 			get => TextureViewModel._clampMode;
 		}
@@ -72,7 +72,7 @@ namespace TpacTool
 			set
 			{
 				TextureViewModel._channelMode = value;
-				MessengerInstance.Send(_selectedTexture, TexturePreviewViewModel.PriviewTextureEvent);
+				MessengerInstance.Send(_selectedTexture, TexturePreviewViewModel.PreviewTextureEvent);
 			}
 			get => TextureViewModel._channelMode;
 		}

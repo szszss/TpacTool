@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using TpacTool.Lib;
+using BoundingBox = SharpDX.BoundingBox;
 
 namespace TpacTool
 {
@@ -20,12 +21,12 @@ namespace TpacTool
 		private static int modelCacheCleanCounter = 0;
 		private static Dictionary<Tuple<Texture, int, int>, WeakReference<BitmapSource>> imageCache = 
 							new Dictionary<Tuple<Texture, int, int>, WeakReference<BitmapSource>>();
-		private static Dictionary<Mesh, WeakReference<GeometryModel3D>> modelCache =
-							new Dictionary<Mesh, WeakReference<GeometryModel3D>>();
+		private static Dictionary<Mesh, WeakReference<MeshBaker.BakedMesh>> modelCache =
+							new Dictionary<Mesh, WeakReference<MeshBaker.BakedMesh>>();
 
-		public static GeometryModel3D GetModel(Mesh mesh)
+		public static MeshBaker.BakedMesh GetModel(Mesh mesh)
 		{
-			GeometryModel3D target = null;
+			MeshBaker.BakedMesh target = null;
 			var key = mesh;
 			lock (modelCache)
 			{
@@ -40,7 +41,7 @@ namespace TpacTool
 					}
 
 					target = MeshBaker.BakeMesh(mesh, true);
-					modelCache[key] = new WeakReference<GeometryModel3D>(target);
+					modelCache[key] = new WeakReference<MeshBaker.BakedMesh>(target);
 				}
 			}
 			return target;

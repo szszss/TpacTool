@@ -14,7 +14,7 @@ namespace TpacTool
 {
 	public class ModelPreviewViewModel : ViewModelBase
 	{
-		public static readonly Guid PriviewModelEvent = Guid.NewGuid();
+		public static readonly Guid PreviewModelEvent = Guid.NewGuid();
 
 		public MatrixCamera Camera { private set; get; }
 
@@ -52,7 +52,7 @@ namespace TpacTool
 			{
 				//_messenger = SimpleIoc.Default.GetInstance<Messenger>(MESSENGER_KEY);
 				//_messenger.Register<Metamesh>(this, OnSelectAsset);
-				MessengerInstance.Register<List<Mesh>>(this, PriviewModelEvent, OnPreviewModel);
+				MessengerInstance.Register<List<Mesh>>(this, PreviewModelEvent, OnPreviewModel);
 				MessengerInstance.Register<object>(this, MainViewModel.CleanupEvent, unused =>
 				{
 					Models.Children.Clear();
@@ -84,7 +84,7 @@ namespace TpacTool
 			Models.Children.Clear();
 			foreach (var mesh in meshes)
 			{
-				Models.Children.Add(ResourceCache.GetModel(mesh));
+				Models.Children.Add(ResourceCache.GetModel(mesh).Mesh);
 			}
             if (Models.Children.First() != null) {
                 var target = Models.Children.First().Bounds.Location;

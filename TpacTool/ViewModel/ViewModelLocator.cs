@@ -44,13 +44,15 @@ namespace TpacTool
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<LoadingViewModel>();
-            SimpleIoc.Default.Register<ModelPreviewViewModel>();
+            //SimpleIoc.Default.Register<ModelPreviewViewModel>();
             SimpleIoc.Default.Register<TexturePreviewViewModel>();
 			SimpleIoc.Default.Register<ModelViewModel>();
 			SimpleIoc.Default.Register<TextureViewModel>();
 			SimpleIoc.Default.Register<MaterialViewModel>();
+			SimpleIoc.Default.Register<WpfPreviewViewModel>();
 			// force init preview and panel
-			ViewModelBase unused = ModelPreview;
+			//ViewModelBase unused = ModelPreview;
+			ViewModelBase unused = WpfPreview;
 			unused = TexturePreview;
 			unused = Model;
 			unused = Texture;
@@ -73,19 +75,35 @@ namespace TpacTool
 			}
 		}
 
-		public ModelPreviewViewModel ModelPreview
+		/*public ModelPreviewViewModel ModelPreview
 		{
 			get
 			{
 				return ServiceLocator.Current.GetInstance<ModelPreviewViewModel>();
 			}
-		}
+		}*/
 
 		public TexturePreviewViewModel TexturePreview
 		{
 			get
 			{
 				return ServiceLocator.Current.GetInstance<TexturePreviewViewModel>();
+			}
+		}
+
+		public WpfPreviewViewModel WpfPreview
+		{
+			get
+			{
+				return ServiceLocator.Current.GetInstance<WpfPreviewViewModel>();
+			}
+		}
+
+		public AbstractPreviewViewModel ModelPreview
+		{
+			get
+			{
+				return WpfPreview;
 			}
 		}
 

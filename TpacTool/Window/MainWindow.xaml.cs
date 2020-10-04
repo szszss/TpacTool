@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TpacTool.Properties;
 using TabControl = BetterWpfControls.TabControl;
 using TabItem = BetterWpfControls.TabItem;
 
@@ -54,6 +55,11 @@ namespace TpacTool
 					tabControl.SelectedIndex = tabControl.SelectedIndex + 1;
 				}
 			}
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			Settings.Default.Save();
 		}
 	}
 }
