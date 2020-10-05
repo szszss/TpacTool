@@ -76,7 +76,14 @@ namespace TpacTool.Lib
 					{
 						alignedHeight += aligh - (alignedHeight % aligh);
 					}
-					raw[a][m] = stream.ReadBytes((alignedWidth * alignedHeight * pixelSize) / 8);
+					// prevent from overflow for mega textures or underflow for very small mipmap
+					// should be alignedWidth * alignedHeight * pixelSize / 8
+					int readSize = alignedWidth * alignedHeight;
+					if (readSize >= 8)
+						readSize = readSize / 8 * pixelSize;
+					else
+						readSize = readSize * pixelSize / 8;
+					raw[a][m] = stream.ReadBytes(readSize);
 					imageWidth = Math.Max(imageWidth >> 1, 1);
 					imageHeight = Math.Max(imageHeight >> 1, 1);
 				}
