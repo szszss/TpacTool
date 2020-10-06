@@ -34,7 +34,8 @@ namespace TpacTool.Lib
 
 		//public Dictionary<Guid, AbstractExternalLoader> FixedExternalData { private set; get; }
 
-		public delegate void ProgressCallback(int package, int packageCount, string fileName, bool completed);
+		// return true for continuing. false for halt
+		public delegate bool ProgressCallback(int package, int packageCount, string fileName, bool completed);
 
 		public AssetManager()
 		{
@@ -52,7 +53,7 @@ namespace TpacTool.Lib
 			//FixedExternalData = new Dictionary<Guid, AbstractExternalLoader>();
 		}
 
-	public virtual void Load(DirectoryInfo assetDir)
+		public virtual void Load(DirectoryInfo assetDir)
 		{
 			if (!assetDir.Exists)
 				throw new FileNotFoundException("Asser folder not exists: " + assetDir.FullName);
@@ -86,8 +87,11 @@ namespace TpacTool.Lib
 			int i = 0;
 			foreach (var file in files)
 			{
-				if (reportProgress)
-					callback(i++, packageCount, file.Name, false);
+				if (reportProgress && !callback(i++, packageCount, file.Name, false))
+				{
+					InterruptLoading();
+					return;
+				}
 				var package = new AssetPackage(file.FullName);
 				package.IsGuidLocked = true;
 				_loadedPackages.Add(package);
@@ -98,8 +102,20 @@ namespace TpacTool.Lib
 					_loadedAssets.Add(assetItem);
 				}
 			}
-			if (reportProgress)
-				callback(packageCount, packageCount, String.Empty, true);
+
+			if (reportProgress && !callback(packageCount, packageCount, String.Empty, true))
+			{
+				InterruptLoading();
+				return;
+			}
+		}
+
+		protected virtual void InterruptLoading()
+		{
+			_loadedPackages.Clear();
+			_loadedAssets.Clear();
+			_packageLookup.Clear();
+			_assetLookup.Clear();
 		}
 
 		public object this[Guid guid]

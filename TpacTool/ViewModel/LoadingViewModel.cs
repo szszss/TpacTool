@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 
@@ -8,6 +10,8 @@ namespace TpacTool
 	public class LoadingViewModel : ViewModelBase
 	{
 		public static readonly Guid LoadingProgressEvent = Guid.NewGuid();
+
+		public static readonly Guid LoadingCancelledEvent = Guid.NewGuid();
 
 		public string LoadingFileName { set; get; }
 
@@ -18,6 +22,8 @@ namespace TpacTool
 		public int MaxProgress { set; get; } = 100;
 
 		public bool IsCompletedWithoutError { set; get; }
+
+		public ICommand CancelLoadingCommand { set; get; }
 
 		public LoadingViewModel()
 		{
@@ -30,6 +36,7 @@ namespace TpacTool
 			{
 				LoadingFileName = String.Empty;
 				ReadableLoadingProgress = String.Empty;
+				CancelLoadingCommand = new RelayCommand(CancelLoading);
 				MessengerInstance.Register<ValueTuple<int, int, string>>(this, LoadingProgressEvent, message =>
 					{
 						ReadableLoadingProgress = message.Item1 + " / " + message.Item2;
@@ -42,6 +49,11 @@ namespace TpacTool
 						RaisePropertyChanged("CurrentProgress");
 					});
 			}
+		}
+
+		private void CancelLoading()
+		{
+			MessengerInstance.Send<object>(null, LoadingCancelledEvent);
 		}
 	}
 }

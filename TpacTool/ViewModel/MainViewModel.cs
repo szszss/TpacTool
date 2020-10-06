@@ -46,6 +46,8 @@ namespace TpacTool
 
 		private string _statusMsg = String.Empty;
 
+		private volatile bool _interruptLoading = false;
+
 		private LoadingWindow _loadingWindow;
 
 		public Settings Settings { private set; get; }
@@ -130,6 +132,8 @@ namespace TpacTool
 
 				MessengerInstance.Register<string>(this, StatusEvent, msg => StatusMsg = msg);
 
+				MessengerInstance.Register<object>(this, LoadingViewModel.LoadingCancelledEvent, OnLoadingCancelled);
+
 				/*var workDir = Path.GetDirectoryName(this.GetType().Assembly.Location);
 				var assimpLib32 = workDir + "/bin/win-x86/native/assimp";
 				var assimpLib64 = workDir + "/bin/win-x64/native/assimp";
@@ -156,30 +160,7 @@ namespace TpacTool
 			{
 				BeforeLoad();
 				DirectoryInfo dir = new DirectoryInfo(assetFolderDialog.SelectedPath);
-				if (!dir.Exists)
-				{
-					MessageBox.Show(Resources.Msgbox_DirNotExisting, Resources.Msgbox_Error,
-						MessageBoxButton.OK, MessageBoxImage.Error);
-				}
-				else if (dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
-				{
-					MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
-						MessageBoxButton.OK, MessageBoxImage.Exclamation);
-				}
-				else
-				{
-					_loadingWindow = new LoadingWindow();
-					_loadingWindow.Owner = Application.Current.MainWindow;
-					AssetManager = new AssetManager();
-					AssetManager.Load(dir, AssetManagerCallback);
-					if (_loadingWindow.ShowDialog() == true)
-					{
-						Settings.Default.UpdateWorkDir(dir);
-						Settings.Default.Save();
-						RefreshRecents();
-						AfterLoad();
-					}
-				}
+				Load(dir);
 			}
 		}
 
@@ -192,35 +173,46 @@ namespace TpacTool
 			{
 				var path = rwd[arg];
 				DirectoryInfo dir = new DirectoryInfo(path);
-				if (!dir.Exists)
+				if (!dir.Exists || dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
 				{
 					rwd.Remove(path);
 					Settings.Default.Save();
 					RefreshRecents();
-					MessageBox.Show(Resources.Msgbox_DirNotExisting, Resources.Msgbox_Error,
-						MessageBoxButton.OK, MessageBoxImage.Error);
 				}
-				else if (dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
+				Load(dir);
+			}
+		}
+
+		private void OnLoadingCancelled(object obj)
+		{
+			_interruptLoading = true;
+		}
+
+		private void Load(DirectoryInfo dir)
+		{
+			if (!dir.Exists)
+			{
+				MessageBox.Show(Resources.Msgbox_DirNotExisting, Resources.Msgbox_Error,
+					MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			else if (dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
+			{
+				MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
+					MessageBoxButton.OK, MessageBoxImage.Exclamation);
+			}
+			else
+			{
+				_interruptLoading = false;
+				_loadingWindow = new LoadingWindow();
+				_loadingWindow.Owner = Application.Current.MainWindow;
+				AssetManager = new AssetManager();
+				AssetManager.Load(dir, AssetManagerCallback);
+				if (_loadingWindow.ShowDialog() == true)
 				{
-					rwd.Remove(path);
+					Settings.Default.UpdateWorkDir(dir);
 					Settings.Default.Save();
 					RefreshRecents();
-					MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
-						MessageBoxButton.OK, MessageBoxImage.Exclamation);
-				}
-				else
-				{
-					_loadingWindow = new LoadingWindow();
-					_loadingWindow.Owner = Application.Current.MainWindow;
-					AssetManager = new AssetManager();
-					AssetManager.Load(dir, AssetManagerCallback);
-					if (_loadingWindow.ShowDialog() == true)
-					{
-						Settings.Default.UpdateWorkDir(dir);
-						Settings.Default.Save();
-						RefreshRecents();
-						AfterLoad();
-					}
+					AfterLoad();
 				}
 			}
 		}
@@ -244,6 +236,10 @@ namespace TpacTool
 			}
 			TabPages.Clear();
 			DefaultDependenceResolver.Clear();
+			AssetPanelUri = null;
+			AssetPreviewUri = null;
+			RaisePropertyChanged("AssetPanelUri");
+			RaisePropertyChanged("AssetPreviewUri");
 			GC.Collect();
 		}
 
@@ -324,8 +320,17 @@ namespace TpacTool
 			RaisePropertyChanged("RecentDirStrings");
 		}
 
-		private void AssetManagerCallback(int package, int packagecount, string filename, bool completed)
+		private bool AssetManagerCallback(int package, int packagecount, string filename, bool completed)
 		{
+			if (_interruptLoading)
+			{
+				DispatcherHelper.CheckBeginInvokeOnUI(() =>
+				{
+					_loadingWindow.DialogResult = false;
+					_loadingWindow.Close();
+				});
+				return false;
+			}
 			DispatcherHelper.CheckBeginInvokeOnUI(() =>
 			{
 				if (!completed)
@@ -337,6 +342,7 @@ namespace TpacTool
 					_loadingWindow.Close();
 				}
 			});
+			return true;
 		}
 
 		private void OnSelectAsset(AssetItem asset)
