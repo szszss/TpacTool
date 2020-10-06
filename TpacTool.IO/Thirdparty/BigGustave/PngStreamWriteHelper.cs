@@ -10,7 +10,8 @@ namespace TpacTool.IO
     internal class PngStreamWriteHelper : Stream
     {
         private readonly Stream inner;
-        private readonly List<byte> written = new List<byte>();
+        //private readonly List<byte> written = new List<byte>();
+		private uint crc = uint.MaxValue;
 
         public override bool CanRead => inner.CanRead;
 
@@ -35,7 +36,8 @@ namespace TpacTool.IO
 
         public void WriteChunkHeader(byte[] header)
         {
-            written.Clear();
+            //written.Clear();
+			crc = uint.MaxValue;
             Write(header, 0, header.Length);
         }
 
@@ -52,14 +54,18 @@ namespace TpacTool.IO
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            written.AddRange(buffer.Skip(offset).Take(count));
+			for (int i = offset, j = offset + count; i < j; i++)
+			{
+				Crc32.IncrementCalculate(ref crc, buffer[i]);
+			}
+            //written.AddRange(buffer.Skip(offset).Take(count));
             inner.Write(buffer, offset, count);
         }
 
         public void WriteCrc()
         {
-            var result = (int)Crc32.Calculate(written);
-            StreamHelper.WriteBigEndianInt32(inner, result);
-        }
+            //var result = (int)Crc32.Calculate(written);
+            StreamHelper.WriteBigEndianInt32(inner, (int)(crc ^ uint.MaxValue));
+		}
     }
 }

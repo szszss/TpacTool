@@ -121,6 +121,17 @@ namespace TpacTool.IO
         {
             const int headerLength = 2;
             const int checksumLength = 4;
+
+			int checksum = 0;
+#if !NET40
+			System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Run((() =>
+			{
+				checksum = Adler32Checksum.Calculate(data);
+			}));
+#else
+			checksum = Adler32Checksum.Calculate(data);
+#endif
+
 			using (var compressStream = new MemoryStream())
 #if NET40
 			using (var compressor = new DeflateStream(compressStream, CompressionMode.Compress, true))
@@ -149,7 +160,9 @@ namespace TpacTool.IO
 				}
 
 				// Write Checksum of raw data.
-				var checksum = Adler32Checksum.Calculate(data);
+#if !NET40
+				task.Wait();
+#endif
 
 				var offset = headerLength + compressStream.Length;
 

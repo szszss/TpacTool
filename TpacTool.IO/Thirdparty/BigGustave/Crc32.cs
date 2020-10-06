@@ -50,10 +50,16 @@ namespace TpacTool.IO
             return crc32 ^ uint.MaxValue;
         }
 
-        /// <summary>
-        /// Calculate the CRC32 for data.
-        /// </summary>
-        public static uint Calculate(List<byte> data)
+		public static void IncrementCalculate(ref uint crc32, byte b)
+		{
+			var index = (crc32 ^ b) & 0xFF;
+			crc32 = (crc32 >> 8) ^ Lookup[index];
+		}
+
+		/// <summary>
+		/// Calculate the CRC32 for data.
+		/// </summary>
+		public static uint Calculate(List<byte> data)
         {
             var crc32 = uint.MaxValue;
             for (var i = 0; i < data.Count; i++)

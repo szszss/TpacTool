@@ -16,7 +16,7 @@ namespace TpacTool.IO
         /// <summary>
         /// Calculate the Adler-32 checksum for some data.
         /// </summary>
-        public static int Calculate(IEnumerable<byte> data)
+        public static int Calculate(byte[] data)
         {
             // s1 is the sum of all bytes.
             var s1 = 1;
@@ -24,8 +24,9 @@ namespace TpacTool.IO
             // s2 is the sum of all s1 values.
             var s2 = 0;
 
-            foreach (var b in data)
-            {
+			for (int i = 0, j = data.Length; i < j; i++)
+			{
+				var b = data[i];
                 s1 = (s1 + b) % AdlerModulus;
                 s2 = (s1 + s2) % AdlerModulus;
             }

@@ -21,8 +21,7 @@ namespace TpacTool.IO
 			{
 				data = Texture.TexturePixels.Data.RawImage[SpecifyArray][0];
 			}
-			TextureUtil.DecodeTextureDataToWriter(Texture.TexturePixels.Data.PrimaryRawImage, 
-													width, height, Texture.Format, writer);
+			TextureUtil.DecodeTextureDataToWriter(data, width, height, Texture.Format, writer);
 			builder.Save(writeStream);
 		}
 

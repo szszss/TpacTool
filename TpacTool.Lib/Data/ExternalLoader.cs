@@ -9,6 +9,7 @@ namespace TpacTool.Lib
 {
 	public sealed class ExternalLoader<T> : AbstractExternalLoader where T : ExternalData, new()
 	{
+		private const int IMMEDIATELY_GC_THRESHOLD = 128 * 1024 * 1024 - 1;
 #if NET40
 		private volatile WeakReference _data;
 		private T _strongRef;
@@ -103,6 +104,12 @@ namespace TpacTool.Lib
 				stream.AssertLength((long)_actualSize);
 			}
 
+			if (rawData.Length > IMMEDIATELY_GC_THRESHOLD)
+			{
+				rawData = null;
+				GC.Collect();
+			}
+
 			data.TypeGuid = TypeGuid;
 
 			return data;
@@ -125,6 +132,8 @@ namespace TpacTool.Lib
 					{
 						rawData = stream.ReadBytes((int)_storageSize);
 						rawData = lz4decompress(rawData, (int)_actualSize);
+						if (rawData.Length > IMMEDIATELY_GC_THRESHOLD)
+							GC.Collect();
 						break;
 					}
 				default:
