@@ -421,7 +421,7 @@
     <value>提示</value>
   </data>
   <data name="Msgbox_TpacNotFound" xml:space="preserve">
-    <value>目录内不存在tpac文件</value>
+    <value>目录内不存在tpac文件，是否继续？ (将会搜索子目录)</value>
   </data>
   <data name="Preview_Msg_TextureFormatUnsupported" xml:space="preserve">
     <value>无法预览此格式的纹理: {0}</value>

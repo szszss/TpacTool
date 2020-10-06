@@ -421,7 +421,7 @@
     <value>Info</value>
   </data>
   <data name="Msgbox_TpacNotFound" xml:space="preserve">
-    <value>No tpac file found in the directory</value>
+    <value>No tpac file found in the top directory. Go on? (Will search sub directories)</value>
   </data>
   <data name="Preview_Msg_TextureFormatUnsupported" xml:space="preserve">
     <value>Cannot preview this texture because its format is unsupported: {0}</value>

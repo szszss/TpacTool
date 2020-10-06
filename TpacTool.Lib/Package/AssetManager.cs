@@ -82,7 +82,7 @@ namespace TpacTool.Lib
 		protected virtual void LoadDo(ProgressCallback callback = null)
 		{
 			bool reportProgress = callback != null;
-			var files = WorkDir.EnumerateFiles("*.tpac", SearchOption.TopDirectoryOnly).ToList();
+			var files = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
 			var packageCount = files.Count;
 			int i = 0;
 			foreach (var file in files)

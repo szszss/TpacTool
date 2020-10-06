@@ -159,8 +159,7 @@ namespace TpacTool
 			if (assetFolderDialog.ShowDialog().GetValueOrDefault(false))
 			{
 				BeforeLoad();
-				DirectoryInfo dir = new DirectoryInfo(assetFolderDialog.SelectedPath);
-				Load(dir);
+				Load(assetFolderDialog.SelectedPath);
 			}
 		}
 
@@ -172,14 +171,7 @@ namespace TpacTool
 			if (arg < rwd.Count)
 			{
 				var path = rwd[arg];
-				DirectoryInfo dir = new DirectoryInfo(path);
-				if (!dir.Exists || dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
-				{
-					rwd.Remove(path);
-					Settings.Default.Save();
-					RefreshRecents();
-				}
-				Load(dir);
+				Load(path, true);
 			}
 		}
 
@@ -188,17 +180,34 @@ namespace TpacTool
 			_interruptLoading = true;
 		}
 
-		private void Load(DirectoryInfo dir)
+		private void Load(string path, bool loadFromRecent = false)
 		{
+			DirectoryInfo dir = new DirectoryInfo(path);
+
 			if (!dir.Exists)
 			{
+				if (loadFromRecent)
+				{
+					Settings.Default.RecentWorkDirs.Remove(path);
+					Settings.Default.Save();
+					RefreshRecents();
+				}
 				MessageBox.Show(Resources.Msgbox_DirNotExisting, Resources.Msgbox_Error,
 					MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			else if (dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
 			{
-				MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
-					MessageBoxButton.OK, MessageBoxImage.Exclamation);
+				if (MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					if (loadFromRecent)
+					{
+						Settings.Default.RecentWorkDirs.Remove(path);
+						Settings.Default.Save();
+						RefreshRecents();
+					}
+					return;
+				}
 			}
 			else
 			{

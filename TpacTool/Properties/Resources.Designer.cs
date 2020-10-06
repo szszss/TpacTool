@@ -970,7 +970,7 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
-        ///   查找类似 No tpac file found in the directory 的本地化字符串。
+        ///   查找类似 No tpac file found in the top directory. Go on? (Will search sub directories) 的本地化字符串。
         /// </summary>
         public static string Msgbox_TpacNotFound {
             get {
