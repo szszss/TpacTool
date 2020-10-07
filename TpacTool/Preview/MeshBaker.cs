@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using SharpDX;
@@ -17,8 +19,31 @@ namespace TpacTool
 			var data = mesh.VertexStream.Data;
 			var gm3d = new GeometryModel3D();
 			var mesh3d = new MeshGeometry3D();
-			MaterialGroup mat = new MaterialGroup();
-			mat.Children.Add(new DiffuseMaterial(new SolidColorBrush(Colors.Gainsboro)));
+			var mat = new MaterialGroup();
+			DiffuseMaterial diffuseMat = null;
+			bool hasTexture = false;
+
+			if (mesh.Material.TryGetItem(out var meshMat))
+			{
+				if (meshMat.Textures.Count > 0 
+					&& meshMat.Textures.First().Value.TryGetItem(out var tex)
+					&& tex.HasPixelData)
+				{
+					hasTexture = true;
+					var bitmap = ResourceCache.GetImage(tex, 1024, ResourceCache.CHANNEL_MODE_RGBA);
+					var brush = new ImageBrush(bitmap);
+					// http://csharphelper.com/blog/2014/10/apply-textures-to-triangles-using-wpf-and-c/
+					brush.ViewportUnits = BrushMappingMode.Absolute;
+					diffuseMat = new DiffuseMaterial(brush);
+				}
+			}
+
+			if (diffuseMat == null)
+			{
+				diffuseMat = new DiffuseMaterial(new SolidColorBrush(Colors.Gainsboro));
+			}
+
+			mat.Children.Add(diffuseMat);
 			mat.Children.Add(new SpecularMaterial());
 			double massX = 0d, massY = 0d, massZ = 0d;
 			float geoMinX = float.MaxValue, geoMinY = float.MaxValue, geoMinZ = float.MaxValue;
@@ -59,12 +84,20 @@ namespace TpacTool
 			}
 			mesh3d.Normals = normals;
 
-			var uvs = new PointCollection(mesh.VertexCount);
-			foreach (var uv in data.Uv1)
+			if (hasTexture)
 			{
-				uvs.Add(new Point(uv.X, uv.Y));
+				var uvs = new PointCollection(mesh.VertexCount);
+				foreach (var uv in data.Uv1)
+				{
+					// wpf 3d viewport doesn't support texture wrap
+					double x = uv.X;
+					double y = uv.Y;
+					x = x - Math.Floor(x);
+					y = y - Math.Floor(y);
+					uvs.Add(new Point(x, y));
+				}
+				mesh3d.TextureCoordinates = uvs;
 			}
-			mesh3d.TextureCoordinates = uvs;
 
 			var indices = new Int32Collection(mesh.FaceCount * 3);
 			foreach (var index in data.Indices)
