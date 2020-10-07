@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:h="http://helix-toolkit.org/wpf"
       xmlns:local="clr-namespace:TpacTool"
+      xmlns:loc="clr-namespace:TpacTool.Properties"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="WpfPreviewPage">
@@ -43,15 +44,15 @@
             </h:GridLinesVisual3D>
         </h:HelixViewport3D>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Height="26" ScrollViewer.VerticalScrollBarVisibility="Disabled" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
-            <TextBlock Text="Light:" VerticalAlignment="Center" Margin="5,0,0,0"/>
-            <ComboBox VerticalAlignment="Center" Margin="3,0,0,0" ItemsSource="{Binding LightModeItems, Mode=OneWay}" SelectedIndex="{Binding LightMode, Mode=TwoWay}"/>
-            <TextBlock Text="Center:" VerticalAlignment="Center" Margin="5,0,0,0"/>
-            <ComboBox VerticalAlignment="Center" Margin="3,0,0,0" ItemsSource="{Binding CenterModeItems, Mode=OneWay}" SelectedIndex="{Binding CenterMode, Mode=TwoWay}"/>
+            <TextBlock Text="{x:Static loc:Resources.Preview_Lights}" VerticalAlignment="Center" Margin="5,0,0,0" ToolTip="{x:Static loc:Resources.Preview_Lights_Tooltip}"/>
+            <ComboBox VerticalAlignment="Center" Margin="3,0,0,0" ItemsSource="{Binding LightModeItems, Mode=OneWay}" SelectedIndex="{Binding LightMode, Mode=TwoWay}" ToolTip="{x:Static loc:Resources.Preview_Lights_Tooltip}"/>
+            <TextBlock Text="{x:Static loc:Resources.Preview_Center}" VerticalAlignment="Center" Margin="5,0,0,0" ToolTip="{x:Static loc:Resources.Preview_Center_Tooltip}"/>
+            <ComboBox VerticalAlignment="Center" Margin="3,0,0,0" ItemsSource="{Binding CenterModeItems, Mode=OneWay}" SelectedIndex="{Binding CenterMode, Mode=TwoWay}" ToolTip="{x:Static loc:Resources.Preview_Center_Tooltip}"/>
             <!--TextBlock Text="Keep scale:" VerticalAlignment="Center" Margin="5,0,0,0"/>
             <ComboBox VerticalAlignment="Center" Margin="3,0,0,0" ItemsSource="{Binding KeepScaleModeItems, Mode=OneWay}" SelectedIndex="{Binding KeepScaleMode, Mode=TwoWay}"/-->
-            <ToggleButton Content="Keep scale" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding KeepScaleMode, Mode=TwoWay}" VerticalAlignment="Center"/>
-            <ToggleButton Content="Inertia" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding EnableInertia, Mode=TwoWay}" VerticalAlignment="Center"/>
-            <ToggleButton Content="Show Grid" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding ShowGridLines, Mode=TwoWay}" VerticalAlignment="Center"/>
+            <ToggleButton Content="{x:Static loc:Resources.Preview_Keepscale}" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding KeepScaleMode, Mode=TwoWay}" VerticalAlignment="Center" ToolTip="{x:Static loc:Resources.Preview_Keepscale_Tooltip}"/>
+            <ToggleButton Content="{x:Static loc:Resources.Preview_Inertia}" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding EnableInertia, Mode=TwoWay}" VerticalAlignment="Center" ToolTip="{x:Static loc:Resources.Preview_Inertia_Tooltip}"/>
+            <ToggleButton Content="{x:Static loc:Resources.Preview_Showgrid}" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding ShowGridLines, Mode=TwoWay}" VerticalAlignment="Center" ToolTip="{x:Static loc:Resources.Preview_Showgrid_Tooltip}"/>
         </StackPanel>
     </Grid>
 </Page>

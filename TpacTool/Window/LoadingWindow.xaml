@@ -15,6 +15,6 @@
         <Label Content="{Binding ReadableLoadingProgress}" Margin="0,0,0,95" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14"/>
         <Label Content="{Binding LoadingFileName}" Margin="0,0,0,70" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14"/>
         <ProgressBar HorizontalAlignment="Center" Margin="0,0,0,45" VerticalAlignment="Bottom" Height="16" Width="350" Maximum="{Binding MaxProgress}" Value="{Binding CurrentProgress}"/>
-        <Button HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Height="26" Width="90" Content="Cancel" Command="{Binding CancelLoadingCommand}" />
+        <Button Content="{x:Static loc:Resources.Loading_Cancel}" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Height="26" Width="90" Command="{Binding CancelLoadingCommand}" />
     </Grid>
 </Window>

@@ -168,6 +168,9 @@
   <data name="Asset_Type_Texture" xml:space="preserve">
     <value>纹理</value>
   </data>
+  <data name="Loading_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
   <data name="Loading_Title" xml:space="preserve">
     <value>少女祈祷中</value>
   </data>
@@ -423,6 +426,48 @@
   <data name="Msgbox_TpacNotFound" xml:space="preserve">
     <value>目录内不存在tpac文件，是否继续？ (将会搜索子目录)</value>
   </data>
+  <data name="Preview_Center" xml:space="preserve">
+    <value>焦点：</value>
+  </data>
+  <data name="Preview_Center_Geometry" xml:space="preserve">
+    <value>几何中心</value>
+  </data>
+  <data name="Preview_Center_Mass" xml:space="preserve">
+    <value>质心</value>
+  </data>
+  <data name="Preview_Center_Origin" xml:space="preserve">
+    <value>原点</value>
+  </data>
+  <data name="Preview_Center_Tooltip" xml:space="preserve">
+    <value>设置镜头旋转与缩放的焦点。</value>
+  </data>
+  <data name="Preview_Inertia" xml:space="preserve">
+    <value>惯性</value>
+  </data>
+  <data name="Preview_Inertia_Tooltip" xml:space="preserve">
+    <value>启用镜头的惯性旋转与缩放。</value>
+  </data>
+  <data name="Preview_Keepscale" xml:space="preserve">
+    <value>保持体积</value>
+  </data>
+  <data name="Preview_Keepscale_Tooltip" xml:space="preserve">
+    <value>在切换预览模型时自动缩放镜头，以使新模型在屏幕上的大小与之前相似。</value>
+  </data>
+  <data name="Preview_Lights" xml:space="preserve">
+    <value>光照：</value>
+  </data>
+  <data name="Preview_Lights_Quad" xml:space="preserve">
+    <value>四光源</value>
+  </data>
+  <data name="Preview_Lights_Single" xml:space="preserve">
+    <value>单光源</value>
+  </data>
+  <data name="Preview_Lights_Tooltip" xml:space="preserve">
+    <value>设置场景中的照明光源。</value>
+  </data>
+  <data name="Preview_Lights_Tri" xml:space="preserve">
+    <value>三光源</value>
+  </data>
   <data name="Preview_Msg_TextureFormatUnsupported" xml:space="preserve">
     <value>无法预览此格式的纹理: {0}</value>
   </data>
@@ -431,6 +476,12 @@
   </data>
   <data name="Preview_Msg_TextureSizeTooLarge" xml:space="preserve">
     <value>纹理体积过大，无法预览 (&gt;100MB)</value>
+  </data>
+  <data name="Preview_Showgrid" xml:space="preserve">
+    <value>显示网格</value>
+  </data>
+  <data name="Preview_Showgrid_Tooltip" xml:space="preserve">
+    <value>显示地面网格。</value>
   </data>
   <data name="Texture_Dialog_SelectExportFile" xml:space="preserve">
     <value>将纹理导出到 ...</value>

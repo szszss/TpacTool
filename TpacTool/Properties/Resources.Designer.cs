@@ -214,6 +214,15 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Cancel 的本地化字符串。
+        /// </summary>
+        public static string Loading_Cancel {
+            get {
+                return ResourceManager.GetString("Loading_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Loading 的本地化字符串。
         /// </summary>
         public static string Loading_Title {
@@ -979,6 +988,132 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Focus: 的本地化字符串。
+        /// </summary>
+        public static string Preview_Center {
+            get {
+                return ResourceManager.GetString("Preview_Center", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Center of Geometry 的本地化字符串。
+        /// </summary>
+        public static string Preview_Center_Geometry {
+            get {
+                return ResourceManager.GetString("Preview_Center_Geometry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Center of Mass 的本地化字符串。
+        /// </summary>
+        public static string Preview_Center_Mass {
+            get {
+                return ResourceManager.GetString("Preview_Center_Mass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Origin 的本地化字符串。
+        /// </summary>
+        public static string Preview_Center_Origin {
+            get {
+                return ResourceManager.GetString("Preview_Center_Origin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set the focal point of rotation and scaling. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Center_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Center_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Inertia 的本地化字符串。
+        /// </summary>
+        public static string Preview_Inertia {
+            get {
+                return ResourceManager.GetString("Preview_Inertia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enable inertia for rotation and scaling. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Inertia_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Inertia_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Keep Scale 的本地化字符串。
+        /// </summary>
+        public static string Preview_Keepscale {
+            get {
+                return ResourceManager.GetString("Preview_Keepscale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Keep the scale of the preview model in the screen when selecting other asset. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Keepscale_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Keepscale_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Lights: 的本地化字符串。
+        /// </summary>
+        public static string Preview_Lights {
+            get {
+                return ResourceManager.GetString("Preview_Lights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Quad Lights 的本地化字符串。
+        /// </summary>
+        public static string Preview_Lights_Quad {
+            get {
+                return ResourceManager.GetString("Preview_Lights_Quad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Single Light 的本地化字符串。
+        /// </summary>
+        public static string Preview_Lights_Single {
+            get {
+                return ResourceManager.GetString("Preview_Lights_Single", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set the light sources in the scene. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Lights_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Lights_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Tri Lights 的本地化字符串。
+        /// </summary>
+        public static string Preview_Lights_Tri {
+            get {
+                return ResourceManager.GetString("Preview_Lights_Tri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Cannot preview this texture because its format is unsupported: {0} 的本地化字符串。
         /// </summary>
         public static string Preview_Msg_TextureFormatUnsupported {
@@ -1002,6 +1137,24 @@ namespace TpacTool.Properties {
         public static string Preview_Msg_TextureSizeTooLarge {
             get {
                 return ResourceManager.GetString("Preview_Msg_TextureSizeTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Show Grid 的本地化字符串。
+        /// </summary>
+        public static string Preview_Showgrid {
+            get {
+                return ResourceManager.GetString("Preview_Showgrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Show the grid of ground. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Showgrid_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Showgrid_Tooltip", resourceCulture);
             }
         }
         

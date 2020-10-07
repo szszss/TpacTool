@@ -14,14 +14,14 @@ namespace TpacTool
 
 		protected const float MAX_GRID_LENGTH = 256;
 
-		internal static string LIGHTMODE_SUN = "Single Light";
-		internal static string LIGHTMODE_THREEPOINTS = "Tri Lights";
-		internal static string LIGHTMODE_DEFAULT = "Quad Lights";
+		internal static string LIGHTMODE_SUN = Resources.Preview_Lights_Single;
+		internal static string LIGHTMODE_THREEPOINTS = Resources.Preview_Lights_Tri;
+		internal static string LIGHTMODE_DEFAULT = Resources.Preview_Lights_Quad;
 
-		internal static string CENTERMODE_ORIGIN = "Origin";
+		internal static string CENTERMODE_ORIGIN = Resources.Preview_Center_Origin;
 		//internal static string CENTERMODE_BOUNDINGBOX = "Center of Bounding Box";
-		internal static string CENTERMODE_MASS = "Center of Mass";
-		internal static string CENTERMODE_CENTER = "Center of Geometry";
+		internal static string CENTERMODE_MASS = Resources.Preview_Center_Mass;
+		internal static string CENTERMODE_CENTER = Resources.Preview_Center_Geometry;
 
 		internal static string KEEPSCALEMODE_OFF = "Off";
 		internal static string KEEPSCALEMODE_ON = "On";
