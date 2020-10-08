@@ -91,18 +91,18 @@ namespace TpacTool
 							stride = width * 3;
 							break;
 						case CHANNEL_MODE_R:
-							pf = PixelFormats.Gray16;
-							stride = width * 2;
+							pf = PixelFormats.Gray8;
+							stride = width * 1;
 							break;
 						case CHANNEL_MODE_ALPHA:
-							pf = PixelFormats.Gray16;
-							stride = width * 2;
+							pf = PixelFormats.Gray8;
+							stride = width * 1;
 							break;
 						default:
 							throw new ArgumentOutOfRangeException("mode");
 					}
 					byte[] rawImage = new byte[stride * height];
-					var writer = new ImageWriter(rawImage, mode);
+					var writer = new ImageWriter(rawImage, width, mode);
 					TextureUtil.DecodeTextureDataToWriter(rawData, width, height, texture.Format, writer);
 					/*int length = width * height;
 					for (int i = 0; i < length; i++)
@@ -127,60 +127,50 @@ namespace TpacTool
 			modelCache.Clear();
 		}
 
-		private class ImageWriter : TextureUtil.PipelineWriter
+		private class ImageWriter : TextureUtil.SimplePipelineWriter
 		{
 			private byte[] buff;
 			private int pointer;
 			private int mode;
 
-			public ImageWriter(byte[] buff, int mode)
+			public ImageWriter(byte[] buff, int width, int mode)
 			{
 				this.buff = buff;
+				this.width = width;
 				this.mode = mode;
 			}
 
-			public override void Write(TextureUtil.PixelColor color)
+			public override void WriteLine(byte[] rgba8, bool normalized)
 			{
-				switch (mode)
+				for (int i = 0; i < width; i++)
 				{
-					case CHANNEL_MODE_RGBA:
-						buff[pointer++] = SingleToByte(color.B);
-						buff[pointer++] = SingleToByte(color.G);
-						buff[pointer++] = SingleToByte(color.R);
-						buff[pointer++] = SingleToByte(color.A);
-						break;
-					case CHANNEL_MODE_RGB:
-						buff[pointer++] = SingleToByte(color.B);
-						buff[pointer++] = SingleToByte(color.G);
-						buff[pointer++] = SingleToByte(color.R);
-						break;
-					case CHANNEL_MODE_RG:
-						buff[pointer++] = 0;
-						buff[pointer++] = SingleToByte(color.G);
-						buff[pointer++] = SingleToByte(color.R);
-						break;
-					case CHANNEL_MODE_R:
-						var r = SingleToUShort(color.R);
-						buff[pointer++] = (byte)(r & 0xFF);
-						buff[pointer++] = (byte)((r >> 8) & 0xFF);
-						break;
-					case CHANNEL_MODE_ALPHA:
-						var a = SingleToUShort(color.A);
-						buff[pointer++] = (byte)(a & 0xFF);
-						buff[pointer++] = (byte)((a >> 8) & 0xFF);
-						break;
+					int j = i * 4;
+					switch (mode)
+					{
+						case CHANNEL_MODE_RGBA:
+							buff[pointer++] = rgba8[j + 2];
+							buff[pointer++] = rgba8[j + 1];
+							buff[pointer++] = rgba8[j + 0];
+							buff[pointer++] = rgba8[j + 3];
+							break;
+						case CHANNEL_MODE_RGB:
+							buff[pointer++] = rgba8[j + 2];
+							buff[pointer++] = rgba8[j + 1];
+							buff[pointer++] = rgba8[j + 0];
+							break;
+						case CHANNEL_MODE_RG:
+							buff[pointer++] = 0;
+							buff[pointer++] = rgba8[j + 1];
+							buff[pointer++] = rgba8[j + 0];
+							break;
+						case CHANNEL_MODE_R:
+							buff[pointer++] = rgba8[j + 0];
+							break;
+						case CHANNEL_MODE_ALPHA:
+							buff[pointer++] = rgba8[j + 3];
+							break;
+					}
 				}
-				
-			}
-
-			private static byte SingleToByte(float value)
-			{
-				return (byte)Math.Max(Math.Min((int) (value * 255), 255), 0);
-			}
-
-			private static ushort SingleToUShort(float value)
-			{
-				return (ushort)Math.Max(Math.Min((int)(value * 65535), 65535), 0);
 			}
 		}
 	}

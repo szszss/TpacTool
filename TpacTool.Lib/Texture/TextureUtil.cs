@@ -23,6 +23,8 @@ namespace TpacTool.Lib
 				case TextureFormat.A2M1:
 				case TextureFormat.BC6H_UF16:
 				case TextureFormat.BC7:
+				case TextureFormat.INDEX16:
+				case TextureFormat.INDEX32:
 					return false;
 				default:
 					return true;
@@ -485,6 +487,7 @@ namespace TpacTool.Lib
 			reader.Read(writer);
 		}
 
+		[Obsolete]
 		public static PixelColor[] DecodeTextureData(byte[] data, int width, int height, TextureFormat format,
 													bool bottomToTop = false, bool rightToLeft = false)
 		{
@@ -547,49 +550,414 @@ namespace TpacTool.Lib
 			{
 				using (SimpleBinaryStream stream = new SimpleBinaryStream(dataSource))
 				{
-					for (int y = 0; y < height; y++)
+					switch (format)
 					{
-						for (int x = 0; x < width; x++)
-						{
-							output.Write(ReadPixel(stream));
-						}
+						case TextureFormat.A8_UNORM:
+						case TextureFormat.L8_UNORM:
+						case TextureFormat.R8_UNORM:
+						case TextureFormat.R8_UINT:
+						case TextureFormat.R8G8_UNORM:
+						case TextureFormat.R8G8B8:
+						case TextureFormat.B8G8R8:
+						case TextureFormat.B8G8R8A8_UNORM:
+						case TextureFormat.B8G8R8X8_UNORM:
+						case TextureFormat.R8G8B8A8_UNORM:
+						case TextureFormat.R8G8B8A8_UINT:
+							byte[] byteBuffer = new byte[width * 4];
+							for (int y = 0; y < height; y++)
+							{
+								ReadLine8bpp(stream, output, byteBuffer);
+								Array.Clear(byteBuffer, 0, byteBuffer.Length);
+							}
+							byteBuffer = null;
+							break;
+						case TextureFormat.R16_UINT:
+						case TextureFormat.R16_UNORM:
+						case TextureFormat.D16_UNORM:
+						case TextureFormat.L16_UNORM:
+						case TextureFormat.R16G16_UNORM:
+						case TextureFormat.R16G16_UINT:
+						case TextureFormat.R16G16B16:
+						case TextureFormat.R16G16B16A16_UINT:
+							ushort[] ushortBuffer = new ushort[width * 4];
+							for (int y = 0; y < height; y++)
+							{
+								ReadLine16bpp(stream, output, ushortBuffer);
+								Array.Clear(ushortBuffer, 0, ushortBuffer.Length);
+							}
+							ushortBuffer = null;
+							break;
+						case TextureFormat.R32_UINT:
+						case TextureFormat.R32G32_UINT:
+						case TextureFormat.R32G32B32_UINT:
+						case TextureFormat.R32G32B32A32_UINT:
+						case TextureFormat.R24G8_TYPELESS:
+							uint[] uintBuffer = new uint[width * 4];
+							for (int y = 0; y < height; y++)
+							{
+								ReadLine32bpp(stream, output, uintBuffer);
+								Array.Clear(uintBuffer, 0, uintBuffer.Length);
+							}
+							uintBuffer = null;
+							break;
+						case TextureFormat.D24_UNORM_S8_UINT:
+						case TextureFormat.D24_UNORM_X8_UINT:
+						case TextureFormat.D32_S8X24_UINT:
+						case TextureFormat.D32F:
+							float[] depthBuffer = new float[width];
+							byte[] stencilBuffer = new byte[width];
+							for (int y = 0; y < height; y++)
+							{
+								ReadLineDepth(stream, output, depthBuffer, stencilBuffer);
+							}
+							depthBuffer = null;
+							stencilBuffer = null;
+							break;
+						case TextureFormat.R11G11B10F:
+						case TextureFormat.R16F:
+						case TextureFormat.R16G16F:
+						case TextureFormat.R16G16B16A16F:
+						case TextureFormat.R32F:
+						case TextureFormat.R32G32F:
+						case TextureFormat.R32G32B32F:
+						case TextureFormat.R32G32B32A32F:
+							float[] floatBuffer = new float[width * 4];
+							for (int y = 0; y < height; y++)
+							{
+								ReadLineFloat(stream, output, floatBuffer);
+								Array.Clear(floatBuffer, 0, floatBuffer.Length);
+							}
+							floatBuffer = null;
+							break;
+						default:
+							throw new Exception("Unsupported format:" + format.ToString());
 					}
 				}
 			}
 
-			private static float UnormByteToSingle(byte value)
+			private void ReadLine8bpp(SimpleBinaryStream input, PipelineWriter output, byte[] buffer)
 			{
-				return value / 255f;
+				bool normalized = true;
+				switch (format)
+				{
+					case TextureFormat.A8_UNORM:
+						for (int i = 0; i < width; i++)
+							buffer[i * 4 + 3] = input.ReadByte();
+						break;
+					case TextureFormat.L8_UNORM:
+					case TextureFormat.R8_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadByte();
+							buffer[j + 3] = byte.MaxValue;
+						}
+						break;
+					case TextureFormat.R8_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadByte();
+							buffer[j + 3] = byte.MaxValue;
+						}
+						normalized = false;
+						break;
+					case TextureFormat.R8G8_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j + 3] = byte.MaxValue;
+						}
+						break;
+					case TextureFormat.R8G8B8:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j + 2] = input.ReadByte();
+							buffer[j + 3] = byte.MaxValue;
+						}
+						break;
+					case TextureFormat.B8G8R8:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j + 2] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j] = input.ReadByte();
+							buffer[j + 3] = byte.MaxValue;
+						}
+						break;
+					case TextureFormat.B8G8R8A8_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j + 2] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j] = input.ReadByte();
+							buffer[j + 3] = input.ReadByte();
+						}
+						break;
+					case TextureFormat.B8G8R8X8_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j + 2] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j] = input.ReadByte();
+							input.ReadByte();
+							buffer[j + 3] = byte.MaxValue;
+						}
+						break;
+					case TextureFormat.R8G8B8A8_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j + 2] = input.ReadByte();
+							buffer[j + 3] = input.ReadByte();
+						}
+						break;
+					case TextureFormat.R8G8B8A8_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadByte();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j + 2] = input.ReadByte();
+							buffer[j + 3] = input.ReadByte();
+						}
+						normalized = false;
+						break;
+				}
+				output.WriteLine(buffer, normalized);
 			}
 
-			private static float ByteToSingle(byte value)
+			private void ReadLine16bpp(SimpleBinaryStream input, PipelineWriter output, ushort[] buffer)
 			{
-				return value;
+				bool normalized = true;
+				switch (format)
+				{
+					case TextureFormat.R16_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt16();
+							buffer[j + 3] = ushort.MaxValue;
+						}
+						normalized = false;
+						break;
+					case TextureFormat.R16_UNORM:
+					case TextureFormat.D16_UNORM:
+					case TextureFormat.L16_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt16();
+							buffer[j + 3] = ushort.MaxValue;
+						}
+						break;
+					case TextureFormat.R16G16_UNORM:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt16();
+							buffer[j + 1] = input.ReadUInt16();
+							buffer[j + 3] = ushort.MaxValue;
+						}
+						break;
+					case TextureFormat.R16G16_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt16();
+							buffer[j + 1] = input.ReadUInt16();
+							buffer[j + 3] = ushort.MaxValue;
+						}
+						normalized = false;
+						break;
+					case TextureFormat.R16G16B16:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt16();
+							buffer[j + 1] = input.ReadUInt16();
+							buffer[j + 2] = input.ReadUInt16();
+							buffer[j + 3] = ushort.MaxValue;
+						}
+						break;
+					case TextureFormat.R16G16B16A16_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt16();
+							buffer[j + 1] = input.ReadUInt16();
+							buffer[j + 2] = input.ReadUInt16();
+							buffer[j + 3] = input.ReadUInt16();
+						}
+						break;
+				}
+				output.WriteLine(buffer, normalized);
 			}
 
-			private static float UnormUShortToSingle(ushort value)
+			private void ReadLine32bpp(SimpleBinaryStream input, PipelineWriter output, uint[] buffer)
 			{
-				return value / 65535f;
+				bool normalized = false;
+				switch (format)
+				{
+					case TextureFormat.R32_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt32();
+							buffer[j + 3] = uint.MaxValue;
+						}
+						break;
+					case TextureFormat.R32G32_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt32();
+							buffer[j + 1] = input.ReadUInt32();
+							buffer[j + 3] = uint.MaxValue;
+						}
+						break;
+					case TextureFormat.R32G32B32_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt32();
+							buffer[j + 1] = input.ReadUInt32();
+							buffer[j + 2] = input.ReadUInt32();
+							buffer[j + 3] = uint.MaxValue;
+						}
+						break;
+					case TextureFormat.R32G32B32A32_UINT:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt32();
+							buffer[j + 1] = input.ReadUInt32();
+							buffer[j + 2] = input.ReadUInt32();
+							buffer[j + 3] = input.ReadUInt32();
+						}
+						break;
+					case TextureFormat.R24G8_TYPELESS:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadUInt24();
+							buffer[j + 1] = input.ReadByte();
+							buffer[j + 3] = uint.MaxValue;
+						}
+						break;
+				}
+				output.WriteLine(buffer, normalized);
 			}
 
-			private static float UShortToSingle(ushort value)
+			private void ReadLineDepth(SimpleBinaryStream input, PipelineWriter output, float[] depth, byte[] stencil)
 			{
-				return value;
+				switch (format)
+				{
+					case TextureFormat.D24_UNORM_S8_UINT:
+						for (int i = 0; i < width; i++)
+						{
+							depth[i] = Int24ToSingle(input.ReadUInt24());
+							stencil[i] = input.ReadByte();
+						}
+						break;
+					case TextureFormat.D24_UNORM_X8_UINT:
+						for (int i = 0; i < width; i++)
+						{
+							depth[i] = Int24ToSingle(input.ReadUInt24());
+							input.ReadByte();
+						}
+						break;
+					case TextureFormat.D32_S8X24_UINT:
+						for (int i = 0; i < width; i++)
+						{
+							depth[i] = Int32ToSingle(input.ReadUInt32());
+							stencil[i] = input.ReadByte();
+							input.ReadUInt24();
+						}
+						break;
+					case TextureFormat.D32F:
+						for (int i = 0; i < width; i++)
+						{
+							depth[i] = input.ReadSingle();
+						}
+						break;
+				}
+				output.WriteLine(depth, stencil);
 			}
 
-			private static float IntToSingle(uint value)
+			private void ReadLineFloat(SimpleBinaryStream input, PipelineWriter output, float[] buffer)
 			{
-				return value;
+				switch (format)
+				{
+					case TextureFormat.R11G11B10F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							UnpackR11G11B10F(input.ReadUInt32(), out float r, out float g, out float b);
+							buffer[j] = r;
+							buffer[j + 1] = g;
+							buffer[j + 2] = b;
+							buffer[j + 3] = 1f;
+						}
+						break;
+					case TextureFormat.R16F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = HalfToSingle(input.ReadUInt16());
+							buffer[j + 3] = 1f;
+						}
+						break;
+					case TextureFormat.R16G16F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = HalfToSingle(input.ReadUInt16());
+							buffer[j + 1] = HalfToSingle(input.ReadUInt16());
+							buffer[j + 3] = 1f;
+						}
+						break;
+					case TextureFormat.R16G16B16A16F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = HalfToSingle(input.ReadUInt16());
+							buffer[j + 1] = HalfToSingle(input.ReadUInt16());
+							buffer[j + 2] = HalfToSingle(input.ReadUInt16());
+							buffer[j + 3] = HalfToSingle(input.ReadUInt16());
+						}
+						break;
+					case TextureFormat.R32F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadSingle();
+							buffer[j + 3] = 1f;
+						}
+						break;
+					case TextureFormat.R32G32F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadSingle();
+							buffer[j + 1] = input.ReadSingle();
+							buffer[j + 3] = 1f;
+						}
+						break;
+					case TextureFormat.R32G32B32F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadSingle();
+							buffer[j + 1] = input.ReadSingle();
+							buffer[j + 2] = input.ReadSingle();
+							buffer[j + 3] = 1f;
+						}
+						break;
+					case TextureFormat.R32G32B32A32F:
+						for (int i = 0, j = 0; i < width; i++, j = i * 4)
+						{
+							buffer[j] = input.ReadSingle();
+							buffer[j + 1] = input.ReadSingle();
+							buffer[j + 2] = input.ReadSingle();
+							buffer[j + 3] = input.ReadSingle();
+						}
+						break;
+				}
+				output.WriteLine(buffer);
 			}
 
-			private static float UnormInt24ToSingle(int value)
+			private static float Int24ToSingle(uint value)
 			{
-				return value / 16777215f;
+				return (float)(value / 16777215d);
 			}
 
-			private static float Int24ToSingle(int value)
+			private static float Int32ToSingle(uint value)
 			{
-				return value / 16777215f;
+				return (float)(value / (double)UInt32.MaxValue);
 			}
 
 			private static float HalfToSingle(ushort value)
@@ -597,180 +965,75 @@ namespace TpacTool.Lib
 				return Half.ToHalf(value);
 			}
 
-			// don't laugh. it's a historical problem :)
-			private static float SingleToSingle(float value)
+			private static void UnpackR11G11B10F(uint value, out float r, out float g, out float b)
 			{
-				return value;
+				// https://github.com/anonymousguy198/swiftshader-compiled/blob/a6bc61d61d6fe9551d72f917629bf6bccfeafce0/src/Common/Half.hpp#L73
+				uint bits = (value & 0x7FFu) << 4;
+				r = HalfToSingle((ushort) bits);
+				bits = ((value >> 11) & 0x7FFu) << 4;
+				g = HalfToSingle((ushort) bits);
+				bits = ((value >> 22) & 0x3FFu) << 5;
+				b = HalfToSingle((ushort) bits);
+			}
+		}
+
+		private struct RGB565
+		{
+			internal readonly byte R;
+			internal readonly byte G;
+			internal readonly byte B;
+			internal readonly byte A;
+
+			public RGB565(ushort value) : this(value, byte.MaxValue)
+			{
 			}
 
-			private PixelColor ReadPixel(SimpleBinaryStream stream)
+			public RGB565(ushort value, byte alpha)
 			{
-				float r = 0, g = 0, b = 0, a = 1.0f;
-				switch (format)
-				{
-					case TextureFormat.B8G8R8A8_UNORM:
-						b = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						r = UnormByteToSingle(stream.ReadByte());
-						a = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.B8G8R8X8_UNORM:
-						b = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						r = UnormByteToSingle(stream.ReadByte());
-						stream.ReadByte();
-						break;
-					case TextureFormat.R16G16_UNORM:
-						r = UnormUShortToSingle(stream.ReadUInt16());
-						g = UnormUShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R16G16F:
-						r = HalfToSingle(stream.ReadUInt16());
-						g = HalfToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R32_UINT: // not good for visual
-						r = IntToSingle(stream.ReadUInt32());
-						break;
-					case TextureFormat.A8_UNORM:
-						r = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R8G8B8A8_UNORM:
-						r = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						b = UnormByteToSingle(stream.ReadByte());
-						a = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R8G8B8A8_UINT:
-						r = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						b = UnormByteToSingle(stream.ReadByte());
-						a = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R16G16B16A16_UNORM:
-						r = UnormUShortToSingle(stream.ReadUInt16());
-						g = UnormUShortToSingle(stream.ReadUInt16());
-						b = UnormUShortToSingle(stream.ReadUInt16());
-						a = UnormUShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.L8_UNORM:
-						r = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R8_UNORM:
-						r = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R16_UNORM:
-						r = UnormUShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R16F:
-						r = HalfToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.D24_UNORM_S8_UINT:
-						r = UnormInt24ToSingle(stream.ReadUInt24());
-						g = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.D24_UNORM_X8_UINT:
-						r = UnormInt24ToSingle(stream.ReadUInt24());
-						stream.ReadByte();
-						break;
-					case TextureFormat.D16_UNORM:
-						r = UnormUShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.D32F:
-						r = SingleToSingle(stream.ReadSingle());
-						break;
-					case TextureFormat.L16_UNORM:
-						r = UnormUShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R16G16B16A16F:
-						r = HalfToSingle(stream.ReadUInt16());
-						g = HalfToSingle(stream.ReadUInt16());
-						b = HalfToSingle(stream.ReadUInt16());
-						a = HalfToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R32F:
-						r = SingleToSingle(stream.ReadSingle());
-						break;
-					case TextureFormat.R32G32B32F:
-						r = SingleToSingle(stream.ReadSingle());
-						g = SingleToSingle(stream.ReadSingle());
-						b = SingleToSingle(stream.ReadSingle());
-						break;
-					case TextureFormat.R32G32B32A32F:
-						r = SingleToSingle(stream.ReadSingle());
-						g = SingleToSingle(stream.ReadSingle());
-						b = SingleToSingle(stream.ReadSingle());
-						a = SingleToSingle(stream.ReadSingle());
-						break;
-					case TextureFormat.R11G11B10F: // unsupported! daze!
-						stream.ReadUInt32();
-						break;
-					case TextureFormat.R16G16B16:
-						r = UShortToSingle(stream.ReadUInt16());
-						g = UShortToSingle(stream.ReadUInt16());
-						b = UShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R8G8B8:
-						r = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						b = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.B8G8R8:
-						b = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						r = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R32G32B32A32_UINT: // not good for visual
-						r = IntToSingle(stream.ReadUInt32());
-						g = IntToSingle(stream.ReadUInt32());
-						b = IntToSingle(stream.ReadUInt32());
-						a = IntToSingle(stream.ReadUInt32());
-						break;
-					case TextureFormat.R8_UINT:
-						r = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R16_UINT:
-						r = UShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R24G8_TYPELESS: // not sure if it should be normalized
-						r = Int24ToSingle(stream.ReadUInt24());
-						g = ByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R32G32B32_UINT: // not good for visual
-						r = IntToSingle(stream.ReadUInt32());
-						g = IntToSingle(stream.ReadUInt32());
-						b = IntToSingle(stream.ReadUInt32());
-						break;
-					case TextureFormat.D32_S8X24_UINT:
-						r = SingleToSingle(stream.ReadSingle());
-						g = ByteToSingle((byte)(stream.ReadUInt32() & 0xFF));
-						break;
-					case TextureFormat.R16G16_UINT: // not good for visual
-						r = UShortToSingle(stream.ReadUInt16());
-						g = UShortToSingle(stream.ReadUInt16());
-						break;
-					case TextureFormat.R8G8_UNORM:
-						r = UnormByteToSingle(stream.ReadByte());
-						g = UnormByteToSingle(stream.ReadByte());
-						break;
-					case TextureFormat.R32G32F:
-						r = SingleToSingle(stream.ReadSingle());
-						g = SingleToSingle(stream.ReadSingle());
-						break;
-					case TextureFormat.R32G32_UINT: // not good for visual
-						r = IntToSingle(stream.ReadUInt32());
-						g = IntToSingle(stream.ReadUInt32());
-						break;
-					case TextureFormat.R16G16B16A16_UINT:
-						r = UShortToSingle(stream.ReadUInt16());
-						g = UShortToSingle(stream.ReadUInt16());
-						b = UShortToSingle(stream.ReadUInt16());
-						a = UShortToSingle(stream.ReadUInt16());
-						break;
-					default:
-						throw new Exception("Unsupported format:" + format.ToString());
-				}
+				int r = (value >> 11) & 0x1F;
+				int g = (value >> 5) & 0x3F;
+				int b = value & 0x1F;
+				r = r << 3 | r >> 2;
+				g = g << 2 | g >> 3;
+				b = b << 3 | b >> 2;
+				R = (byte)r;
+				G = (byte)g;
+				B = (byte)b;
+				A = alpha;
+			}
 
-				return new PixelColor(r, g, b, a);
+			private RGB565(byte r, byte g, byte b, byte a)
+			{
+				R = r;
+				G = g;
+				B = b;
+				A = a;
+			}
+
+			public void WriteToBytes(byte[] rgba8, int offset)
+			{
+				rgba8[offset] = R;
+				rgba8[offset + 1] = G;
+				rgba8[offset + 2] = B;
+				rgba8[offset + 3] = A;
+			}
+
+			// return (left * 2 + right) / 3 (ignore alpha)
+			public static RGB565 MAD(RGB565 left, RGB565 right)
+			{
+				int r = (((left.R << 1) + right.R) / 3) & 0xFF;
+				int g = (((left.G << 1) + right.G) / 3) & 0xFF;
+				int b = (((left.B << 1) + right.B) / 3) & 0xFF;
+				return new RGB565((byte) r, (byte) g, (byte) b, left.A);
+			}
+
+			// return (left + right) / 2 (ignore alpha)
+			public static RGB565 AVG(RGB565 left, RGB565 right)
+			{
+				int r = ((left.R + right.R) >> 1) & 0xFF;
+				int g = ((left.G + right.G) >> 1) & 0xFF;
+				int b = ((left.B + right.B) >> 1) & 0xFF;
+				return new RGB565((byte)r, (byte)g, (byte)b, left.A);
 			}
 		}
 
@@ -787,8 +1050,12 @@ namespace TpacTool.Lib
 			{
 				int blockWidth = Math.Max((width + 3) / 4, 1);
 				int blockHeight = Math.Max((height + 3) / 4, 1);
-				PixelColor[,] cache0 = new PixelColor[4, blockWidth * 4];
-				PixelColor[,] cache1 = new PixelColor[4, blockWidth * 4];
+				byte[][] cache0 = new byte[4][];
+				for (int i = 0; i < 4; i++)
+					cache0[i] = new byte[blockWidth * 4 * 4];
+				byte[][] cache1 = new byte[4][];
+				for (int i = 0; i < 4; i++)
+					cache1[i] = new byte[blockWidth * 4 * 4];
 				bool isPingPong = false;
 #if !NET40
 				System.Threading.Tasks.Task task = null;
@@ -800,12 +1067,12 @@ namespace TpacTool.Lib
 						if (isPingPong)
 						{
 							for (int x = 0; x < blockWidth; x++)
-								ReadBlock(stream, ref cache1, x);
+								ReadBlock(stream, cache1, x);
 						}
 						else
 						{
 							for (int x = 0; x < blockWidth; x++)
-								ReadBlock(stream, ref cache0, x);
+								ReadBlock(stream, cache0, x);
 						}
 
 #if !NET40
@@ -825,13 +1092,11 @@ namespace TpacTool.Lib
 								{
 									if (pingPoing)
 									{
-										for (int x = 0; x < width; x++)
-											output.Write(cache1[y2, x]);
+										output.WriteLine(cache1[y2], false);
 									}
 									else
 									{
-										for (int x = 0; x < width; x++)
-											output.Write(cache0[y2, x]);
+										output.WriteLine(cache0[y2], false);
 									}
 								}
 							}
@@ -846,7 +1111,7 @@ namespace TpacTool.Lib
 				}
 			}
 
-			protected static PixelColor GetColorFromRGB565(ushort rgb565)
+			/*protected static PixelColor GetColorFromRGB565(ushort rgb565)
 			{
 
 				int b = rgb565 & 0x1F;
@@ -856,9 +1121,9 @@ namespace TpacTool.Lib
 				g = g << 2 | g >> 3;
 				r = r << 3 | r >> 2;
 				return new PixelColor(r / 255f, g / 255f, b / 255f, 1f);
-			}
+			}*/
 
-			protected abstract void ReadBlock(SimpleBinaryStream stream, ref PixelColor[,] cache, int blockX);
+			protected abstract void ReadBlock(SimpleBinaryStream stream, byte[][] cache, int blockX);
 		}
 
 		private class DXT1Reader : BlockReader
@@ -867,32 +1132,34 @@ namespace TpacTool.Lib
 			{
 			}
 
-			protected override void ReadBlock(SimpleBinaryStream stream, ref PixelColor[,] cache, int blockX)
+			protected override void ReadBlock(SimpleBinaryStream stream, byte[][] cache, int blockX)
 			{
-				blockX *= 4;
-				PixelColor[] baseColor = new PixelColor[4];
+				int posX = blockX * 4;
+				
+				RGB565[] baseColor = new RGB565[4];
 				ushort color0, color1;
-				baseColor[0] = GetColorFromRGB565(color0 = stream.ReadUInt16());
-				baseColor[1] = GetColorFromRGB565(color1 = stream.ReadUInt16());
+				baseColor[0] = new RGB565(color0 = stream.ReadUInt16());
+				baseColor[1] = new RGB565(color1 = stream.ReadUInt16());
 				if (color0 > color1)
 				{
 					// baseColor[2] = (baseColor[0] * 2 + baseColor[1]) / 3;
-					baseColor[2] = PixelColor.MAD(baseColor[0], 2, baseColor[1], 3);
-					baseColor[3] = PixelColor.MAD(baseColor[1], 2, baseColor[0], 3);
+					baseColor[2] = RGB565.MAD(baseColor[0], baseColor[1]);
+					baseColor[3] = RGB565.MAD(baseColor[1], baseColor[0]);
 				}
 				else
 				{
-					baseColor[2] = PixelColor.AVG(baseColor[0], baseColor[1]);
-					baseColor[3] = new PixelColor(0, 0, 0, 1f);
+					baseColor[2] = RGB565.AVG(baseColor[0], baseColor[1]);
+					baseColor[3] = new RGB565(0, byte.MaxValue);
 				}
 
 				for (int y = 0; y < 4; y++)
 				{
+					byte[] writeLine = cache[y];
 					byte index = stream.ReadByte();
-					cache[y, blockX + 0] = baseColor[(index >> 0) & 0x3];
-					cache[y, blockX + 1] = baseColor[(index >> 2) & 0x3];
-					cache[y, blockX + 2] = baseColor[(index >> 4) & 0x3];
-					cache[y, blockX + 3] = baseColor[(index >> 6) & 0x3];
+					baseColor[(index >> 0) & 0x3].WriteToBytes(writeLine, (posX + 0) * 4);
+					baseColor[(index >> 2) & 0x3].WriteToBytes(writeLine, (posX + 1) * 4);
+					baseColor[(index >> 4) & 0x3].WriteToBytes(writeLine, (posX + 2) * 4);
+					baseColor[(index >> 6) & 0x3].WriteToBytes(writeLine, (posX + 3) * 4);
 				}
 			}
 		}
@@ -903,20 +1170,21 @@ namespace TpacTool.Lib
 			{
 			}
 
-			protected override void ReadBlock(SimpleBinaryStream stream, ref PixelColor[,] cache, int blockX)
+			protected override void ReadBlock(SimpleBinaryStream stream, byte[][] cache, int blockX)
 			{
 				ulong alphaData = stream.ReadUInt64();
-				base.ReadBlock(stream, ref cache, blockX);
-				blockX *= 4;
+				base.ReadBlock(stream, cache, blockX);
+				int posX = blockX * 4;
 				int i = 0;
 				for (int y = 0; y < 4; y++)
 				{
+					byte[] writeLine = cache[y];
 					for (int x = 0; x < 4; x++)
 					{
 						int alpha = (int)((alphaData >> (i * 4)) & 0xF);
 						i++;
-						alpha = alpha << 4 | alpha;
-						cache[y, blockX + x].A = alpha / 255f;
+						alpha = (alpha << 4 | alpha) & 0xFF;
+						writeLine[(posX + x) * 4 + 3] = (byte) alpha;
 					}
 				}
 			}
@@ -928,39 +1196,53 @@ namespace TpacTool.Lib
 			{
 			}
 
-			protected override void ReadBlock(SimpleBinaryStream stream, ref PixelColor[,] cache, int blockX)
+			protected override void ReadBlock(SimpleBinaryStream stream, byte[][] cache, int blockX)
 			{
 				long alphaData = stream.ReadInt64();
-				base.ReadBlock(stream, ref cache, blockX);
-				ReadBC3AlphaBlock(alphaData, ref cache, blockX * 4, (ref PixelColor pixel, float value) =>
+				base.ReadBlock(stream, cache, blockX);
+				ReadBC3AlphaBlock(alphaData, cache, blockX * 4, (out int maskR, out int maskG, out int maskB, out int maskA,
+					out byte addR, out byte addG, out byte addB, out byte addA) =>
+				{
+					maskR = maskG = maskB = 0;
+					maskA = byte.MaxValue;
+					addR = addG = addB = addA = 0;
+				});
+				/*ReadBC3AlphaBlock(alphaData, cache, blockX * 4, (ref PixelColor pixel, float value) =>
 				{
 					pixel.A = value;
-				});
+				});*/
 			}
 
-			public delegate void PixelAction(ref PixelColor pixel, float value);
+			public delegate void GetPixelMask(out int maskR, out int maskG, out int maskB, out int maskA,
+											out byte addR, out byte addG, out byte addB, out byte addA);
 
-			public static void ReadBC3AlphaBlock(long block, ref PixelColor[,] cache, int posX, PixelAction writeOut)
+			public static void ReadBC3AlphaBlock(long block, byte[][] cache, int posX, GetPixelMask writeMask)
 			{
+				writeMask(out var maskR, out var maskG, out var maskB, out var maskA,
+						out var addR, out var addG, out var addB, out var addA);
 				int alpha0 = (int)(block & 0xFF);
 				int alpha1 = (int)((block >> 8) & 0xFF);
 				bool isFirstGreater = alpha0 > alpha1;
 				block = block >> 16;
-				float[] alphaLookup = new float[8];
+				byte[] alphaLookup = new byte[8];
 				for (int j = 0; j < 8; j++)
 				{
-					alphaLookup[j] = BC3GradientInterpolate(j, alpha0, alpha1, isFirstGreater) / 255f;
+					alphaLookup[j] = (byte) BC3GradientInterpolate(j, alpha0, alpha1, isFirstGreater);
 				}
 				int i = 0;
 				for (int y = 0; y < 4; y++)
 				{
+					byte[] writeLine = cache[y];
 					for (int x = 0; x < 4; x++)
 					{
 						int alphaIndex = (int)(block >> (i * 3)) & 0x7;
-						float alpha = alphaLookup[alphaIndex];
+						byte value = alphaLookup[alphaIndex];
 						i++;
-						//cache[y, posX + x].a = alpha;
-						writeOut(ref cache[y, posX + x], alpha);
+						int writePos = (posX + x) * 4;
+						writeLine[writePos + 0] = (byte) (((value & maskR) + (writeLine[writePos + 0] & ~maskR)) + addR);
+						writeLine[writePos + 1] = (byte) (((value & maskG) + (writeLine[writePos + 1] & ~maskG)) + addG);
+						writeLine[writePos + 2] = (byte) (((value & maskB) + (writeLine[writePos + 2] & ~maskB)) + addB);
+						writeLine[writePos + 3] = (byte) (((value & maskA) + (writeLine[writePos + 3] & ~maskA)) + addA);
 					}
 				}
 			}
@@ -1021,13 +1303,21 @@ namespace TpacTool.Lib
 			{
 			}
 
-			protected override void ReadBlock(SimpleBinaryStream stream, ref PixelColor[,] cache, int blockX)
+			protected override void ReadBlock(SimpleBinaryStream stream, byte[][] cache, int blockX)
 			{
-				DXT5Reader.ReadBC3AlphaBlock(stream.ReadInt64(), ref cache, blockX * 4, (ref PixelColor pixel, float value) =>
+				DXT5Reader.ReadBC3AlphaBlock(stream.ReadInt64(), cache, blockX * 4, (out int maskR, out int maskG, out int maskB, out int maskA,
+					out byte addR, out byte addG, out byte addB, out byte addA) =>
+				{
+					maskR = byte.MaxValue;
+					maskG = maskB = maskA  = 0;
+					addR = addG = addB = 0;
+					addA = byte.MaxValue;
+				});
+				/*DXT5Reader.ReadBC3AlphaBlock(stream.ReadInt64(), ref cache, blockX * 4, (ref PixelColor pixel, float value) =>
 				{
 					pixel.R = value;
 					pixel.A = 1f;
-				});
+				});*/
 			}
 		}
 
@@ -1037,13 +1327,20 @@ namespace TpacTool.Lib
 			{
 			}
 
-			protected override void ReadBlock(SimpleBinaryStream stream, ref PixelColor[,] cache, int blockX)
+			protected override void ReadBlock(SimpleBinaryStream stream, byte[][] cache, int blockX)
 			{
-				base.ReadBlock(stream, ref cache, blockX);
-				DXT5Reader.ReadBC3AlphaBlock(stream.ReadInt64(), ref cache, blockX * 4, (ref PixelColor pixel, float value) =>
+				base.ReadBlock(stream, cache, blockX);
+				DXT5Reader.ReadBC3AlphaBlock(stream.ReadInt64(), cache, blockX * 4, (out int maskR, out int maskG, out int maskB, out int maskA,
+					out byte addR, out byte addG, out byte addB, out byte addA) =>
+				{
+					maskG = byte.MaxValue;
+					maskR  = maskB = maskA = 0;
+					addR = addG = addB = addA = 0;
+				});
+				/*DXT5Reader.ReadBC3AlphaBlock(stream.ReadInt64(), ref cache, blockX * 4, (ref PixelColor pixel, float value) =>
 				{
 					pixel.G = value;
-				});
+				});*/
 			}
 		}
 
@@ -1051,7 +1348,72 @@ namespace TpacTool.Lib
 		{
 			protected int width, height;
 
-			public abstract void Write(PixelColor color);
+			public abstract void WriteLine(byte[] rgba8, bool normalized);
+
+			public abstract void WriteLine(ushort[] rgba16, bool normalized);
+
+			public abstract void WriteLine(uint[] rgba32, bool normalized);
+
+			public abstract void WriteLine(float[] depth, byte[] stencil);
+
+			public abstract void WriteLine(float[] rgba32f);
+		}
+
+		private static byte FloatToByte(float v)
+		{
+			int i = Math.Min(Math.Max((int)Math.Round(v * 255), 0), 255);
+			return (byte)i;
+		}
+
+		public abstract class SimplePipelineWriter : PipelineWriter
+		{
+			private byte[] tempBuffer;
+
+			public override void WriteLine(ushort[] rgba16, bool normalized)
+			{
+				if (tempBuffer == null || tempBuffer.Length < rgba16.Length)
+					tempBuffer = new byte[rgba16.Length];
+				for (int i = 0, j = rgba16.Length; i < j; i++)
+				{
+					tempBuffer[i] = (byte) ((rgba16[i] >> 8) & 0xFF);
+				}
+				WriteLine(tempBuffer, normalized);
+			}
+
+			public override void WriteLine(uint[] rgba32, bool normalized)
+			{
+				if (tempBuffer == null || tempBuffer.Length < rgba32.Length)
+					tempBuffer = new byte[rgba32.Length];
+				for (int i = 0, j = rgba32.Length; i < j; i++)
+				{
+					tempBuffer[i] = (byte)((rgba32[i] >> 24) & 0xFF);
+				}
+				WriteLine(tempBuffer, normalized);
+			}
+
+			public override void WriteLine(float[] depth, byte[] stencil)
+			{
+				if (tempBuffer == null || tempBuffer.Length < depth.Length * 4)
+					tempBuffer = new byte[depth.Length * 4];
+				for (int i = 0, j = depth.Length; i < j; i++)
+				{
+					tempBuffer[i * 4] = FloatToByte(depth[i]);
+					tempBuffer[i * 4 + 1] = stencil[i];
+					tempBuffer[i * 4 + 3] = byte.MaxValue;
+				}
+				WriteLine(tempBuffer, true);
+			}
+
+			public override void WriteLine(float[] rgba32f)
+			{
+				if (tempBuffer == null || tempBuffer.Length < rgba32f.Length)
+					tempBuffer = new byte[rgba32f.Length];
+				for (int i = 0, j = rgba32f.Length; i < j; i++)
+				{
+					tempBuffer[i] = FloatToByte(rgba32f[i]);
+				}
+				WriteLine(tempBuffer, true);
+			}
 		}
 
 		public class ARGB32Writer : PipelineWriter
@@ -1072,22 +1434,82 @@ namespace TpacTool.Lib
 				buffer = new int[lineLimiter];
 			}
 
-			public override void Write(PixelColor color)
+			public override void WriteLine(byte[] rgba8, bool normalized)
 			{
-				buffer[pointer++] = color.ToARGB32();
-				if (pointer >= lineLimiter)
+				for (int i = 0; i < lineLimiter; i++)
 				{
-					pointer = 0;
-					Marshal.Copy(buffer, 0, data, lineLimiter);
-					data = IntPtr.Add(data, stride);
+					int j = i * 4;
+					// B G R A
+					buffer[i] = rgba8[j + 2] | (rgba8[j + 1] << 8) | (rgba8[j] << 16) | (rgba8[j + 3] << 24);
 				}
+				Marshal.Copy(buffer, 0, data, lineLimiter);
+				data = IntPtr.Add(data, stride);
+			}
+
+			public override void WriteLine(ushort[] rgba16, bool normalized)
+			{
+				for (int i = 0; i < lineLimiter; i++)
+				{
+					int j = i * 4;
+					// B G R A
+					buffer[i] = (rgba16[j + 2] >> 8) | 
+								((rgba16[j + 1] >> 8) << 8) |
+								((rgba16[j] >> 8) << 16) |
+								((rgba16[j + 3] >> 8) << 24);
+				}
+				Marshal.Copy(buffer, 0, data, lineLimiter);
+				data = IntPtr.Add(data, stride);
+			}
+
+			public override void WriteLine(uint[] rgba32, bool normalized)
+			{
+				for (int i = 0; i < lineLimiter; i++)
+				{
+					int j = i * 4;
+					// B G R A
+					buffer[i] =  (int)(rgba32[j + 2] >> 24) |
+								((int)(rgba32[j + 1] >> 24) << 8) |
+								((int)(rgba32[j] >> 24) << 16) |
+								((int)(rgba32[j + 3] >> 24) << 24);
+				}
+				Marshal.Copy(buffer, 0, data, lineLimiter);
+				data = IntPtr.Add(data, stride);
+			}
+
+			public override void WriteLine(float[] depth, byte[] stencil)
+			{
+				for (int i = 0; i < lineLimiter; i++)
+				{
+					// B G R A
+					buffer[i] = 0 |
+								(stencil[i] << 8) |
+								(FloatToByte(depth[i]) << 16) |
+								byte.MaxValue;
+				}
+				Marshal.Copy(buffer, 0, data, lineLimiter);
+				data = IntPtr.Add(data, stride);
+			}
+
+			public override void WriteLine(float[] rgba32f)
+			{
+				for (int i = 0; i < lineLimiter; i++)
+				{
+					int j = i * 4;
+					// B G R A
+					buffer[i] = FloatToByte(rgba32f[j + 2]) |
+								(FloatToByte(rgba32f[j + 1]) << 8) |
+								(FloatToByte(rgba32f[j]) << 16) |
+								(FloatToByte(rgba32f[j + 3]) << 24);
+				}
+				Marshal.Copy(buffer, 0, data, lineLimiter);
+				data = IntPtr.Add(data, stride);
 			}
 		}
 
 		public class RawWriter : PipelineWriter
 		{
 			private PixelColor[] buffer;
-			private int baseOffset, lineOffset;
+			private int baseOffset = 0;
 			private bool bottomToTop, rightToLeft;
 
 			public RawWriter([NotNull] PixelColor[] target, int width, int height, bool bottomToTop, bool rightToLeft)
@@ -1097,21 +1519,109 @@ namespace TpacTool.Lib
 				this.height = height;
 				this.bottomToTop = bottomToTop;
 				this.rightToLeft = rightToLeft;
-				if (rightToLeft)
-					lineOffset = width - 1;
 				if (bottomToTop)
 					baseOffset = width * (height - 1);
 			}
 
-			public override void Write(PixelColor color)
+			public override void WriteLine(byte[] rgba8, bool normalized)
 			{
-				buffer[baseOffset + lineOffset] = color;
-				lineOffset += rightToLeft ? -1 : 1;
-				if (lineOffset >= width || lineOffset < 0)
+				int i = rightToLeft ? width - 1 : 0;
+				int inc = rightToLeft ? -1 : 1;
+				int end = rightToLeft ? -1 : width;
+				for (; i != end; i += inc)
 				{
-					lineOffset = rightToLeft ? width - 1 : 0;
-					baseOffset += bottomToTop ? width : -width;
+					int j = i * 4;
+					if (normalized)
+					{
+						buffer[baseOffset + i] = new PixelColor(
+							rgba8[j] / (float)byte.MaxValue, 
+							rgba8[j + 1] / (float)byte.MaxValue, 
+							rgba8[j + 2] / (float)byte.MaxValue, 
+							rgba8[j + 3] / (float)byte.MaxValue);
+					}
+					else
+					{
+						buffer[baseOffset + i] = new PixelColor(rgba8[j], rgba8[j + 1], rgba8[j + 2], rgba8[j + 3]);
+					}
 				}
+				baseOffset += bottomToTop ? width : -width;
+			}
+
+			public override void WriteLine(ushort[] rgba16, bool normalized)
+			{
+				int i = rightToLeft ? width - 1 : 0;
+				int inc = rightToLeft ? -1 : 1;
+				int end = rightToLeft ? -1 : width;
+				for (; i != end; i += inc)
+				{
+					int j = i * 4;
+					if (normalized)
+					{
+						buffer[baseOffset + i] = new PixelColor(
+							rgba16[j] / (float)ushort.MaxValue, 
+							rgba16[j + 1] / (float)ushort.MaxValue, 
+							rgba16[j + 2] / (float)ushort.MaxValue, 
+							rgba16[j + 3] / (float)ushort.MaxValue);
+					}
+					else
+					{
+						buffer[baseOffset + i] = new PixelColor(rgba16[j], rgba16[j + 1], rgba16[j + 2], rgba16[j + 3]);
+					}
+				}
+				baseOffset += bottomToTop ? width : -width;
+			}
+
+			public override void WriteLine(uint[] rgba32, bool normalized)
+			{
+				int i = rightToLeft ? width - 1 : 0;
+				int inc = rightToLeft ? -1 : 1;
+				int end = rightToLeft ? -1 : width;
+				for (; i != end; i += inc)
+				{
+					int j = i * 4;
+					if (normalized)
+					{
+						buffer[baseOffset + i] = new PixelColor(
+							(float)(rgba32[j] / (double)uint.MaxValue), 
+							(float)(rgba32[j + 1] / (double)uint.MaxValue), 
+							(float)(rgba32[j + 2] / (double)uint.MaxValue),
+							(float)(rgba32[j + 3] / (double)uint.MaxValue));
+					}
+					else
+					{
+						buffer[baseOffset + i] = new PixelColor(rgba32[j], rgba32[j + 1], rgba32[j + 2], rgba32[j + 3]);
+					}
+				}
+				baseOffset += bottomToTop ? width : -width;
+			}
+
+			public override void WriteLine(float[] depth, byte[] stencil)
+			{
+				int i = rightToLeft ? width - 1 : 0;
+				int inc = rightToLeft ? -1 : 1;
+				int end = rightToLeft ? -1 : width;
+				for (; i != end; i += inc)
+				{
+					buffer[baseOffset + i] = new PixelColor(
+						depth[i],
+						stencil[i],
+						0,
+						1f);
+				}
+				baseOffset += bottomToTop ? width : -width;
+			}
+
+			public override void WriteLine(float[] rgba32f)
+			{
+				int i = rightToLeft ? width - 1 : 0;
+				int inc = rightToLeft ? -1 : 1;
+				int end = rightToLeft ? -1 : width;
+				for (; i != end; i += inc)
+				{
+					int j = i * 4;
+					buffer[baseOffset + i] = new PixelColor(rgba32f[j], rgba32f[j + 1], rgba32f[j + 2], rgba32f[j + 3]);
+				}
+				baseOffset += bottomToTop ? width : -width;
 			}
 		}
 
@@ -1138,13 +1648,13 @@ namespace TpacTool.Lib
 				return (ushort)(b0 | b1 << 8);
 			}
 
-			public int ReadUInt24()
+			public uint ReadUInt24()
 			{
 				byte b0 = data[pointer];
 				byte b1 = data[pointer + 1];
 				byte b2 = data[pointer + 2];
 				pointer += 3;
-				return (int)(b0 | b1 << 8 | b2 << 16);
+				return (uint)(b0 | b1 << 8 | b2 << 16);
 			}
 
 			public uint ReadUInt32()
@@ -1189,6 +1699,7 @@ namespace TpacTool.Lib
 			}
 		}
 
+		[Obsolete]
 		public struct PixelColor
 		{
 			public float R, G, B, A;

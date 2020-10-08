@@ -79,7 +79,8 @@ namespace TpacTool.Lib
 					// prevent from overflow for mega textures or underflow for very small mipmap
 					// should be alignedWidth * alignedHeight * pixelSize / 8
 					int readSize = alignedWidth * alignedHeight;
-					if (readSize >= 8)
+					// if readSize & 7 != 0, then it cannot be divided exactly
+					if (readSize >= 8 && (readSize & 7) == 0)
 						readSize = readSize / 8 * pixelSize;
 					else
 						readSize = readSize * pixelSize / 8;
