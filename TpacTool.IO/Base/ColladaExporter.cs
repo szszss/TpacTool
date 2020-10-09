@@ -440,6 +440,16 @@ namespace TpacTool.IO
 							var matBind = new instance_material();
 							matBind.symbol = mat.Name + "-material";
 							matBind.target = "#" + matBind.symbol;
+							// fix blender 2.8x importing
+							matBind.bind_vertex_input = new instance_materialBind_vertex_input[]
+							{
+								new instance_materialBind_vertex_input()
+								{
+									semantic = "TEXCOORD0",
+									input_semantic = "TEXCOORD",
+									input_set = 0
+								}
+							};
 							matList.Add(matBind);
 						}
 					}
@@ -559,7 +569,8 @@ namespace TpacTool.IO
 				{
 					Item = new common_color_or_texture_typeTexture()
 					{
-						texture = textures[(int)TextureUsage.Diffuse].Name + "-sampler"
+						texture = textures[(int)TextureUsage.Diffuse].Name + "-sampler",
+						texcoord = "TEXCOORD0" // fix blender 2.8x importing
 					}
 				};
 			}
@@ -577,7 +588,8 @@ namespace TpacTool.IO
 				{
 					Item = new common_color_or_texture_typeTexture()
 					{
-						texture = textures[(int)TextureUsage.Specular].Name + "-sampler"
+						texture = textures[(int)TextureUsage.Specular].Name + "-sampler",
+						texcoord = "TEXCOORD0" // fix blender 2.8x importing
 					}
 				};
 			}
@@ -614,7 +626,8 @@ namespace TpacTool.IO
 								bumptype = "NORMALMAP",
 								Item = new common_color_or_texture_typeTexture()
 								{
-									texture = textures[(int)TextureUsage.Normal].Name + "-sampler"
+									texture = textures[(int)TextureUsage.Normal].Name + "-sampler",
+									texcoord = "TEXCOORD0" // fix blender 2.8x importing
 								}
 							}
 						}
