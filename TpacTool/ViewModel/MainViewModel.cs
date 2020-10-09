@@ -194,6 +194,7 @@ namespace TpacTool
 				}
 				MessageBox.Show(Resources.Msgbox_DirNotExisting, Resources.Msgbox_Error,
 					MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
 			}
 			else if (dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
 			{
@@ -209,20 +210,19 @@ namespace TpacTool
 					return;
 				}
 			}
-			else
+
+			_interruptLoading = false;
+			_loadingWindow = new LoadingWindow();
+			_loadingWindow.Owner = Application.Current.MainWindow;
+			MessengerInstance.Send<object>(null, LoadingViewModel.LoadingBeginEvent);
+			AssetManager = new AssetManager();
+			AssetManager.Load(dir, AssetManagerCallback);
+			if (_loadingWindow.ShowDialog() == true)
 			{
-				_interruptLoading = false;
-				_loadingWindow = new LoadingWindow();
-				_loadingWindow.Owner = Application.Current.MainWindow;
-				AssetManager = new AssetManager();
-				AssetManager.Load(dir, AssetManagerCallback);
-				if (_loadingWindow.ShowDialog() == true)
-				{
-					Settings.Default.UpdateWorkDir(dir);
-					Settings.Default.Save();
-					RefreshRecents();
-					AfterLoad();
-				}
+				Settings.Default.UpdateWorkDir(dir);
+				Settings.Default.Save();
+				RefreshRecents();
+				AfterLoad();
 			}
 		}
 
@@ -347,7 +347,16 @@ namespace TpacTool
 											LoadingViewModel.LoadingProgressEvent);
 				else
 				{
-					_loadingWindow.DialogResult = true;
+					if (packagecount <= 0)
+					{
+						_loadingWindow.DialogResult = false;
+						MessageBox.Show(Resources.Msgbox_NoFileLoaded, Resources.Msgbox_Info,
+							MessageBoxButton.OK, MessageBoxImage.Warning);
+					}
+					else
+					{
+						_loadingWindow.DialogResult = true;
+					}
 					_loadingWindow.Close();
 				}
 			});

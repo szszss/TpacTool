@@ -82,7 +82,40 @@ namespace TpacTool.Lib
 		protected virtual void LoadDo(ProgressCallback callback = null)
 		{
 			bool reportProgress = callback != null;
-			var files = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
+			List<FileInfo> files = null;
+#if !NETSTANDARD1_3
+			Thread thread = new Thread(() =>
+			{
+				try
+				{
+					var fs = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
+					files = fs;
+				}
+				catch (ThreadAbortException)
+				{
+				}
+			});
+			thread.Name = "Tpac Searcher";
+			thread.IsBackground = true;
+			thread.Start();
+			while (true)
+			{
+				if (reportProgress && !callback(-1, -1, String.Empty, false))
+				{
+					if (thread.ThreadState != ThreadState.Stopped)
+						thread.Abort();
+					InterruptLoading();
+					return;
+				}
+				if (files != null)
+					break;
+				Thread.Sleep(100);
+				Thread.Yield();
+			}
+#else
+			files = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
+#endif
+
 			var packageCount = files.Count;
 			int i = 0;
 			foreach (var file in files)

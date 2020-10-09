@@ -171,6 +171,9 @@
   <data name="Loading_Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="Loading_Searching" xml:space="preserve">
+    <value>正在搜索tpac文件 ...</value>
+  </data>
   <data name="Loading_Title" xml:space="preserve">
     <value>少女祈祷中</value>
   </data>
@@ -422,6 +425,9 @@
   </data>
   <data name="Msgbox_Info" xml:space="preserve">
     <value>提示</value>
+  </data>
+  <data name="Msgbox_NoFileLoaded" xml:space="preserve">
+    <value>没有加载任何文件。 (子目录下没有tpac文件)</value>
   </data>
   <data name="Msgbox_TpacNotFound" xml:space="preserve">
     <value>目录内不存在tpac文件，是否继续？ (将会搜索子目录)</value>

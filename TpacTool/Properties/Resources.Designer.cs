@@ -223,6 +223,15 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Searching tpac ... 的本地化字符串。
+        /// </summary>
+        public static string Loading_Searching {
+            get {
+                return ResourceManager.GetString("Loading_Searching", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Loading 的本地化字符串。
         /// </summary>
         public static string Loading_Title {
@@ -975,6 +984,15 @@ namespace TpacTool.Properties {
         public static string Msgbox_Info {
             get {
                 return ResourceManager.GetString("Msgbox_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 No file loaded. (No tpac file in any sub directory) 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_NoFileLoaded {
+            get {
+                return ResourceManager.GetString("Msgbox_NoFileLoaded", resourceCulture);
             }
         }
         
