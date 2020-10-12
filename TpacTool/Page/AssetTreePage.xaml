@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:litetreeview="clr-namespace:LiteTreeView;assembly=LiteTreeView"
       xmlns:local="clr-namespace:TpacTool"
       xmlns:loc="clr-namespace:TpacTool.Properties"
       mc:Ignorable="d" 
@@ -12,14 +11,47 @@
 
     <Page.Resources>
         <Image x:Key="Icon_Folder" Source="../Properties/Icon_Folder.png"/>
+        <HierarchicalDataTemplate DataType="{x:Type local:AssetViewModel}"
+                                  ItemsSource="{Binding Children}">
+
+            <!--Display the TopLevelName property in the first level.-->
+            <TextBlock Text="{Binding Name}" LineHeight="19"/>
+
+            <!--Display each string in the SecondLevelItems property in
+          the second level.-->
+            <HierarchicalDataTemplate.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" LineHeight="19"/>
+                </DataTemplate>
+            </HierarchicalDataTemplate.ItemTemplate>
+
+            <!--Set the foreground of the items in the second level
+          to Navy.-->
+            <!--
+            <HierarchicalDataTemplate.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="Foreground" Value="Navy"/>
+                </Style>
+            </HierarchicalDataTemplate.ItemContainerStyle>
+            -->
+        </HierarchicalDataTemplate>
     </Page.Resources>
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
         </Grid.Background>
-        <litetreeview:LiteTreeViewControl Margin="0,0,0,36" MyItemsSource="{Binding TreeItemSource}" SelectionChanged="LiteTreeViewControl_SelectionChanged"/>
+        <TreeView Margin="0,0,0,36" ItemsSource="{Binding TreeItemSource}"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+        <!--litetreeview:LiteTreeViewControl Margin="0,0,0,36" MyItemsSource="{Binding TreeItemSource}" SelectionChanged="LiteTreeViewControl_SelectionChanged"/-->
         <ToggleButton Content="{StaticResource Icon_Folder}" ToolTip="{x:Static loc:Resources.AssetTree_Grouped_Tooltip}" HorizontalAlignment="Left" Margin="5,0,0,5" VerticalAlignment="Bottom" Height="24" Width="24" IsChecked="{Binding IsPackageMode, Mode=TwoWay}"/>
-        <TextBox Height="24" Margin="34,0,26,5" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom" Visibility="Hidden"/>
-        <Button Content="X" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Bottom" Width="16" Height="24" BorderBrush="{x:Null}" Background="{x:Null}" FontSize="16" Visibility="Hidden"/>
+        <TextBox Height="24" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=300}" Margin="34,0,26,5" TextWrapping="Wrap" VerticalAlignment="Bottom" ToolTip="{x:Static loc:Resources.AssetTree_Filter_Tooltip}"/>
+        <Button Content="X" Command="{Binding ClearFilterCommand}" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Bottom" Width="16" Height="24" BorderBrush="{x:Null}" Background="{x:Null}" FontSize="16" ToolTip="{x:Static loc:Resources.AssetTree_FilterRemove_Tooltip}"/>
     </Grid>
 </Page>

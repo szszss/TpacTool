@@ -79,9 +79,6 @@
     <Reference Include="HelixToolkit.Wpf, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.Wpf.2.11.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="LiteTreeView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFLiteTreeView.1.0.0\lib\net45\LiteTreeView.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=66aa232afad40158, processorArchitecture=MSIL">
@@ -152,6 +149,7 @@
     <Compile Include="Util\TypeHelper.cs" />
     <Compile Include="ViewModel\AbstractPreviewViewModel.cs" />
     <Compile Include="ViewModel\AssetTreeViewModel.cs" />
+    <Compile Include="ViewModel\AssetViewModel.cs" />
     <Compile Include="ViewModel\WpfPreviewViewModel.cs" />
     <Compile Include="ViewModel\LoadingViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

@@ -455,6 +455,8 @@ namespace TpacTool.Lib
 
 		#region TextureToBitmap
 
+#pragma warning disable 612
+
 		public static void DecodeTextureDataToWriter(byte[] data, int width, int height, TextureFormat format,
 													PipelineWriter writer)
 		{
@@ -1512,6 +1514,7 @@ namespace TpacTool.Lib
 			private int baseOffset = 0;
 			private bool bottomToTop, rightToLeft;
 
+
 			public RawWriter([NotNull] PixelColor[] target, int width, int height, bool bottomToTop, bool rightToLeft)
 			{
 				this.buffer = target;
@@ -1783,6 +1786,9 @@ namespace TpacTool.Lib
                 return new PixelColor(left.r / right, left.g / right, left.b / right, left.a / right);
             }*/
 		}
+
+#pragma warning restore 612
+
 		#endregion
 	}
 }

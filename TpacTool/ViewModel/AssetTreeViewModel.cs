@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using LiteTreeView;
@@ -18,119 +21,124 @@ namespace TpacTool
 
 		private bool _isPackageMode;
 
-		public List<PackageTreeNode> PackageNodes { private set; get; }
+		private string _filterText = string.Empty;
 
-		public List<AssetTreeNode> AssetNodes { private set; get; }
+		public List<AssetViewModel> PackageNodes { private set; get; }
+
+		public List<AssetViewModel> AssetNodes { private set; get; }
+
+		public ICommand ClearFilterCommand { private set; get; }
+
+		public string FilterText
+		{
+			set
+			{
+				if (_filterText != value)
+				{
+					_filterText = value;
+					RaisePropertyChanged("FilterText");
+
+					UpdateAssetTree();
+				}
+			}
+			get
+			{
+				return _filterText;
+			}
+		}
 
 		public bool IsPackageMode
 		{
 			set
 			{
 				_isPackageMode = value;
-				if (_isPackageMode)
-					TreeItemSource = PackageNodes;
-				else
-					TreeItemSource = AssetNodes;
-				RaisePropertyChanged("TreeItemSource");
+				UpdateAssetTree();
 			}
 			get => _isPackageMode;
+		}
+
+		private void UpdateAssetTree()
+		{
+			IEnumerable<AssetViewModel> list = null;
+
+			if (_isPackageMode)
+				list = PackageNodes;
+			else
+				list = AssetNodes;
+
+			if (!string.IsNullOrWhiteSpace(_filterText))
+				list = list.AsParallel().AsOrdered().Where(vm => vm.Filter(_filterText)).AsSequential();
+
+			TreeItemSource = list;
+			RaisePropertyChanged("TreeItemSource");
 		}
 
 		public override void Cleanup()
 		{
 			PackageNodes.Clear();
 			AssetNodes.Clear();
+			FilterText = string.Empty;
 			base.Cleanup();
 		}
 
-		public IList TreeItemSource { private set; get; }
+		public IEnumerable<AssetViewModel> TreeItemSource { private set; get; }
 
 		public AssetTreeViewModel(AssetManager manager, Guid typeGuid)
 		{
-			PackageNodes = new List<PackageTreeNode>();
-			AssetNodes = new List<AssetTreeNode>();
-			IsPackageMode = true;
+			ClearFilterCommand = new RelayCommand(() => { FilterText = string.Empty; });
+
+			PackageNodes = new List<AssetViewModel>();
+			AssetNodes = new List<AssetViewModel>();
+			var tempList = new List<AssetViewModel>();
+
 			foreach (var package in manager.LoadedPackages)
 			{
-				var name = package.File.Name;
+				//var name = package.File.Name;
 				bool hasAsset = false;
-				var packageNode = new PackageTreeNode() { PackageName = name };
+				var packageNode = new AssetViewModel.Package(this, package);
 				foreach (var asset in package.Items)
 				{
 					if (asset.Type == typeGuid)
 					{
-						AssetTreeNode assetNode = null;
-						if (typeGuid == Texture.TYPE_GUID)	
+						AssetViewModel assetNode = null;
+						assetNode = new AssetViewModel.Item(this, asset);
+						/*if (typeGuid == Texture.TYPE_GUID)	
 							assetNode = new TextureTreeNode() { Asset = asset };
 						else
-							assetNode = new AssetTreeNode() { Asset = asset };
+							assetNode = new AssetTreeNode() { Asset = asset };*/
 						AssetNodes.Add(assetNode);
-						packageNode.Assets.Add(assetNode);
+						tempList.Add(assetNode);
 						hasAsset = true;
 					}
 				}
 
 				if (hasAsset)
 				{
-					packageNode.Assets.Sort((left, right) =>
+					tempList.Sort((left, right) =>
 						{
-							return StringComparer.CurrentCultureIgnoreCase.Compare(left.Asset.Name, right.Asset.Name);
+							return StringComparer.CurrentCultureIgnoreCase.Compare(left.Name, right.Name);
 						});
+					packageNode.AddRange(tempList);
 					PackageNodes.Add(packageNode);
 				}
+				tempList.Clear();
 			}
 
 			PackageNodes.Sort((left, right) =>
 				{
-					return StringComparer.CurrentCultureIgnoreCase.Compare(left.PackageName, right.PackageName);
+					return StringComparer.CurrentCultureIgnoreCase.Compare(left.Name, right.Name);
 				});
 			AssetNodes.Sort((left, right) =>
 				{
-					return StringComparer.CurrentCultureIgnoreCase.Compare(left.Asset.Name, right.Asset.Name);
+					return StringComparer.CurrentCultureIgnoreCase.Compare(left.Name, right.Name);
 				});
+
+			IsPackageMode = true;
 		}
 
 		public void SelectAsset(AssetItem assetItem)
 		{
 			MessengerInstance.Send(assetItem, AssetSelectedEvent);
-		}
-
-		public class PackageTreeNode : IHaveChildren
-		{
-			public List<AssetTreeNode> Assets { private set; get; } = new List<AssetTreeNode>();
-
-			public IEnumerable Children => Assets;
-
-			public string PackageName { set; get; }
-
-			public override string ToString()
-			{
-				return PackageName;
-			}
-		}
-
-		public class AssetTreeNode : IHaveChildren
-		{
-			private static IEnumerable EMPTY_LIST = new List<object>();
-
-			public IEnumerable Children => EMPTY_LIST;
-
-			public AssetItem Asset { set; get; }
-
-			public override string ToString()
-			{
-				return Asset.Name;
-			}
-		}
-
-		public class TextureTreeNode : AssetTreeNode
-		{
-			public override string ToString()
-			{
-				if (!((Texture) Asset).HasPixelData)
-					return Asset.Name + " (TileSets)";
-				return base.ToString();
-			}
 		}
 	}
 }

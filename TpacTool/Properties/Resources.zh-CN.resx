@@ -132,6 +132,12 @@
   <data name="About_Website" xml:space="preserve">
     <value>网站:</value>
   </data>
+  <data name="AssetTree_FilterRemove_Tooltip" xml:space="preserve">
+    <value>取消检索</value>
+  </data>
+  <data name="AssetTree_Filter_Tooltip" xml:space="preserve">
+    <value>检索</value>
+  </data>
   <data name="AssetTree_Grouped_Tooltip" xml:space="preserve">
     <value>按照包来分组</value>
   </data>

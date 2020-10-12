@@ -205,6 +205,24 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Filter 的本地化字符串。
+        /// </summary>
+        public static string AssetTree_Filter_Tooltip {
+            get {
+                return ResourceManager.GetString("AssetTree_Filter_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Clear filter pattern 的本地化字符串。
+        /// </summary>
+        public static string AssetTree_FilterRemove_Tooltip {
+            get {
+                return ResourceManager.GetString("AssetTree_FilterRemove_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Grouped by package 的本地化字符串。
         /// </summary>
         public static string AssetTree_Grouped_Tooltip {

@@ -132,6 +132,12 @@
   <data name="About_Website" xml:space="preserve">
     <value>Website:</value>
   </data>
+  <data name="AssetTree_FilterRemove_Tooltip" xml:space="preserve">
+    <value>Clear filter pattern</value>
+  </data>
+  <data name="AssetTree_Filter_Tooltip" xml:space="preserve">
+    <value>Filter</value>
+  </data>
   <data name="AssetTree_Grouped_Tooltip" xml:space="preserve">
     <value>Grouped by package</value>
   </data>

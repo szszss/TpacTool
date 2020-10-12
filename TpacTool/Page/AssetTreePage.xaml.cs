@@ -29,7 +29,7 @@ namespace TpacTool
 		private void LiteTreeViewControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var vm = DataContext as AssetTreeViewModel;
-			if (vm != null && e.AddedItems.Count > 0)
+			/*if (vm != null && e.AddedItems.Count > 0)
 			{
 				var obj = e.AddedItems[0] as LiteTreeViewItemViewModel;
 				var asset = obj.InnerObject as AssetTreeViewModel.AssetTreeNode;
@@ -37,7 +37,7 @@ namespace TpacTool
 				{
 					vm.SelectAsset(asset.Asset);
 				}
-			}
+			}*/
 		}
 	}
 }
