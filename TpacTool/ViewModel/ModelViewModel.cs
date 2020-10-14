@@ -173,7 +173,7 @@ namespace TpacTool
 
 		public bool ExportAsRigged { private set; get; }
 
-		public bool FixBlenderBone { set; get; } = true;
+		public bool FixBlenderBone { set; get; } = false;
 
 		public bool OnlyExportDiffuse { set; get; } = false;
 
@@ -330,6 +330,8 @@ namespace TpacTool
 				option |= ModelExporter.ModelExportOption.LargerSize;
 			if (UseYUpAxis)
 				option |= ModelExporter.ModelExportOption.YAxisUp;
+			if (FixBlenderBone)
+				option |= ModelExporter.ModelExportOption.FixBoneForBlender;
 			if (materialExport == MaterialExportSetting.Export)
 				option |= ModelExporter.ModelExportOption.ExportTextures;
 			if (materialExport == MaterialExportSetting.ExportToSubFolder)

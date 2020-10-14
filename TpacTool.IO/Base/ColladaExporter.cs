@@ -13,8 +13,6 @@ namespace TpacTool.IO
 {
 	public class ColladaExporter : AbstractModelExporter
 	{
-		public bool FixBoneForBlender { set; get; } = true;
-
 		public override string Extension => "dae";
 
 		public override bool SupportsSecondMaterial => false;
@@ -201,9 +199,31 @@ namespace TpacTool.IO
 				controls.Add(controller);
 			}
 
+			Matrix4x4[] invBindMatrices = null;
 			if (Skeleton != null)
 			{
 				var skelData = Skeleton.Definition.Data;
+				bool ignoreScale = Skeleton.UserData != null &&
+									(Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN ||
+									Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
+				invBindMatrices = new Matrix4x4[skelData.Bones.Count];
+				for (var i = 0; i < invBindMatrices.Length; i++)
+				{
+					var bone = skelData.Bones[i];
+					Matrix4x4 matrix = GetBoneRestFrame(bone, ignoreScale);
+					Matrix4x4.Invert(matrix, out matrix);
+					BoneNode parentBone = null;
+					while ((parentBone = bone.Parent) != null)
+					{
+						var leftMatrix = GetBoneRestFrame(parentBone, ignoreScale);
+						Matrix4x4.Invert(leftMatrix, out leftMatrix);
+						matrix = Matrix4x4.Multiply(leftMatrix, matrix);
+						bone = parentBone;
+					}
+
+					invBindMatrices[i] = matrix;
+				}
+
 				foreach (var geometry in geosExcludeMorph)
 				{
 					var controller = new controller()
@@ -237,30 +257,6 @@ namespace TpacTool.IO
 					var sourcePose = new source() { id = controller.id + "-bind_poses" };
 					var posArray = new float_array() { id = sourcePose.id + "-array" };
 					posArray.count = (ulong) skelData.Bones.Count * 16;
-					bool ignoreScale = Skeleton.UserData != null && 
-										(Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN ||
-										Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
-					Matrix4x4[] invBindMatrices = new Matrix4x4[skelData.Bones.Count];
-					for (var i = 0; i < invBindMatrices.Length; i++)
-					{
-						var bone = skelData.Bones[i];
-						Matrix4x4 matrix = bone.RestFrame;
-						if (ignoreScale)
-							matrix.M44 = 1f;
-						Matrix4x4.Invert(matrix, out matrix);
-						BoneNode parentBone = null;
-						while ((parentBone = bone.Parent) != null)
-						{
-							var leftMatrix = parentBone.RestFrame;
-							if (ignoreScale)
-								leftMatrix.M44 = 1f;
-							Matrix4x4.Invert(leftMatrix, out leftMatrix);
-							matrix = Matrix4x4.Multiply(leftMatrix, matrix);
-							bone = parentBone;
-						}
-
-						invBindMatrices[i] = matrix;
-					}
 					posArray.Values = invBindMatrices
 						.SelectMany(
 							matrix => EnumerateMartix(matrix),
@@ -416,7 +412,7 @@ namespace TpacTool.IO
 
 			if (Skeleton != null)
 			{
-				modelRoot = CreateSkeleton(Skeleton);
+				modelRoot = CreateSkeleton(Skeleton, invBindMatrices);
 				nodes.Add(modelRoot);
 			}
 			else if (geosExcludeMorph.Count > 1)
@@ -937,11 +933,13 @@ namespace TpacTool.IO
 			return src;
 		}
 
-		private node CreateSkeleton(Skeleton skeleton)
+		private node CreateSkeleton(Skeleton skeleton, Matrix4x4[] invBindMatrices)
 		{
 			var root = new node();
 			var data = skeleton.Definition.Data;
-			bool isHuman = skeleton.UserData != null && skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN;
+			bool ignoreScale = Skeleton.UserData != null &&
+								(Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN ||
+								Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
 			root.id = skeleton.Name;
 			root.name = skeleton.Name;
 			root.Items = new object[] { CreateMatrix(Matrix4x4.Identity) };
@@ -956,11 +954,7 @@ namespace TpacTool.IO
 				boneNode.name = bone.Name;
 				boneNode.sid = bone.Name;
 				boneNode.type = NodeType.JOINT;
-				var restMatrix = bone.RestFrame;
-				if (isHuman)
-				{
-					restMatrix.M44 = 1;
-				}
+				var restMatrix = GetBoneRestFrame(bone, ignoreScale);
 				boneNode.Items = new object[] { CreateMatrix(restMatrix) };
 				boneNode.ItemsElementName = new[] { ItemsChoiceType2.matrix };
 				mapping[bone] = boneNode;
@@ -977,38 +971,104 @@ namespace TpacTool.IO
 				}
 			}
 
-			if (FixBoneForBlender)
+			for (var i = 0; i < data.Bones.Count; i++)
 			{
-				foreach (var bone in data.Bones)
+				var bone = data.Bones[i];
+				var child = GetBestConnectTarget(skeleton, bone, ignoreScale);
+
+				technique tech = new technique();
+				tech.profile = "blender";
+
+				if (child != null)
 				{
-					if (bone.Parent == null || childrenNum.GetOrAdd(bone.Parent, 0) > 1)
-					{
-						technique tech = new technique();
-						tech.profile = "blender";
-						// well... in fact we have nothing to hint for the root node, do we?
-						mapping[bone].extra = new [] { new extra(){ technique = new []{tech} } };
-					}
-					else if (childrenNum.GetOrAdd(bone.Parent, 0) == 1)
-					{
-						technique tech = new technique();
-						tech.profile = "blender";
-						tech.connect = new connect() { sid = "connect", type = "bool", Text = "1" };
-						mapping[bone].extra = new[] { new extra() { technique = new[] { tech } } };
-					}
-					else
-					{
-						technique tech = new technique();
-						tech.profile = "blender";
-						tech.connect = new connect() { sid = "connect", type = "bool", Text = "1" };
-						/*tech.tip_x = new tip_x() { sid = "tip_x", type = "float", Text = "0" };
-						tech.tip_y = new tip_y() { sid = "tip_y", type = "float", Text = "0.08" };
-						tech.tip_z = new tip_z() { sid = "tip_z", type = "float", Text = "0" };*/
-						mapping[bone].extra = new[] { new extra() { technique = new[] { tech } } };
-					}
+					var restMatrix = AccumulateBoneMatrix(bone, ignoreScale);
+					var tip = GetBoneRestFrame(child, ignoreScale).Translation;
+					tip.Y = tip.Z = 0f;
+					tip = Vector3.Transform(tip, restMatrix);
+					tip = Vector3.Subtract(tip, restMatrix.Translation);
+					//Quaternion rot = Quaternion.CreateFromRotationMatrix(restMatrix);
+					//float f = ExtractRollFromQuaternion(rot);
+					tech.tip_x = new tip_x() { sid = "tip_x", type = "float", Text = tip.X.ToString() };
+					tech.tip_y = new tip_y() { sid = "tip_y", type = "float", Text = tip.Y.ToString() };
+					tech.tip_z = new tip_z() { sid = "tip_z", type = "float", Text = tip.Z.ToString() };
+					//tech.roll = new roll() { sid = "roll", type = "float", Text = f.ToString() };
 				}
+				else
+				{
+					var restMatrix = AccumulateBoneMatrix(bone, ignoreScale);
+					var tip = new Vector3(0.1f, 0, 0);
+					tip = Vector3.Transform(tip, restMatrix);
+					tip = Vector3.Subtract(tip, restMatrix.Translation);
+					//Quaternion rot = Quaternion.CreateFromRotationMatrix(restMatrix);
+					//float f = ExtractRollFromQuaternion(rot);
+					tech.tip_x = new tip_x() { sid = "tip_x", type = "float", Text = tip.X.ToString() };
+					tech.tip_y = new tip_y() { sid = "tip_y", type = "float", Text = tip.Y.ToString() };
+					tech.tip_z = new tip_z() { sid = "tip_z", type = "float", Text = tip.Z.ToString() };
+					//tech.roll = new roll() { sid = "roll", type = "float", Text = f.ToString() };
+				}
+				
+				mapping[bone].extra = new[] { new extra() { technique = new[] { tech } } };
 			}
 			
 			return root;
+		}
+
+		private static Matrix4x4 GetBoneRestFrame(BoneNode bone, bool ignoreScale)
+		{
+			Matrix4x4 matrix = bone.RestFrame;
+			if (ignoreScale)
+				matrix.M44 = 1f;
+			return matrix;
+		}
+
+		private static BoneNode GetBestConnectTarget(Skeleton skeleton, BoneNode bone, bool ignoreScale)
+		{
+			var data = skeleton.Definition.Data;
+			BoneNode target = null;
+			var closestDis = 0.0001f;
+
+			foreach (var child in data.Bones)
+			{
+				if (child != bone && child.Parent == bone)
+				{
+					var trans = child.RestFrame.Translation;
+					if (trans.X < 0) // don't connect to the child on its back (see the tail of cat_skeleton)
+						continue;
+					trans.X = 0;
+					var dis = trans.LengthSquared();
+					if (dis < closestDis)
+					{
+						closestDis = dis;
+						target = child;
+					}
+				}
+			}
+
+			return target;
+		}
+
+		private static Matrix4x4 AccumulateBoneMatrix(BoneNode bone, bool ignoreScale)
+		{
+			var mat = GetBoneRestFrame(bone, ignoreScale);
+			BoneNode parent = null;
+
+			while ((parent = bone.Parent) != null)
+			{
+				mat = Matrix4x4.Multiply(mat, GetBoneRestFrame(parent, ignoreScale));
+				bone = parent;
+			}
+
+			return mat;
+		}
+
+		private static float ExtractRollFromQuaternion(Quaternion quat)
+		{
+			double pitch = Math.Asin(2.0 * (quat.Z * quat.X - quat.Z * quat.Y));
+			if (pitch < -2 * Math.PI)
+				pitch += 2 * Math.PI;
+			else if (pitch > 2 * Math.PI)
+				pitch -= 2 * Math.PI;
+			return (float)pitch;
 		}
 
 		private static void AppendNode(node parent, node child)

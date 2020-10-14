@@ -635,6 +635,8 @@ namespace Collada141
 
 		private tip_z tip_zField;
 
+		private roll rollField;
+
         private string profileField;
 
         /// <remarks />
@@ -678,6 +680,13 @@ namespace Collada141
 		{
 			get => tip_zField;
 			set => tip_zField = value;
+		}
+
+		[XmlElement("roll")]
+		public roll roll
+		{
+			get => rollField;
+			set => rollField = value;
 		}
 
 		/// <remarks />
@@ -845,6 +854,47 @@ namespace Collada141
 	[XmlType(AnonymousType = true, Namespace = "http://www.collada.org/2005/11/COLLADASchema")]
 	[XmlRoot(Namespace = "http://www.collada.org/2005/11/COLLADASchema", IsNullable = false)]
 	public class tip_z
+	{
+		private string sidField;
+
+		private string typeField;
+
+		private string textField;
+
+		/// <remarks />
+		[XmlAttribute(DataType = "NCName")]
+		public string sid
+		{
+			get { return sidField; }
+			set { sidField = value; }
+		}
+
+		/// <remarks />
+		[XmlAttribute]
+		public string type
+		{
+			get { return typeField; }
+			set { typeField = value; }
+		}
+
+		/// <remarks />
+		[XmlText]
+		public string Text
+		{
+			get { return textField; }
+
+			set { textField = value; }
+		}
+	}
+
+	/// <remarks />
+	[GeneratedCode("xsd", "4.0.30319.1")]
+	[Serializable]
+	[DebuggerStepThrough]
+	[DesignerCategory("code")]
+	[XmlType(AnonymousType = true, Namespace = "http://www.collada.org/2005/11/COLLADASchema")]
+	[XmlRoot(Namespace = "http://www.collada.org/2005/11/COLLADASchema", IsNullable = false)]
+	public class roll
 	{
 		private string sidField;
 

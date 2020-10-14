@@ -13,6 +13,8 @@ namespace TpacTool.IO
 
 		public Metamesh Model { set; get; }
 
+		public bool FixBoneForBlender { set; get; } = true;
+
 		public bool IsLargerSize { set; get; } = false;
 
 		public bool IsYAxisUp { set; get; } = false;

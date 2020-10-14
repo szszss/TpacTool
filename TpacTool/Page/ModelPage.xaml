@@ -185,7 +185,7 @@
                             <StackPanel>
                                 <CheckBox Margin="5,10,5,5" Content="{x:Static loc:Resources.Model_Export_Misc_LargerScale}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_LargerScale_Tooltip}" IsChecked="{Binding UseLargerScale, Mode=TwoWay}"/>
                                 <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Misc_YUpAxis}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_YUpAxis_Tooltip}" IsChecked="{Binding UseYUpAxis, Mode=TwoWay}"/>
-                                <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Misc_FixBoneConnect}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_FixBoneConnect_Tooltip}" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}" IsChecked="{Binding FixBlenderBone, Mode=TwoWay}"/>
+                                <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Misc_FixBoneConnect}" ToolTip="{x:Static loc:Resources.Model_Export_Misc_FixBoneConnect_Tooltip}" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}" IsChecked="{Binding FixBlenderBone, Mode=TwoWay}" Visibility="Collapsed"/>
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>

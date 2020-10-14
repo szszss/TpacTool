@@ -64,6 +64,7 @@ namespace TpacTool.IO
 
 			exporter.Model = model;
 			exporter.Skeleton = skeleton;
+			exporter.FixBoneForBlender = option.HasFlag(ModelExportOption.FixBoneForBlender);
 			exporter.IsYAxisUp = option.HasFlag(ModelExportOption.YAxisUp);
 			exporter.IsLargerSize = option.HasFlag(ModelExportOption.LargerSize);
 			exporter.IsDiffuseOnly = option.HasFlag(ModelExportOption.ExportDiffuseOnly);
@@ -88,6 +89,7 @@ namespace TpacTool.IO
 			ExportTextures = 0x1000,
 			ExportTexturesSubFolder = 0x2000,
 			ExportDiffuseOnly = 0x4000,
+			FixBoneForBlender = 0x10000,
 			PreferPng = 0x100000,
 			PreferDds = 0x200000
 		}

@@ -10,7 +10,6 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using LiteTreeView;
 using TpacTool.Lib;
 
 namespace TpacTool
