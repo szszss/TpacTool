@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using TpacTool.Lib;
 
 namespace TpacTool.IO
@@ -9,6 +10,8 @@ namespace TpacTool.IO
 	{
 		protected float ResizeFactor = 10f;
 
+		protected static readonly Matrix4x4 NegYMatrix = Matrix4x4.CreateRotationZ((float) Math.PI);
+
 		public Skeleton Skeleton { set; get; }
 
 		public Metamesh Model { set; get; }
@@ -16,6 +19,8 @@ namespace TpacTool.IO
 		public bool FixBoneForBlender { set; get; } = true;
 
 		public bool IsLargerSize { set; get; } = false;
+
+		public bool IsNegYAxisForward { set; get; } = false;
 
 		public bool IsYAxisUp { set; get; } = false;
 

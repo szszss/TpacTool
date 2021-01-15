@@ -179,6 +179,8 @@ namespace TpacTool
 
 		public bool UseLargerScale { set; get; } = false;
 
+		public bool UseNegYForwardAxis { set; get; } = true;
+
 		public bool UseYUpAxis { set; get; } = false;
 
 		public ICommand ChangeSkeletonCommand { private set; get; }
@@ -328,6 +330,8 @@ namespace TpacTool
 
 			if (UseLargerScale)
 				option |= ModelExporter.ModelExportOption.LargerSize;
+			if (UseNegYForwardAxis)
+				option |= ModelExporter.ModelExportOption.NegYAxisForward;
 			if (UseYUpAxis)
 				option |= ModelExporter.ModelExportOption.YAxisUp;
 			if (FixBlenderBone)

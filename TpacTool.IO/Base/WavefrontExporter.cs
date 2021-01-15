@@ -24,7 +24,10 @@ namespace TpacTool.IO
 		public override void Export(Stream writeStream)
 		{
 			bool largeSize = IsLargerSize;
-			bool swapYz = IsYAxisUp;
+			bool isNegYForward = IsNegYAxisForward;
+			bool isYUp = IsYAxisUp;
+			var negYMatrix = NegYMatrix;
+			var yUpMatrix = Matrix4x4.CreateRotationX((float) (Math.PI / -2));
 #if NET40
 			var memStream = new MemoryStream();
 			using (var stream = new StreamWriter(writeStream, Encoding.UTF8))
@@ -71,73 +74,37 @@ namespace TpacTool.IO
 
 						foreach (var position in med.Positions)
 						{
-							float x, y, z;
-							switch (largeSize)
-							{
-								default:
-									switch (swapYz)
-									{
-										default:
-											x = position.X;
-											y = position.Y;
-											z = position.Z;
-											break;
-										case true:
-											x = position.X;
-											y = position.Z;
-											z = -position.Y;
-											break;
-									}
-									break;
-								case true:
-									switch (swapYz)
-									{
-										default:
-											x = position.X * ResizeFactor;
-											y = position.Y * ResizeFactor;
-											z = position.Z * ResizeFactor;
-											break;
-										case true:
-											x = position.X * ResizeFactor;
-											y = position.Z * ResizeFactor;
-											z = -position.Y * ResizeFactor;
-											break;
-									}
-									break;
-							}
+							var vec = position;
+							if (isNegYForward)
+								vec = Vector4.Transform(vec, negYMatrix);
+							if (isYUp)
+								vec = Vector4.Transform(vec, yUpMatrix);
+							if (largeSize)
+								vec = Vector4.Multiply(vec, ResizeFactor);
 							stream.Write("v ");
-							stream.Write(x);
+							stream.Write(vec.X);
 							stream.Write(' ');
-							stream.Write(y);
+							stream.Write(vec.Y);
 							stream.Write(' ');
-							stream.Write(z);
+							stream.Write(vec.Z);
 							stream.Write('\n');
 						}
 
 						for (var i = 0; i < med.Vertices.Length; i++)
 						{
-							float x, y, z;
 							var vertex = med.Vertices[i];
-							switch (swapYz)
-							{
-								default:
-									x = vertex.Normal.X;
-									y = vertex.Normal.Y;
-									z = vertex.Normal.Z;
-									break;
-								case true:
-									x = vertex.Normal.X;
-									y = vertex.Normal.Z;
-									z = -vertex.Normal.Y;
-									break;
-							}
+							var vec = vertex.Normal;
+							if (isNegYForward)
+								vec = Vector4.Transform(vec, negYMatrix);
+							if (isYUp)
+								vec = Vector4.Transform(vec, yUpMatrix);
 							posPointer[i] = (int)vertex.PositionIndex;
 							stream.Write("vn ");
-							stream.Write(x);
+							stream.Write(vec.X);
 							stream.Write(' ');
-							stream.Write(y);
+							stream.Write(vec.Y);
 							stream.Write(' ');
-							stream.Write(z);
+							stream.Write(vec.Z);
 							stream.Write('\n');
 							stream.Write("vt ");
 							stream.Write(vertex.Uv.X);

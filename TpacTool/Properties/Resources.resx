@@ -312,6 +312,12 @@
   <data name="Model_Export_Misc_LargerScale_Tooltip" xml:space="preserve">
     <value>Enlarging the size of the exported model. For the formats which support node (eg DAE) it will enlarge the scale of root node.  For others (eg OBJ) it will directly enlarge the mesh.</value>
   </data>
+  <data name="Model_Export_Misc_NYForward" xml:space="preserve">
+    <value>Negative-Y-forward axis</value>
+  </data>
+  <data name="Model_Export_Misc_NYForward_Tooltip" xml:space="preserve">
+    <value>By default, the exported model faces to +Y. Check this option to make it facing to -Y.</value>
+  </data>
   <data name="Model_Export_Misc_YUpAxis" xml:space="preserve">
     <value>OBJ: Y-upward axis</value>
   </data>

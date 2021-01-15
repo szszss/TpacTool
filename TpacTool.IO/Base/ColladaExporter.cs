@@ -90,7 +90,7 @@ namespace TpacTool.IO
 				var id = GetGeoId(geoId++);
 				// if this is the only one geometry, then its name is the name of model
 				var name = processingMeshes.Count == meshes.Count ? Model.Name : mesh.Name;
-				var geo = CreateMesh(processingMeshes, id, name);
+				var geo = CreateMesh(processingMeshes, id, name, IsNegYAxisForward);
 				geos.Add(geo);
 				geosExcludeMorph.Add(geo);
 				foreach (var processingMesh in processingMeshes)
@@ -102,10 +102,12 @@ namespace TpacTool.IO
 				{
 					int morphIndex = 0;
 					morphCounts[geo] = morphs.Count;
+					var isHumanHead = Model.Name == "head_male_a" || Model.Name == "head_female_a";
 					for (var i = 0; i < morphs.Count; i++)
 					{
-						var morphGeo = CreateMorphMesh(processingMeshes,
-							id, "Morph_" + mesh.EditData.Data.MorphFrames[i].Time, i);
+						var label = isHumanHead ? MorphNameMapping.GetHumanHeadMorphName(i) :
+									"KeyTime_" + i;
+						var morphGeo = CreateMorphMesh(processingMeshes, id, label, i, IsNegYAxisForward);
 						morphIndex++;
 						geos.Add(morphGeo);
 					}
@@ -221,6 +223,8 @@ namespace TpacTool.IO
 						bone = parentBone;
 					}
 
+					if (IsNegYAxisForward)
+						matrix = Matrix4x4.Multiply(NegYMatrix, matrix);
 					invBindMatrices[i] = matrix;
 				}
 
@@ -659,14 +663,14 @@ namespace TpacTool.IO
 			return true;
 		}
 
-		private static geometry CreateMesh(List<Mesh> meshes, string id, string name)
+		private static geometry CreateMesh(List<Mesh> meshes, string id, string name, bool isNegYAxisForward)
 		{
 			var geo = new geometry();
 			geo.id = id;
 			geo.name = name;
 			var cMesh = new mesh();
-			var srcPos = GetPositionSource(geo.id + "-positions", meshes);
-			var srcNormal = GetNormalSource(geo.id + "-normals", meshes);
+			var srcPos = GetPositionSource(geo.id + "-positions", meshes, isNegYAxisForward);
+			var srcNormal = GetNormalSource(geo.id + "-normals", meshes, isNegYAxisForward);
 			var srcTex0 = GetUvSource(geo.id + "-tex0", meshes);
 			var srcColor0 = GetColorSource(geo.id + "-color0", meshes);
 			cMesh.source = new[] { srcPos, srcNormal, srcTex0, srcColor0 };
@@ -705,9 +709,10 @@ namespace TpacTool.IO
 			return geo;
 		}
 
-		private static geometry CreateMorphMesh(List<Mesh> meshes, string id, string name, int morphIndex)
+		private static geometry CreateMorphMesh(List<Mesh> meshes, string id, string name, int morphIndex, 
+												bool isNegYAxisForward)
 		{
-			var morphGeo = CreateMesh(meshes, id + "_morph" + morphIndex, name);
+			var morphGeo = CreateMesh(meshes, id + "_morph" + morphIndex, name, isNegYAxisForward);
 			var m = morphGeo.Item as mesh;
 			var posSrc = m.source[0];
 			var normalSrc = m.source[1];
@@ -838,8 +843,9 @@ namespace TpacTool.IO
 			return src;
 		}
 
-		private static source GetPositionSource(string id, List<Mesh> meshes)
+		private static source GetPositionSource(string id, List<Mesh> meshes, bool isNegYAxisForward)
 		{
+			var negYMatrix = NegYMatrix;
 			var src = ToSource(id);
 			var array = src.Item as float_array;
 			var totalLength = meshes.Sum(mesh => mesh.VertexStream.Data.Positions.Length);
@@ -850,10 +856,13 @@ namespace TpacTool.IO
 				var vec3 = mesh.VertexStream.Data.Positions;
 				for (var i = 0; i < vec3.Length; i++)
 				{
+					var vec = vec3[i];
+					if (isNegYAxisForward)
+						vec = Vector3.Transform(vec, negYMatrix);
 					int j = (offset + i) * 3;
-					vals[j] = vec3[i].X;
-					vals[j + 1] = vec3[i].Y;
-					vals[j + 2] = vec3[i].Z;
+					vals[j] = vec.X;
+					vals[j + 1] = vec.Y;
+					vals[j + 2] = vec.Z;
 				}
 
 				offset += vec3.Length;
@@ -880,8 +889,9 @@ namespace TpacTool.IO
 			return src;
 		}
 
-		private static source GetNormalSource(string id, List<Mesh> meshes)
+		private static source GetNormalSource(string id, List<Mesh> meshes, bool isNegYAxisForward)
 		{
+			var negYMatrix = NegYMatrix;
 			var src = ToSource(id);
 			var array = src.Item as float_array;
 			var totalLength = meshes.Sum(mesh => mesh.VertexStream.Data.Normals.Length);
@@ -892,10 +902,13 @@ namespace TpacTool.IO
 				var vec3 = mesh.VertexStream.Data.Normals;
 				for (var i = 0; i < vec3.Length; i++)
 				{
+					var vec = vec3[i];
+					if (isNegYAxisForward)
+						vec = Vector3.Transform(vec, negYMatrix);
 					int j = (offset + i) * 3;
-					vals[j] = vec3[i].X;
-					vals[j + 1] = vec3[i].Y;
-					vals[j + 2] = vec3[i].Z;
+					vals[j] = vec.X;
+					vals[j + 1] = vec.Y;
+					vals[j + 2] = vec.Z;
 				}
 
 				offset += vec3.Length;
@@ -986,6 +999,8 @@ namespace TpacTool.IO
 					tip.Y = tip.Z = 0f;
 					tip = Vector3.Transform(tip, restMatrix);
 					tip = Vector3.Subtract(tip, restMatrix.Translation);
+					if (IsNegYAxisForward)
+						tip = Vector3.Transform(tip, NegYMatrix);
 					//Quaternion rot = Quaternion.CreateFromRotationMatrix(restMatrix);
 					//float f = ExtractRollFromQuaternion(rot);
 					tech.tip_x = new tip_x() { sid = "tip_x", type = "float", Text = tip.X.ToString() };
@@ -999,6 +1014,8 @@ namespace TpacTool.IO
 					var tip = new Vector3(0.1f, 0, 0);
 					tip = Vector3.Transform(tip, restMatrix);
 					tip = Vector3.Subtract(tip, restMatrix.Translation);
+					if (IsNegYAxisForward)
+						tip = Vector3.Transform(tip, NegYMatrix);
 					//Quaternion rot = Quaternion.CreateFromRotationMatrix(restMatrix);
 					//float f = ExtractRollFromQuaternion(rot);
 					tech.tip_x = new tip_x() { sid = "tip_x", type = "float", Text = tip.X.ToString() };

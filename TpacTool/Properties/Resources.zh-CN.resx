@@ -312,6 +312,12 @@
   <data name="Model_Export_Misc_LargerScale_Tooltip" xml:space="preserve">
     <value>放大导出模型的尺寸，对于诸如DAE之类的支持节点的格式，将会放大根节点的比例；对于OBJ这类不支持的，则会直接放大模型网格。</value>
   </data>
+  <data name="Model_Export_Misc_NYForward" xml:space="preserve">
+    <value>负Y轴朝前</value>
+  </data>
+  <data name="Model_Export_Misc_NYForward_Tooltip" xml:space="preserve">
+    <value>默认导出的模型以+Y为正方向，勾选此选项将使导出的模型以-Y为正方向。</value>
+  </data>
   <data name="Model_Export_Misc_YUpAxis" xml:space="preserve">
     <value>OBJ: Y轴朝上</value>
   </data>

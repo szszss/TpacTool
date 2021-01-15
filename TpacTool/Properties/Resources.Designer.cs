@@ -646,6 +646,24 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Negative-Y-forward axis 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Misc_NYForward {
+            get {
+                return ResourceManager.GetString("Model_Export_Misc_NYForward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 By default, the exported model faces to +Y. Check this option to make it facing to -Y. 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Misc_NYForward_Tooltip {
+            get {
+                return ResourceManager.GetString("Model_Export_Misc_NYForward_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 OBJ: Y-upward axis 的本地化字符串。
         /// </summary>
         public static string Model_Export_Misc_YUpAxis {
