@@ -25,6 +25,7 @@ namespace TpacTool.Lib
 			RegisterType(typeof(Shader));
 			RegisterType(typeof(Skeleton));
 			RegisterType(typeof(SkeletalAnimation));
+			RegisterType(typeof(AnimationClip));
 			RegisterType(typeof(Texture));
 #endif
 		}
@@ -83,6 +84,8 @@ namespace TpacTool.Lib
 				result = new Skeleton();
 			else if (typeGuid == SkeletalAnimation.TYPE_GUID)
 				result = new SkeletalAnimation();
+			else if (typeGuid == AnimationClip.TYPE_GUID)
+				result = new AnimationClip();
 			else if (typeGuid == Texture.TYPE_GUID)
 				result = new Texture();
 			else
