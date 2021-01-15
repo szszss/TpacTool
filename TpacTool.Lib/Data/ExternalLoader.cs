@@ -142,6 +142,46 @@ namespace TpacTool.Lib
 			return rawData;
 		}
 
+		protected internal override void SaveTo(BinaryWriter stream, 
+			out ulong actualSize, out ulong storageSize, out StorageFormat storageType)
+		{
+			if (IsDataLoaded())
+			{
+				byte[] tempData = null;
+				using (var memStream = new BinaryWriter(new MemoryStream()))
+				{
+					Data.WriteData(memStream, _userdata.IsValueCreated ? _userdata.Value : EMPTY_USERDATA);
+					tempData = (memStream.BaseStream as MemoryStream).ToArray();
+				}
+				actualSize = (ulong) tempData.Length;
+				if (actualSize < 16)
+				{
+					storageSize = actualSize;
+					storageType = StorageFormat.Uncompressed;
+				}
+				else
+				{
+					tempData = lz4compress(tempData);
+					storageSize = (ulong)tempData.Length;
+					storageType = StorageFormat.LZ4HC;
+				}
+				stream.Write(tempData);
+			}
+			else
+			{
+				using (var readStream = _file.OpenBinaryReader())
+				{
+					if (!readStream.BaseStream.CanSeek)
+						throw new IOException("The base stream must support random access (seek)");
+					readStream.BaseStream.Seek((long)_offset, SeekOrigin.Begin);
+					stream.Write(readStream.ReadBytes((int) _storageSize));
+					actualSize = _actualSize;
+					storageSize = _storageSize;
+					storageType = _storageFormat;
+				}
+			}
+		}
+
 #if NET40
 		public T Data
 		{

@@ -73,6 +73,28 @@ namespace TpacTool.Lib
 			FaceSmoothingGroupMasks = ReadStructArray<int>(stream);
 		}
 
+		public override void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
+		{
+			WriteStructArray(stream, Positions);
+			WriteStructArray(stream, UnusedVec3);
+			WriteStructArray(stream, Vertices);
+			WriteStructArray(stream, Faces);
+
+			stream.Write(MorphFrames.Count);
+			for (var i = 0; i < MorphFrames.Count; i++)
+			{
+				stream.Write(MorphFrames[i].Time);
+			}
+			for (var i = 0; i < MorphFrames.Count; i++)
+			{
+				WriteStructArray(stream, MorphFrames[i].Positions);
+				WriteStructArray(stream, MorphFrames[i].Normals);
+			}
+
+			WriteStructArray(stream, Bones);
+			WriteStructArray(stream, FaceSmoothingGroupMasks);
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Vertex
 		{
@@ -82,7 +104,10 @@ namespace TpacTool.Lib
 			// this is actully a 4x3 TBN matrix
 			public Vector4 Tangent;
 			public Vector4 Binormal;
-			private Vector4 Padding; // values equal to Normal
+			/// <summary>
+			/// Values equal to Normal.
+			/// </summary>
+			public Vector4 Padding;
 			//-----------------
 			public Vector2 Uv;
 			public Vector2 SecondUv;

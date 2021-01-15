@@ -25,5 +25,13 @@ namespace TpacTool.Lib
 			Center = stream.ReadVec4AsVec3();
 			BoundingSphereRadius = stream.ReadSingle();
 		}
+
+		public void Write(BinaryWriter stream)
+		{
+			stream.WriteVec3AsVec4(Min, 1f);
+			stream.WriteVec3AsVec4(Max, 1f);
+			stream.WriteVec3AsVec4(Center, 1f);
+			stream.Write(BoundingSphereRadius);
+		}
 	}
 }

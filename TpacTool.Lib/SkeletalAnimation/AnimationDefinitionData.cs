@@ -117,6 +117,64 @@ namespace TpacTool.Lib
 			}
 		}
 
+		public override void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
+		{
+			stream.WriteSizedString(Name);
+			stream.Write(BoneAnims.Count);
+			for (var i = 0; i < BoneAnims.Count; i++)
+			{
+				var anim = BoneAnims[i];
+
+				stream.Write(anim.UnknownRotationUint1);
+				stream.Write(anim.UnknownRotationUint2);
+				stream.Write(anim.RotationFrames.Count);
+				foreach (var frame in anim.RotationFrames)
+				{
+					stream.Write(frame.Value.Time);
+				}
+				foreach (var frame in anim.RotationFrames)
+				{
+					stream.Write(frame.Value.Value);
+				}
+
+				stream.Write(anim.UnknownPositionUint1);
+				stream.Write(anim.UnknownPositionUint2);
+				stream.Write(anim.PositionFrames.Count);
+				foreach (var frame in anim.PositionFrames)
+				{
+					stream.Write(frame.Value.Time);
+				}
+				foreach (var frame in anim.PositionFrames)
+				{
+					stream.Write(frame.Value.Value);
+				}
+			}
+
+			stream.Write(UnknownRootPositionUint1);
+			stream.Write(UnknownRootPositionUint2);
+			stream.Write(RootPositionFrames.Count);
+			foreach (var frame in RootPositionFrames)
+			{
+				stream.Write(frame.Value.Time);
+			}
+			foreach (var frame in RootPositionFrames)
+			{
+				stream.Write(frame.Value.Value);
+			}
+
+			stream.Write(UnknownRootScaleUint1);
+			stream.Write(UnknownRootScaleUint2);
+			stream.Write(RootScaleFrames.Count);
+			foreach (var frame in RootScaleFrames)
+			{
+				stream.Write(frame.Value.Time);
+			}
+			foreach (var frame in RootScaleFrames)
+			{
+				stream.WriteVec3AsVec4(frame.Value.Value);
+			}
+		}
+
 		public class BoneAnim
 		{
 			public uint UnknownPositionUint1 { set; get; }

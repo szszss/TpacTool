@@ -23,6 +23,8 @@ namespace TpacTool.Lib
 			//RegisterType(typeof(ClothMappingData));
 			RegisterType(typeof(EditmodeMiscData));
 			RegisterType(typeof(TexturePixelData));
+			RegisterType(typeof(TextureSourceInfoData));
+			RegisterType(typeof(TextureImportSettingsData));
 			RegisterType(typeof(PhysicsDescriptionData));
 			RegisterType(typeof(PhysicsStaticCookData));
 			RegisterType(typeof(PhysicsDynamicCookData));
@@ -73,8 +75,34 @@ namespace TpacTool.Lib
 		public static bool CreateTypedData(Guid typeGuid, out ExternalData result)
 		{
 #if NETSTANDARD1_3
+			if (typeGuid == MeshEditData.TYPE_GUID)
+				result = new MeshEditData();
+			if (typeGuid == VertexStreamData.TYPE_GUID)
+				result = new VertexStreamData();
+			if (typeGuid == EditmodeMiscData.TYPE_GUID)
+				result = new EditmodeMiscData();
+			if (typeGuid == TexturePixelData.TYPE_GUID)
+				result = new TexturePixelData();
+			if (typeGuid == TextureSourceInfoData.TYPE_GUID)
+				result = new TextureSourceInfoData();
+			if (typeGuid == TextureImportSettingsData.TYPE_GUID)
+				result = new TextureImportSettingsData();
 			if (typeGuid == PhysicsDescriptionData.TYPE_GUID)
 				result = new PhysicsDescriptionData();
+			if (typeGuid == PhysicsStaticCookData.TYPE_GUID)
+				result = new PhysicsStaticCookData();
+			if (typeGuid == PhysicsDynamicCookData.TYPE_GUID)
+				result = new PhysicsDynamicCookData();
+			if (typeGuid == SkeletonDefinitionData.TYPE_GUID)
+				result = new SkeletonDefinitionData();
+			if (typeGuid == SkeletonUserData.TYPE_GUID)
+				result = new SkeletonUserData();
+			if (typeGuid == MorphDefinitionData.TYPE_GUID)
+				result = new MorphDefinitionData();
+			if (typeGuid == AnimationDefinitionData.TYPE_GUID)
+				result = new AnimationDefinitionData();
+			if (typeGuid == ParticleEffectData.TYPE_GUID)
+				result = new ParticleEffectData();
 			else
 			{
 				result = new ExternalData(typeGuid);

@@ -102,6 +102,37 @@ namespace TpacTool.Lib
 			UnknownBool2 = stream.ReadBoolean();
 		}
 
+		public override void WriteMetadata(BinaryWriter stream)
+		{
+			stream.Write(1);
+			stream.Write(Material);
+			stream.Write(UnknownFloat);
+			stream.WriteSizedString(UnknownString);
+			stream.Write(ClothMetamesh);
+			stream.Write(UnknownUint);
+			stream.Write(ClothUint);
+			if (ClothUint > 0)
+			{
+				stream.WriteSizedString(ClothString);
+			}
+
+			stream.Write(Meshes.Count);
+			for (var i = 0; i < Meshes.Count; i++)
+			{
+				Meshes[i].Write(stream);
+			}
+
+			stream.Write(Original);
+			stream.Write(Variations.Count);
+			for (var i = 0; i < Variations.Count; i++)
+			{
+				stream.Write(Variations[i]);
+			}
+
+			stream.Write(UnknownBool1);
+			stream.Write(UnknownBool2);
+		}
+
 		public override void ConsumeDataSegments(AbstractExternalLoader[] externalData)
 		{
 			foreach (var externalLoader in externalData)

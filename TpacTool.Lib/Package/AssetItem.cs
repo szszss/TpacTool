@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using JetBrains.Annotations;
 
 namespace TpacTool.Lib
@@ -15,15 +16,17 @@ namespace TpacTool.Lib
 
 		public List<AbstractExternalLoader> TypelessDataSegments { private set; get; }
 
+		public List<UnknownDependence> UnknownDependences { private set; get; }
+
 		public uint Version { protected internal set; get; }
 
 		public Guid Guid
 		{
-			internal protected set => _resourceGuid = value;
+			set => _resourceGuid = value;
 			get
 			{
-				if (_resourceGuid == Guid.Empty)
-					_resourceGuid = Guid.NewGuid();
+				/*if (_resourceGuid == Guid.Empty)
+					_resourceGuid = Guid.NewGuid();*/
 				return _resourceGuid;
 			}
 		}
@@ -39,6 +42,7 @@ namespace TpacTool.Lib
 			this.Guid = Guid.Empty;
 			this.Name = String.Empty;
 			this.TypelessDataSegments = new List<AbstractExternalLoader>(0);
+			this.UnknownDependences = new List<UnknownDependence>(0);
 			Removed = false;
 		}
 
@@ -53,6 +57,34 @@ namespace TpacTool.Lib
 		{
 			TypelessDataSegments.Capacity = externalData.Length;
 			TypelessDataSegments.AddRange(externalData);
+		}
+
+		public byte[] WriteMetadata()
+		{
+			var memStream = new MemoryStream();
+			using (var stream = new BinaryWriter(memStream, Encoding.UTF8))
+			{
+				WriteMetadata(stream);
+				stream.Flush();
+				return memStream.ToArray();
+			}
+		}
+
+		public virtual void WriteMetadata([NotNull] BinaryWriter stream)
+		{
+			if (_temp_metadata != null)
+				stream.Write(_temp_metadata);
+			else
+				throw new NotImplementedException();
+		}
+
+		public class UnknownDependence
+		{
+			public Guid UnknownGuid1 { set; get; } = System.Guid.Empty;
+
+			public Guid UnknownGuid2 { set; get; } = System.Guid.Empty;
+
+			public Guid UnknownGuid3 { set; get; } = System.Guid.Empty;
 		}
 	}
 }

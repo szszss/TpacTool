@@ -94,6 +94,67 @@ namespace TpacTool.Lib
 				TangentTransform = ReadStructArray<SnormShort4>(stream, (int)(sizes[27] / 8));
 		}
 
+		public override void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
+		{
+			stream.Write(Indices.Length);
+			if (Indices.Length >= UInt16.MaxValue)
+			{
+				WriteStructArray(stream, Indices);
+				userdata[KEY_IS_32BIT_INDEX] = true;
+			}
+			else
+			{
+				for (int i = 0; i < Indices.Length; i++)
+				{
+					stream.Write((ushort) Indices[i]);
+				}
+				userdata[KEY_IS_32BIT_INDEX] = false;
+			}
+			bool hasQTangent = HasUserdataTag(userdata, KEY_HAS_QTANGENT);
+			ulong length = 0;
+			for (int i = 0, j = hasQTangent ? 14 : 13; i < j; i++)
+			{
+				int size = 0;
+				switch (i)
+				{
+					case 0: size = Colors1.Length * 4; break;
+					case 1: size = Colors2.Length * 4; break;
+					case 2: size = Uv1.Length * 8; break;
+					case 3: size = Uv2.Length * 8; break;
+					case 4: size = Positions.Length * 12; break;
+					case 5: size = UnknownAnotherPositions.Length * 12; break;
+					case 6: size = Normals.Length * 12; break;
+					case 7: size = Tangents.Length * 16; break;
+					case 8: size = BoneWeights.Length * 4; break;
+					case 9: size = BoneIndices.Length * 4; break;
+					case 10: size = CompressedNormals.Length * 4; break;
+					case 11: size = CompressedPositions.Length * 8; break;
+					case 12: size = CompressedTangents.Length * 4; break;
+					case 13: size = TangentTransform.Length * 8; break;
+				}
+
+				stream.Write(length);
+				stream.Write((ulong) size);
+				length += (ulong) size;
+			}
+
+			WriteStructArray(stream, Colors1);
+			WriteStructArray(stream, Colors2);
+			WriteStructArray(stream, Uv1);
+			WriteStructArray(stream, Uv2);
+			WriteStructArray(stream, Positions);
+			WriteStructArray(stream, UnknownAnotherPositions);
+			WriteStructArray(stream, Normals);
+			WriteStructArray(stream, Tangents);
+			WriteStructArray(stream, BoneWeights);
+			WriteStructArray(stream, BoneIndices);
+			WriteStructArray(stream, CompressedNormals);
+			WriteStructArray(stream, CompressedPositions);
+			WriteStructArray(stream, CompressedTangents);
+			if (hasQTangent)
+				WriteStructArray(stream, TangentTransform);
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct BoneIndex : IFormattable
 		{

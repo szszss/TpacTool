@@ -1,17 +1,19 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace TpacTool.Lib
 {
+	[Obsolete]
 	public struct Transform
 	{
-		public Vector4 V1;
+		public Quaternion Rotation;
 
-		public Vector4 V2;
+		public Vector4 Position;
 
-		public Transform(Vector4 v1, Vector4 v2)
+		public Transform(Quaternion v1, Vector4 v2)
 		{
-			V1 = v1;
-			V2 = v2;
+			Rotation = v1;
+			Position = v2;
 		}
 	}
 }

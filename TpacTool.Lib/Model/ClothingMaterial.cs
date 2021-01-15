@@ -54,5 +54,25 @@ namespace TpacTool.Lib
 			MaxLinearVelocity = stream.ReadSingle();
 			LinearVelocityMultiplier = stream.ReadSingle();
 		}
+
+		public void WritePrimaryData(BinaryWriter stream)
+		{
+			stream.WriteSizedString(Name);
+			stream.Write(BendingStiffness);
+			stream.Write(ShearingStiffness);
+			stream.Write(StretchingStiffness);
+			stream.Write(AnchorStiffness);
+			stream.Write(Damping);
+			stream.Write(Gravity);
+			stream.Write(LinearInertia);
+			stream.Write(AirDragMultiplier);
+			stream.Write(Wind);
+		}
+
+		public void WriteExtraData(BinaryWriter stream)
+		{
+			stream.Write(MaxLinearVelocity);
+			stream.Write(LinearVelocityMultiplier);
+		}
 	}
 }

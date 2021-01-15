@@ -85,6 +85,23 @@ namespace TpacTool.Lib
 			return array;
 		}
 
+		protected static void WriteStructArray<T>(BinaryWriter stream, T[] data) where T : struct
+		{
+			int unitSize = GetStructSize<T>();
+			int count = data.Length;
+			int size = count * unitSize;
+			var array = new byte[size];
+			if (size > 0)
+			{
+				var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+				IntPtr ptr = handle.AddrOfPinnedObject();
+				Marshal.Copy(ptr, array, 0, size);
+				handle.Free();
+			}
+			stream.Write(count);
+			stream.Write(array);
+		}
+
 		protected static int GetStructSize<T>()
 		{
 #if NET40 || NET45

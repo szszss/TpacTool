@@ -140,5 +140,39 @@ namespace TpacTool.Lib
 				UnknownBool3 = stream.ReadBoolean();
 			}
 		}
+
+		public void Write(BinaryWriter stream)
+		{
+			stream.Write(IsCompleteMesh);
+			stream.Write(Lod);
+			stream.Write(UnknownUint1);
+			stream.Write(SecondMaterial.Guid);
+			stream.Write((int) 1);
+			stream.Write(Guid);
+			stream.WriteSizedString(Name);
+			stream.Write(UnknownUInt2);
+			stream.WriteStringList(Flags);
+			stream.Write(Material.Guid);
+			stream.Write(FactorColor);
+			stream.Write(Factor2Color);
+			stream.Write(VectorArgument);
+			stream.Write(VectorArgument2);
+			stream.Write(VertexKeyCount);
+			stream.Write(PositionCount);
+			stream.Write(FaceCount);
+			stream.Write(VertexCount);
+			stream.Write(SkinDataSize);
+			stream.Write(0);
+			BoundingBox.Write(stream);
+			stream.Write(UnknownInt2);
+			stream.WriteStringList(MaterialFlags);
+			stream.Write(UnknownFloat1);
+			ClothingMaterial.WritePrimaryData(stream);
+			stream.Write(UnknownInt3);
+			stream.Write(UnknownBool1);
+			stream.Write(UnknownBool2);
+			ClothingMaterial.WriteExtraData(stream);
+			stream.Write(UnknownBool3);
+		}
 	}
 }

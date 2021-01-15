@@ -46,5 +46,20 @@ namespace TpacTool.Lib
 				}
 			}
 		}
+
+		public override void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
+		{
+			stream.WriteSizedString(Name);
+			stream.Write(Bones.Count);
+
+			for (int i = 0; i < Bones.Count; i++)
+			{
+				var bone = Bones[i];
+				int parentIndex = bone.Parent == null ? -1 : Bones.FindIndex(node => node == bone.Parent);
+				stream.WriteSizedString(bone.Name);
+				stream.Write(parentIndex);
+				stream.Write(bone.RestFrame);
+			}
+		}
 	}
 }

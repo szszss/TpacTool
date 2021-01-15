@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace TpacTool.Lib
 {
@@ -24,7 +25,7 @@ namespace TpacTool.Lib
 
 		public Guid TypeGuid { internal set; get; }
 
-		public Guid OwnerGuid { internal set; get; }
+		public Guid OwnerGuid { set; get; }
 
 		protected Lazy<Dictionary<object, object>> _userdata = new Lazy<Dictionary<object, object>>();
 
@@ -38,6 +39,20 @@ namespace TpacTool.Lib
 		internal protected abstract void ForceLoad();
 
 		internal protected abstract void ForceLoad(BinaryReader fullStream);
+
+		internal protected byte[] SaveTo(out ulong actualSize, out ulong storageSize, out StorageFormat storageType)
+		{
+			var memStream = new MemoryStream();
+			using (var stream = new BinaryWriter(memStream, Encoding.UTF8))
+			{
+				SaveTo(stream, out actualSize, out storageSize, out storageType);
+				stream.Flush();
+				return memStream.ToArray();
+			}
+		}
+
+		internal protected abstract void SaveTo(BinaryWriter stream, 
+			out ulong actualSize, out ulong storageSize, out StorageFormat storageType);
 
 		public abstract void MarkLongLive();
 

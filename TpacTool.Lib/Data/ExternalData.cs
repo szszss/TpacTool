@@ -26,9 +26,9 @@ namespace TpacTool.Lib
 			_unknownRawData = stream.ReadBytes(totalSize);
 		}
 
-		public virtual byte[] SaveData()
+		public virtual void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
 		{
-			throw new NotImplementedException();
+			stream.Write(_unknownRawData);
 		}
 
 		protected bool HasUserdata(IDictionary<object, object> userdata, [NotNull] object key, [CanBeNull] object value)

@@ -17,11 +17,11 @@ namespace TpacTool.Lib
 
 		public const string USAGE_HORSE = "horse";
 
-		public float UnknownFloat1 { set; get; }
+		public float BoundingBoxPadding { set; get; }
 
-		public Vector3 UnknownVector1 { set; get; }
+		public Vector3 BoundingBoxMin { set; get; }
 
-		public Vector3 UnknownVector2 { set; get; }
+		public Vector3 BoundingBoxMax { set; get; }
 
 		[NotNull]
 		public string Usage { set; get; }
@@ -49,9 +49,9 @@ namespace TpacTool.Lib
 
 		public override void ReadData(BinaryReader stream, IDictionary<object, object> userdata, int totalSize)
 		{
-			UnknownFloat1 = stream.ReadSingle();
-			UnknownVector1 = stream.ReadVec4AsVec3();
-			UnknownVector2 = stream.ReadVec4AsVec3();
+			BoundingBoxPadding = stream.ReadSingle();
+			BoundingBoxMin = stream.ReadVec4AsVec3();
+			BoundingBoxMax = stream.ReadVec4AsVec3();
 			Usage = stream.ReadSizedString();
 			UnknownString = stream.ReadSizedString();
 			UnknownGuid = stream.ReadGuid();
@@ -61,18 +61,18 @@ namespace TpacTool.Lib
 			for (int i = 0; i < num; i++)
 			{
 				var body = new Body();
-				body.UnknownString1 = stream.ReadSizedString();
-				body.UnknownBool = stream.ReadBoolean();
-				body.UnknownString2 = stream.ReadSizedString();
-				body.UnknownString3 = stream.ReadSizedString();
-				body.UnknownFloat1 = stream.ReadSingle();
-				body.UnknownVector1 = stream.ReadVec4AsVec3();
-				body.UnknownVector2 = stream.ReadVec4AsVec3();
-				body.UnknownFloat2 = stream.ReadSingle();
-				body.UnknownVector3 = stream.ReadVec4AsVec3();
-				body.UnknownVector4 = stream.ReadVec4AsVec3();
-				body.UnknownFloat3 = stream.ReadSingle();
-				body.UnknownFloat4 = stream.ReadSingle();
+				body.BoneName = stream.ReadSizedString();
+				body.EnableBlend = stream.ReadBoolean();
+				body.Type = stream.ReadSizedString();
+				body.BodyType = stream.ReadSizedString();
+				body.Mass = stream.ReadSingle();
+				body.RagdollPosition1 = stream.ReadVec4AsVec3();
+				body.RagdollPosition2 = stream.ReadVec4AsVec3();
+				body.RagdollRadius = stream.ReadSingle();
+				body.CollisionPosition1 = stream.ReadVec4AsVec3();
+				body.CollisionPosition2 = stream.ReadVec4AsVec3();
+				body.CollisionRadius = stream.ReadSingle();
+				body.CollisionMaxRadius = stream.ReadSingle();
 				Bodies.Add(body);
 			}
 
@@ -87,7 +87,8 @@ namespace TpacTool.Lib
 				var s1 = stream.ReadSizedString();
 				var s2 = stream.ReadSizedString();
 				var s3 = stream.ReadSizedString();
-				var tf = stream.ReadTransform();
+				var rot = stream.ReadQuat();
+				var pos = stream.ReadVec4AsVec3();
 				Constraint constraint = null;
 				switch (type)
 				{
@@ -99,55 +100,142 @@ namespace TpacTool.Lib
 						break;
 					case D6JointConstraint.TYPE:
 						var d6 = new D6JointConstraint();
-						d6.Constraint1 = stream.ReadSizedString();
-						d6.Constraint2 = stream.ReadSizedString();
-						d6.Constraint3 = stream.ReadSizedString();
-						d6.Constraint4 = stream.ReadSizedString();
-						d6.Constraint5 = stream.ReadSizedString();
-						d6.Constraint6 = stream.ReadSizedString();
-						d6.UnknownFloat1 = stream.ReadSingle();
-						d6.UnknownFloat2 = stream.ReadSingle();
-						d6.UnknownFloat3 = stream.ReadSingle();
-						d6.UnknownFloat4 = stream.ReadSingle();
-						d6.UnknownFloat5 = stream.ReadSingle();
+						d6.AxisLockX = stream.ReadSizedString();
+						d6.AxisLockY = stream.ReadSizedString();
+						d6.AxisLockZ = stream.ReadSizedString();
+						d6.TwistLock = stream.ReadSizedString();
+						d6.Swing1Lock = stream.ReadSizedString();
+						d6.Swing2Lock = stream.ReadSizedString();
+						d6.AxisLimit = stream.ReadSingle();
+						d6.TwistLowerLimit = stream.ReadSingle();
+						d6.TwistUpperLimit = stream.ReadSingle();
+						d6.Swing1Limit = stream.ReadSingle();
+						d6.Swing2Limit = stream.ReadSingle();
 						constraint = d6;
 						break;
 					case IKConstraint.TYPE:
 						var ik = new IKConstraint();
 						ik.UnknownUint = stream.ReadUInt32();
-						ik.UnknownFloat1 = stream.ReadSingle();
-						ik.UnknownFloat2 = stream.ReadSingle();
-						ik.UnknownFloat3 = stream.ReadSingle();
-						ik.UnknownFloat4 = stream.ReadSingle();
+						ik.Swing1Limit = stream.ReadSingle();
+						ik.Swing2Limit = stream.ReadSingle();
+						ik.TwistLowerLimit = stream.ReadSingle();
+						ik.TwistUpperLimit = stream.ReadSingle();
 						constraint = ik;
 						break;
 					default:
 						throw new Exception("Unknown constraint type: " + type);
 				}
 
-				constraint.UnknownString1 = s1;
-				constraint.UnknownString2 = s2;
-				constraint.UnknownString3 = s3;
-				constraint.UnknownTransform = tf;
+				constraint.Name = s1;
+				constraint.Bone1 = s2;
+				constraint.Bone2 = s3;
+				constraint.EntitySpaceRotation = rot;
+				constraint.Position = pos;
 				Constraints.Add(constraint);
+			}
+		}
+
+		public override void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
+		{
+			stream.Write(BoundingBoxPadding);
+			stream.WriteVec3AsVec4(BoundingBoxMin);
+			stream.WriteVec3AsVec4(BoundingBoxMax);
+
+			stream.WriteSizedString(Usage);
+			stream.WriteSizedString(UnknownString);
+			stream.Write(UnknownGuid);
+
+			stream.Write(Bodies.Count);
+			for (int i = 0; i < Bodies.Count; i++)
+			{
+				var body = Bodies[i];
+				stream.WriteSizedString(body.BoneName);
+				stream.Write(body.EnableBlend);
+				stream.WriteSizedString(body.Type);
+				stream.WriteSizedString(body.BodyType);
+				stream.Write(body.Mass);
+				stream.WriteVec3AsVec4(body.RagdollPosition1);
+				stream.WriteVec3AsVec4(body.RagdollPosition2);
+				stream.Write(body.RagdollRadius);
+				stream.WriteVec3AsVec4(body.CollisionPosition1);
+				stream.WriteVec3AsVec4(body.CollisionPosition2);
+				stream.Write(body.CollisionRadius);
+				stream.Write(body.CollisionMaxRadius);
+			}
+
+			stream.Write(UnknownInt);
+			stream.Write(Constraints.Count);
+			for (int i = 0; i < Constraints.Count; i++)
+			{
+				var constraint = Constraints[i];
+				stream.Write((int) 0);
+				switch (constraint)
+				{
+					case HingeJointConstraint hinge:
+						stream.WriteSizedString(HingeJointConstraint.TYPE);
+						break;
+					case D6JointConstraint d6:
+						stream.WriteSizedString(D6JointConstraint.TYPE);
+						break;
+					case IKConstraint ik:
+						stream.WriteSizedString(IKConstraint.TYPE);
+						break;
+				}
+
+				stream.WriteSizedString(constraint.Name);
+				stream.WriteSizedString(constraint.Bone1);
+				stream.WriteSizedString(constraint.Bone2);
+				stream.Write(constraint.EntitySpaceRotation);
+				stream.WriteVec3AsVec4(constraint.Position);
+
+				switch (constraint)
+				{
+					case HingeJointConstraint hinge:
+						stream.Write(hinge.UnknownFloat1);
+						stream.Write(hinge.UnknownFloat2);
+						break;
+					case D6JointConstraint d6:
+						stream.WriteSizedString(d6.AxisLockX);
+						stream.WriteSizedString(d6.AxisLockY);
+						stream.WriteSizedString(d6.AxisLockZ);
+						stream.WriteSizedString(d6.TwistLock);
+						stream.WriteSizedString(d6.Swing1Lock);
+						stream.WriteSizedString(d6.Swing2Lock);
+						stream.Write(d6.AxisLimit);
+						stream.Write(d6.TwistLowerLimit);
+						stream.Write(d6.TwistUpperLimit);
+						stream.Write(d6.Swing1Limit);
+						stream.Write(d6.Swing2Limit);
+						break;
+					case IKConstraint ik:
+						stream.Write(ik.UnknownUint);
+						stream.Write(ik.Swing1Limit);
+						stream.Write(ik.Swing2Limit);
+						stream.Write(ik.TwistLowerLimit);
+						stream.Write(ik.TwistUpperLimit);
+						break;
+				}
 			}
 		}
 
 		public abstract class Constraint
 		{
-			public string UnknownString1 { set; get; }
+			public string Name { set; get; }
 
-			public string UnknownString2 { set; get; }
+			public string Bone1 { set; get; }
 
-			public string UnknownString3 { set; get; }
+			public string Bone2 { set; get; }
 
-			public Transform UnknownTransform { set; get; }
+			public Quaternion EntitySpaceRotation { set; get; }
+
+			public Vector3 Position { set; get; }
 
 			protected Constraint()
 			{
-				UnknownString1 = String.Empty;
-				UnknownString2 = String.Empty;
-				UnknownString3 = String.Empty;
+				Name = String.Empty;
+				Bone1 = String.Empty;
+				Bone2 = String.Empty;
+				EntitySpaceRotation = new Quaternion(1, 0, 0, 0);
 			}
 		}
 
@@ -164,27 +252,27 @@ namespace TpacTool.Lib
 		{
 			public const string TYPE = "d6";
 
-			public string Constraint1 { set; get; }
+			public string AxisLockX { set; get; }
 
-			public string Constraint2 { set; get; }
+			public string AxisLockY { set; get; }
 
-			public string Constraint3 { set; get; }
+			public string AxisLockZ { set; get; }
 
-			public string Constraint4 { set; get; }
+			public string TwistLock { set; get; }
 
-			public string Constraint5 { set; get; }
+			public string Swing1Lock { set; get; }
 
-			public string Constraint6 { set; get; }
+			public string Swing2Lock { set; get; }
 
-			public float UnknownFloat1 { set; get; }
+			public float AxisLimit { set; get; }
 
-			public float UnknownFloat2 { set; get; }
+			public float TwistLowerLimit { set; get; }
 
-			public float UnknownFloat3 { set; get; }
+			public float TwistUpperLimit { set; get; }
 
-			public float UnknownFloat4 { set; get; }
+			public float Swing1Limit { set; get; }
 
-			public float UnknownFloat5 { set; get; }
+			public float Swing2Limit { set; get; }
 
 			public D6JointConstraint()
 			{
@@ -197,40 +285,42 @@ namespace TpacTool.Lib
 
 			public uint UnknownUint { set; get; }
 
-			public float UnknownFloat1 { set; get; }
+			public float Swing1Limit { set; get; }
 
-			public float UnknownFloat2 { set; get; }
+			public float Swing2Limit { set; get; }
 
-			public float UnknownFloat3 { set; get; }
+			public float TwistLowerLimit { set; get; }
 
-			public float UnknownFloat4 { set; get; }
+			public float TwistUpperLimit { set; get; }
 		}
 
 		public class Body
 		{
-			public string UnknownString1 { set; get; }
+			public string BoneName { set; get; }
 
-			public bool UnknownBool { set; get; }
+			// not sure. true for human pelvis and legs. false for others.
+			// if set it to false for huamn legs, then the legs will act oddly
+			public bool EnableBlend { set; get; }
 
-			public string UnknownString2 { set; get; }
+			public string Type { set; get; }
 
-			public string UnknownString3 { set; get; }
+			public string BodyType { set; get; }
 
-			public float UnknownFloat1 { set; get; }
+			public float Mass { set; get; }
 
-			public Vector3 UnknownVector1 { set; get; }
+			public Vector3 RagdollPosition1 { set; get; }
 
-			public Vector3 UnknownVector2 { set; get; }
+			public Vector3 RagdollPosition2 { set; get; }
 
-			public float UnknownFloat2 { set; get; }
+			public float RagdollRadius { set; get; }
 
-			public Vector3 UnknownVector3 { set; get; }
+			public Vector3 CollisionPosition1 { set; get; }
 
-			public Vector3 UnknownVector4 { set; get; }
+			public Vector3 CollisionPosition2 { set; get; }
 
-			public float UnknownFloat3 { set; get; }
+			public float CollisionMaxRadius { set; get; }
 
-			public float UnknownFloat4 { set; get; }
+			public float CollisionRadius { set; get; }
 		}
 	}
 }

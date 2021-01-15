@@ -8,9 +8,10 @@ namespace TpacTool.Lib
 	{
 		public static readonly Guid TYPE_GUID = Guid.Parse("c635a3d5-eabb-45dd-883e-aa57e4196113");
 
+		// ignore?
 		public bool UnknownBool { set; get; }
 
-		public Guid UnknownGuid { set; get; }
+		public Guid GeometryGuid { set; get; }
 
 		[CanBeNull]
 		public ExternalLoader<SkeletonDefinitionData> Definition { set; get; }
@@ -26,7 +27,14 @@ namespace TpacTool.Lib
 		{
 			var version = stream.ReadUInt32();
 			UnknownBool = stream.ReadBoolean();
-			UnknownGuid = stream.ReadGuid();
+			GeometryGuid = stream.ReadGuid();
+		}
+
+		public override void WriteMetadata(BinaryWriter stream)
+		{
+			stream.Write((int) 0);
+			stream.Write(UnknownBool);
+			stream.Write(GeometryGuid);
 		}
 
 		public override void ConsumeDataSegments(AbstractExternalLoader[] externalData)
