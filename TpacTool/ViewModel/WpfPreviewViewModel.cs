@@ -44,7 +44,16 @@ namespace TpacTool
 
 		protected override void OnPreviewModel(List<Mesh> meshes)
 		{
-			SetRenderMeshes(meshes.ToArray());
+			// TODO: a better fix. use edit data rather than vertex stream
+			try
+			{
+				SetRenderMeshes(meshes.ToArray());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				SetRenderMeshes();
+			}
 		}
 
 		protected void OnCleanup(object unused = null)
@@ -55,8 +64,16 @@ namespace TpacTool
 
 		public void SetRenderMetamesh(Metamesh metamesh, int lod = 0)
 		{
-			var meshes = metamesh.Meshes.FindAll(mesh => { return mesh.Lod == lod; });
-			SetRenderMeshes(meshes.ToArray());
+			try
+			{
+				var meshes = metamesh.Meshes.FindAll(mesh => { return mesh.Lod == lod; });
+				SetRenderMeshes(meshes.ToArray());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				SetRenderMeshes();
+			}
 		}
 
 		public void SetRenderMeshes(params Mesh[] meshes)
