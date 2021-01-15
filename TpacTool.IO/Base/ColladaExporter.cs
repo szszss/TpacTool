@@ -718,6 +718,7 @@ namespace TpacTool.IO
 			var normalSrc = m.source[1];
 			var posArray = (posSrc.Item as float_array).Values;
 			var normalArray = (normalSrc.Item as float_array).Values;
+			var negYMatrix = NegYMatrix;
 
 			int offset = 0;
 			foreach (var mesh in meshes)
@@ -729,6 +730,8 @@ namespace TpacTool.IO
 					int k = (offset + j) * 3;
 					var vertex = sharedVertexData[j];
 					var pos = vertexFrame.Positions[vertex.PositionIndex];
+					if (isNegYAxisForward)
+						pos = Vector4.Transform(pos, negYMatrix);
 					posArray[k] = pos.X;
 					posArray[k + 1] = pos.Y;
 					posArray[k + 2] = pos.Z;
@@ -746,6 +749,8 @@ namespace TpacTool.IO
 				{
 					int k = (offset + j) * 3;
 					var normal = vertexFrame.Normals[j];
+					if (isNegYAxisForward)
+						normal = Vector4.Transform(normal, negYMatrix);
 					normalArray[k] = normal.X;
 					normalArray[k + 1] = normal.Y;
 					normalArray[k + 2] = normal.Z;
