@@ -16,6 +16,9 @@ namespace TpacTool.Lib
 			int length = stream.ReadInt32();
 			if (length == 0)
 				return String.Empty;
+#if DEBUG
+			Debug.Assert(length < 0xFFFF);
+#endif
 			var bytes = stream.ReadBytes(length);
 			return Encoding.UTF8.GetString(bytes);
 		}

@@ -10,6 +10,7 @@ namespace TpacTool.Lib
 	{
 		public static readonly Guid TYPE_GUID = Guid.Parse("506509c8-e563-4ca4-b166-a53b92e913a7");
 
+		[Obsolete]
 		public uint UnknownUInt1 { set; get; }
 
 		public float Duration { set; get; }
@@ -62,6 +63,17 @@ namespace TpacTool.Lib
 
 		public uint UnknownUInt2 { set; get; }
 
+		public ushort UnknownUShort { set; get; }
+
+		[NotNull]
+		public string UnknownClipName { set; get; } = string.Empty;
+
+		[NotNull]
+		public string ClipSource1Name { set; get; } = string.Empty;
+
+		[NotNull]
+		public string ClipSource2Name { set; get; } = string.Empty;
+
 		[NotNull]
 		public List<string> Flags { private set; get; } = new List<string>(4);
 
@@ -74,7 +86,7 @@ namespace TpacTool.Lib
 
 		public override void ReadMetadata(BinaryReader stream, int totalSize)
 		{
-			UnknownUInt1 = stream.ReadUInt32();
+			var version = stream.ReadUInt32();
 			Duration = stream.ReadSingle();
 			Source1 = stream.ReadSingle();
 			Source2 = stream.ReadSingle();
@@ -96,7 +108,18 @@ namespace TpacTool.Lib
 			BlendOutPeriod = stream.ReadSingle();
 			DoNotInterpolate = stream.ReadBoolean();
 			UnknownInt = stream.ReadInt32();
-			UnknownUInt2 = stream.ReadUInt32();
+			if (version >= 4)
+			{
+				UnknownClipName = stream.ReadSizedString();
+				ClipSource1Name = stream.ReadSizedString();
+				ClipSource2Name = stream.ReadSizedString();
+				UnknownUInt2 = stream.ReadUInt32();
+				UnknownUShort = stream.ReadUInt16();
+			}
+			else
+			{
+				UnknownUInt2 = stream.ReadUInt32();
+			}
 			Flags = stream.ReadStringList();
 
 			var count = stream.ReadInt32();
@@ -156,7 +179,7 @@ namespace TpacTool.Lib
 
 		public override void WriteMetadata(BinaryWriter stream)
 		{
-			stream.Write(UnknownUInt1);
+			stream.Write(4);
 			stream.Write(Duration);
 			stream.Write(Source1);
 			stream.Write(Source2);
@@ -178,7 +201,11 @@ namespace TpacTool.Lib
 			stream.Write(BlendOutPeriod);
 			stream.Write(DoNotInterpolate);
 			stream.Write(UnknownInt);
+			stream.WriteSizedString(UnknownClipName);
+			stream.WriteSizedString(ClipSource1Name);
+			stream.WriteSizedString(ClipSource2Name);
 			stream.Write(UnknownUInt2);
+			stream.Write(UnknownUShort);
 			stream.WriteStringList(Flags);
 
 			stream.Write(ClipUsages.Count);
