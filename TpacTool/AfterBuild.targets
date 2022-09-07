@@ -13,7 +13,7 @@
     <Move SourceFiles="@(Dlls)" DestinationFolder="$(OutputPath)\bin\" />
   </Target>
   
-  <!--Target Name="MoveAssimpNatives" AfterTargets="CopyNativeAssimp">
+  <Target Name="MoveAssimpNatives" AfterTargets="CopyNativeAssimp">
     <ItemGroup>
         <NativeAssimpLibX86 Include="$(OutputPath)\runtimes\win-x86\native\assimp.dll"/>
         <NativeAssimpLibX64 Include="$(OutputPath)\runtimes\win-x64\native\assimp.dll"/>
@@ -21,10 +21,9 @@
     <Message Text="Moving native Assimp libraries..." Importance="high" />
     <Move SourceFiles="@(NativeAssimpLibX86)" DestinationFolder="$(OutputPath)\bin\win-x86\native\" />
     <Move SourceFiles="@(NativeAssimpLibX64)" DestinationFolder="$(OutputPath)\bin\win-x64\native\" />
-  </Target-->
+  </Target>
   
-  <!--DependsOnTargets="MoveAssimpNatives"-->
-  <Target Name="CleanMisc" AfterTargets="MoveDlls"  Condition="'$(Configuration)' == 'Release'">
+  <Target Name="CleanMisc" AfterTargets="MoveAssimpNatives" Condition="'$(Configuration)' == 'Release'">
     <ItemGroup>
         <Misc Include="$(OutputPath)\*.*;$(OutputPath)\runtimes\**\*.*" Exclude="$(OutputPath)\*.exe;$(OutputPath)\*.config"/>
     </ItemGroup>  

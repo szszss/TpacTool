@@ -95,24 +95,46 @@ namespace TpacTool.Lib
 			WriteStructArray(stream, FaceSmoothingGroupMasks);
 		}
 
+		public bool HasSecondUv()
+		{
+			foreach (var vertex in Vertices)
+			{
+				if (Math.Abs(vertex.SecondUv.X) > 0.001f || Math.Abs(vertex.SecondUv.Y) > 0.001f)
+					return true;
+			}
+
+			return false;
+		}
+
+		public bool HasSecondColor()
+		{
+			foreach (var vertex in Vertices)
+			{
+				if ((vertex.SecondColor.R & vertex.SecondColor.G & vertex.SecondColor.B & vertex.SecondColor.A) != byte.MaxValue)
+					return true;
+			}
+
+			return false;
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Vertex
 		{
-			public uint PositionIndex;
-			public Vector4 Normal;
+			public uint PositionIndex; // Offset (in byte): 0
+			public Vector4 Normal; // Offset: 4
 			//-----------------
 			// this is actully a 4x3 TBN matrix
-			public Vector4 Tangent;
-			public Vector4 Binormal;
+			public Vector4 Tangent; // Offset: 20
+			public Vector4 Binormal; // Offset: 36
 			/// <summary>
 			/// Values equal to Normal.
 			/// </summary>
-			public Vector4 Padding;
+			public Vector4 Padding; // Offset: 52
 			//-----------------
-			public Vector2 Uv;
-			public Vector2 SecondUv;
-			public Color Color;
-			public Color SecondColor;
+			public Vector2 Uv; // Offset: 68
+			public Vector2 SecondUv; // Offset: 76
+			public Color Color; // Offset: 84
+			public Color SecondColor; // Offset: 88
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

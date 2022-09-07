@@ -21,5 +21,15 @@ namespace TpacTool.Lib
 			this.Name = String.Empty;
 			this.RestFrame = new Matrix4x4();
 		}
+
+		public BoneNode Clone(BoneNode parentsClone)
+		{
+			return new BoneNode()
+			{
+				Name = this.Name,
+				RestFrame = this.RestFrame,
+				Parent = parentsClone
+			};
+		}
 	}
 }

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace TpacTool.Lib
 {
 	public class SkeletalAnimation : AssetItem
 	{
 		public static readonly Guid TYPE_GUID = Guid.Parse("bafab007-7e3f-453f-bac6-e7640043112b");
+
+		[CanBeNull] private ExternalLoader<AnimationDefinitionData> _definition;
 
 		public Guid GeometryGuid { set; get; }
 
@@ -20,6 +23,20 @@ namespace TpacTool.Lib
 		public int Duration { set; get; }
 
 		public int UnknownInt { set; get; } // always 0
+
+		[CanBeNull]
+		public ExternalLoader<AnimationDefinitionData> Definition
+		{
+			set
+			{
+				var old = _definition;
+				_definition = value; 
+				if (value != null)
+					value.OwnerGuid = this.Guid;
+				SetDataSegment(old, value);
+			}
+			get => _definition;
+		}
 
 		public SkeletalAnimation() : base(TYPE_GUID)
 		{
@@ -47,6 +64,19 @@ namespace TpacTool.Lib
 			stream.Write(BoneNum);
 			stream.Write(Duration);
 			stream.Write(UnknownInt);
+		}
+
+		public override void ConsumeDataSegments(AbstractExternalLoader[] externalData)
+		{
+			foreach (var externalLoader in externalData)
+			{
+				if (externalLoader is ExternalLoader<AnimationDefinitionData> defin)
+				{
+					_definition = defin;
+				}
+			}
+
+			base.ConsumeDataSegments(externalData);
 		}
 	}
 }

@@ -37,6 +37,28 @@ namespace TpacTool.Lib
 			stream.Write(GeometryGuid);
 		}
 
+		public override AssetItem Clone()
+		{
+			var clone = new Skeleton()
+			{
+				Version = this.Version,
+
+				UnknownBool = this.UnknownBool,
+				GeometryGuid = this.GeometryGuid
+			};
+
+			if (Definition?.Data != null)
+			{
+				clone.Definition =
+					new ExternalLoader<SkeletonDefinitionData>((SkeletonDefinitionData) Definition.Data.Clone());
+			}
+
+			// TODO: clone user data
+
+			clone.CloneDo(this);
+			return clone;
+		}
+
 		public override void ConsumeDataSegments(AbstractExternalLoader[] externalData)
 		{
 			foreach (var externalLoader in externalData)

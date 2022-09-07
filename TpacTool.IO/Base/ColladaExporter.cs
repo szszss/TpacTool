@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -24,6 +25,10 @@ namespace TpacTool.IO
 		public override bool SupportsSkeleton => true;
 
 		public override bool SupportsMorph => true;
+
+		public override bool SupportsSkeletalAnimation => false;
+
+		public override bool SupportMorphAnimation => false;
 
 		public override void Export(Stream writeStream)
 		{
@@ -419,10 +424,61 @@ namespace TpacTool.IO
 				modelRoot = CreateSkeleton(Skeleton, invBindMatrices);
 				nodes.Add(modelRoot);
 			}
-			else if (geosExcludeMorph.Count > 1)
+			//else if (geosExcludeMorph.Count > 1)
+			else
 			{
-				modelRoot = new node() { id = "node_" + Model.Name, name = Model.Name };
+				modelRoot = new node() { type = NodeType.NODE };
+				if (string.IsNullOrEmpty(Model.Name))
+				{
+					modelRoot.id = "node_" + Model.Name;
+					modelRoot.name = Model.Name;
+				}
 				nodes.Add(modelRoot);
+			}
+			modelRoot.Items = new object[]
+			{
+				new TargetableFloat3() { sid = "scale", Values = new double[]{ 1, 1, 1 } },
+				new rotate() { sid = "rotationZ", Values = new double[]{ 0, 0, 1, 0 } },
+				new rotate() { sid = "rotationY", Values = new double[]{ 0, 1, 0, 0 } },
+				new rotate() { sid = "rotationX", Values = new double[]{ 1, 0, 0, 0 } },
+				new TargetableFloat3() { sid = "location", Values = new double[]{ 0, 0, 0 } }
+			};
+			modelRoot.ItemsElementName = new ItemsChoiceType2[]
+			{
+				ItemsChoiceType2.scale,
+				ItemsChoiceType2.rotate,
+				ItemsChoiceType2.rotate,
+				ItemsChoiceType2.rotate,
+				ItemsChoiceType2.translate
+			};
+
+			var animations = new library_animations();
+			if (Animation != null)
+			{
+				var data = Animation.Definition.Data;
+				var animContainerName = "action_container-" + (Skeleton != null ? Skeleton.Name : Model.Name);
+				var anim = new animation() { id = animContainerName, name = Animation.Name };
+				List<animation> animChannel = new List<animation>();
+
+				CreateAnimationRootTransform(modelRoot.id, data, animChannel);
+				if (Skeleton != null)
+				{
+					// XXX: redundant ignoreScale
+					bool ignoreScale = Skeleton.UserData != null &&
+					                   (Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN ||
+					                    Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
+					var skelData = Skeleton.Definition.Data;
+					var j = Math.Min(data.BoneAnims.Count, skelData.Bones.Count);
+					for (var i = 0; i < j; i++)
+					{
+						var boneAnim = data.BoneAnims[i];
+						CreateAnimationBoneTransform(Skeleton.Name + "_" + skelData.Bones[i].Name, boneAnim,
+							GetBoneRestFrame(skelData.Bones[i], ignoreScale), animChannel);
+					}
+				}
+
+				anim.Items = animChannel.Cast<object>().ToArray();
+				animations.animation = new[] { anim };
 			}
 
 			foreach (var geometry in geosExcludeMorph)
@@ -501,7 +557,7 @@ namespace TpacTool.IO
 			visScene.node = nodes.ToArray();
 			visualScenes.visual_scene = new[] { visScene };
 
-			collada.Items = new object[] { images, effects, materials, geometries, controllers, visualScenes };
+			collada.Items = new object[] { images, effects, materials, geometries, controllers, animations, visualScenes };
 
 			var scene = collada.scene = new COLLADAScene();
 			scene.instance_visual_scene = new InstanceWithExtra() { url = "#Scene" };
@@ -951,6 +1007,248 @@ namespace TpacTool.IO
 			return src;
 		}
 
+		private void CreateAnimationRootTransform(string animTarget, AnimationDefinitionData data, List<animation> outList)
+		{
+			if (data.HasRootPositionTransform())
+			{
+				outList.Add(CreateAnimationData(animTarget + "_location", animTarget, "location", Matrix4x4.Identity,  data.RootPositionFrames));
+			}
+
+			if (data.HasRootScaleTransform())
+			{
+				outList.Add(CreateAnimationData(animTarget + "_scale", animTarget, "scale", Matrix4x4.Identity,  data.RootScaleFrames));
+			}
+		}
+
+		private void CreateAnimationBoneTransform(string animTarget,
+			AnimationDefinitionData.BoneAnim data, Matrix4x4 boneRestMatrix, List<animation> outList)
+		{
+			if (data.HasPositionTransform())
+			{
+				outList.Add(CreateAnimationData(animTarget + "_location", animTarget, "location", boneRestMatrix, data.PositionFrames));
+			}
+
+			if (data.HasRotationTransform())
+			{
+				outList.Add(CreateAnimationData(animTarget + "_rotationX", animTarget, "rotationX", boneRestMatrix, data.RotationFrames, 0));
+				outList.Add(CreateAnimationData(animTarget + "_rotationY", animTarget, "rotationY", boneRestMatrix, data.RotationFrames, 1));
+				outList.Add(CreateAnimationData(animTarget + "_rotationZ", animTarget, "rotationZ", boneRestMatrix, data.RotationFrames, 2));
+			}
+		}
+
+		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+		private animation CreateAnimationData<T>(
+			string animId, string animTarget, string animType, Matrix4x4 boneRestMatrix,
+			SortedList<float, AnimationFrame<T>> position, int rotationComponent = 0) where T : struct
+		{
+			if (typeof(T) != typeof(Vector3) && typeof(T) != typeof(Vector4) && typeof(T) != typeof(Quaternion))
+				throw new ArgumentException("Generic type of data must be one of Vector3, Vector4 or Quaternion");
+			if (rotationComponent < 0 || rotationComponent > 2)
+				throw new ArgumentException("rotationComponent must be in [0, 2]", nameof(rotationComponent));
+			source sourceTime = null;
+			{
+				var timeArray = new float_array()
+				{
+					id = animId + "-input-array",
+					count = (ulong) position.Count,
+					Values = position.Keys.Select(key => (double) (key / AnimationFrameRate)).ToArray()
+				};
+				var timeTech = new sourceTechnique_common()
+				{
+					accessor = new accessor()
+					{
+						source = "#" + timeArray.id,
+						count = timeArray.count,
+						stride = 1,
+						param = new param[]
+						{
+							new param() { name = "TIME", type = "float" }
+						}
+					}
+				};
+				sourceTime = new source() { id = animId + "-input", Item = timeArray, technique_common = timeTech };
+			}
+
+			source sourceOutput = null;
+			{
+				var outputArray = new float_array()
+				{
+					id = animId + "-output-array",
+					count = (ulong) position.Count * (typeof(T) == typeof(Quaternion) ? 1ul : 3ul)
+				};
+				var outputTech = new sourceTechnique_common()
+				{
+					accessor = new accessor()
+					{
+						source = "#" + outputArray.id,
+						count = (ulong)position.Count,
+						stride = typeof(T) == typeof(Quaternion) ? 1ul : 3ul
+					}
+				};
+
+				if (position is SortedList<float, AnimationFrame<Vector3>> vec3List)
+				{
+					outputArray.Values = vec3List.Values.SelectMany(value =>
+					{
+						var vec3 = value.Value;
+						return new double[] { vec3.X, vec3.Y, vec3.Z };
+					}).ToArray();
+					outputTech.accessor.param = new param[]
+					{
+						new param() { name = "X", type = "float" },
+						new param() { name = "Y", type = "float" },
+						new param() { name = "Z", type = "float" }
+					};
+				}
+				else if (position is SortedList<float, AnimationFrame<Vector4>> vec4List)
+				{
+					outputArray.Values = vec4List.Values.SelectMany(value =>
+					{
+						var vec4 = value.Value;
+						return new double[] { vec4.X, vec4.Y, vec4.Z }; // ignore W
+					}).ToArray();
+					outputTech.accessor.param = new param[]
+					{
+						new param() { name = "X", type = "float" },
+						new param() { name = "Y", type = "float" },
+						new param() { name = "Z", type = "float" }
+					};
+				}
+				else if (position is SortedList<float, AnimationFrame<Quaternion>> quatList)
+				{
+					var restQuat = Quaternion.Identity;
+					if (Matrix4x4.Decompose(boneRestMatrix, out var unusedScale, out var boneQuat, out var unusedTrans))
+					{
+						restQuat = ConvertHand(Quaternion.Inverse(boneQuat));
+					}
+
+					outputArray.Values = quatList.Values.Select(q =>
+					{
+						//var quat = Quaternion.Multiply(Quaternion.CreateFromAxisAngle(Vector3.UnitX, 1.570795f), 
+						//	Quaternion.CreateFromAxisAngle(Vector3.UnitY, 1.570795f));
+						var quat = Quaternion.Multiply(restQuat, ConvertHand(q.Value));
+						//var quat = ConvertHand(q.Value);
+						// y z is right, x is neg
+						//quat = Quaternion.Multiply(new Quaternion(0, 0, -0.707f, 0.707f), Quaternion.Multiply(quat, new Quaternion(0, 0, 0.707f, 0.707f)));
+						quat = Quaternion.Multiply(new Quaternion(-0.707f, 0.707f, 0, 0), Quaternion.Multiply(quat, new Quaternion(0.707f, -0.707f, 0, 0)));
+						quat = Quaternion.Normalize(quat);
+
+						//quat = Quaternion.Inverse(quat);
+						//quat = new Quaternion(-quat.X, quat.Y, -quat.Z, quat.W);
+						//var quat = Quaternion.Identity;
+						var mat = Matrix4x4.CreateFromQuaternion(quat);
+						GetEularFromMatrix(mat, out var rotX, out var rotY, out var rotZ);
+
+						switch (rotationComponent)
+						{
+							case 0:
+								return rotX * 180d / Math.PI;
+							case 1:
+								return rotY * 180d / Math.PI;
+							case 2:
+								return -rotZ * 180d / Math.PI;
+							default:
+								throw new ArgumentException();
+						}
+					}).ToArray();
+					outputTech.accessor.param = new param[]
+					{
+						new param() { name = "ANGLE", type = "float" }
+					};
+				}
+
+				sourceOutput = new source() {id = animId + "-output", Item = outputArray, technique_common = outputTech};
+			}
+
+			source sourceInterpolation = null;
+			{
+				var interpolationArray = new Name_array()
+				{
+					id = animId + "-interpolation-array",
+					count = (ulong) position.Count,
+					Values = Enumerable.Repeat("LINEAR", position.Count).ToArray()
+				};
+				var interpolationTech = new sourceTechnique_common()
+				{
+					accessor = new accessor()
+					{
+						source = "#" + interpolationArray.id,
+						count = interpolationArray.count,
+						stride = 1,
+						param = new param[]
+						{
+							new param() { name = "INTERPOLATION", type = "name" }
+						}
+					}
+				};
+				sourceInterpolation = new source() 
+					{ id = animId + "-interpolation", Item = interpolationArray, technique_common = interpolationTech };
+			}
+
+			sampler samp = new sampler()
+			{
+				id = animId + "-sampler", input = new InputLocal[]
+				{
+					new InputLocal() { semantic = "INPUT", source = "#" + sourceTime.id },
+					new InputLocal() { semantic = "OUTPUT", source = "#" + sourceOutput.id },
+					new InputLocal() { semantic = "INTERPOLATION", source = "#" + sourceInterpolation.id }
+				}
+			};
+
+			channel chan = new channel() { source = "#" + samp.id, target = animTarget + "/" + animType };
+
+			return new animation() 
+			{
+				id = animId,
+				name = animTarget,
+				Items = new object[]
+				{
+					sourceTime,
+					sourceOutput,
+					sourceInterpolation,
+					samp,
+					chan
+				}
+			};
+		}
+
+		private static void QuaternionToEulerAngles(Quaternion q, out double value, int component = 0)
+		{
+			var rotMat = Matrix4x4.CreateFromQuaternion(q);
+			rotMat = Matrix4x4.Transpose(rotMat);
+
+			switch (component)
+			{
+				case 1:
+					value = Math.Asin(Math.Min(Math.Max(rotMat.M13, -1), 1));
+					break;
+				case 0:
+					if (Math.Abs(rotMat.M23) < 0.99999f)
+					{
+						value = Math.Atan2(-rotMat.M23, rotMat.M33);
+					}
+					else
+					{
+						value = Math.Atan2(rotMat.M32, rotMat.M22);
+					}
+					break;
+				case 2:
+					if (Math.Abs(rotMat.M23) < 0.99999f)
+					{
+						value = Math.Atan2(-rotMat.M12, rotMat.M11);
+					}
+					else
+					{
+						value = 0;
+					}
+					break;
+				default:
+					throw new ArgumentException("Unknown component: " + component, nameof(component));
+			}
+
+			value = value * 180 / Math.PI;
+		}
+
 		private node CreateSkeleton(Skeleton skeleton, Matrix4x4[] invBindMatrices)
 		{
 			var root = new node();
@@ -960,9 +1258,9 @@ namespace TpacTool.IO
 								Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
 			root.id = skeleton.Name;
 			root.name = skeleton.Name;
-			root.Items = new object[] { CreateMatrix(Matrix4x4.Identity) };
-			root.ItemsElementName = new [] { ItemsChoiceType2.matrix };
-			root.type = NodeType.NODE;
+			//root.Items = new object[] { CreateMatrix(Matrix4x4.Identity) };
+			//root.ItemsElementName = new [] { ItemsChoiceType2.matrix };
+			//root.type = NodeType.NODE;
 			var mapping = new Dictionary<BoneNode, node>();
 			var childrenNum = new ConcurrentDictionary<BoneNode, int>();
 			foreach (var bone in data.Bones)
@@ -973,8 +1271,36 @@ namespace TpacTool.IO
 				boneNode.sid = bone.Name;
 				boneNode.type = NodeType.JOINT;
 				var restMatrix = GetBoneRestFrame(bone, ignoreScale);
-				boneNode.Items = new object[] { CreateMatrix(restMatrix) };
-				boneNode.ItemsElementName = new[] { ItemsChoiceType2.matrix };
+				if (Animation != null &&
+				    Matrix4x4.Decompose(restMatrix, out var scale, out var _, out var translation))
+				{
+					/*rotation = ConvertHand(rotation);
+					QuaternionToEulerAngles(rotation, out var rotX, 0);
+					QuaternionToEulerAngles(rotation, out var rotY, 1);
+					QuaternionToEulerAngles(rotation, out var rotZ, 2);*/
+					GetEularFromMatrix(restMatrix, out var rotX, out var rotY, out var rotZ);
+					boneNode.Items = new object[]
+					{
+						new TargetableFloat3() { sid = "scale", Values = new double[]{ scale.X, scale.Y, scale.Z } },
+						new rotate() { sid = "rotationX", Values = new double[]{ 1, 0, 0, rotX } },
+						new rotate() { sid = "rotationY", Values = new double[]{ 0, 1, 0, rotY } },
+						new rotate() { sid = "rotationZ", Values = new double[]{ 0, 0, 1, rotZ } },
+						new TargetableFloat3() { sid = "location", Values = new double[]{ translation.X, translation.Y, translation.Z } }
+					};
+					boneNode.ItemsElementName = new ItemsChoiceType2[]
+					{
+						ItemsChoiceType2.scale,
+						ItemsChoiceType2.rotate,
+						ItemsChoiceType2.rotate,
+						ItemsChoiceType2.rotate,
+						ItemsChoiceType2.translate
+					};
+				}
+				else
+				{
+					boneNode.Items = new object[] { CreateMatrix(restMatrix) };
+					boneNode.ItemsElementName = new[] { ItemsChoiceType2.matrix };
+				}
 				mapping[bone] = boneNode;
 			}
 
@@ -1012,6 +1338,7 @@ namespace TpacTool.IO
 					tech.tip_y = new tip_y() { sid = "tip_y", type = "float", Text = tip.Y.ToString() };
 					tech.tip_z = new tip_z() { sid = "tip_z", type = "float", Text = tip.Z.ToString() };
 					//tech.roll = new roll() { sid = "roll", type = "float", Text = f.ToString() };
+					//tech.roll = new roll() { sid = "roll", type = "float", Text = "0" };
 				}
 				else
 				{
@@ -1027,6 +1354,7 @@ namespace TpacTool.IO
 					tech.tip_y = new tip_y() { sid = "tip_y", type = "float", Text = tip.Y.ToString() };
 					tech.tip_z = new tip_z() { sid = "tip_z", type = "float", Text = tip.Z.ToString() };
 					//tech.roll = new roll() { sid = "roll", type = "float", Text = f.ToString() };
+					//tech.roll = new roll() { sid = "roll", type = "float", Text = "0" };
 				}
 				
 				mapping[bone].extra = new[] { new extra() { technique = new[] { tech } } };
@@ -1085,12 +1413,19 @@ namespace TpacTool.IO
 
 		private static float ExtractRollFromQuaternion(Quaternion quat)
 		{
-			double pitch = Math.Asin(2.0 * (quat.Z * quat.X - quat.Z * quat.Y));
+			/*double pitch = Math.Asin(2.0 * (quat.Z * quat.X - quat.Z * quat.Y));
 			if (pitch < -2 * Math.PI)
 				pitch += 2 * Math.PI;
 			else if (pitch > 2 * Math.PI)
-				pitch -= 2 * Math.PI;
-			return (float)pitch;
+				pitch -= 2 * Math.PI;*/
+			var quat2 = Quaternion.Multiply(new Quaternion(0, 0, 0.707f, 0.707f),
+				Quaternion.Multiply(quat, new Quaternion(0, 0, -0.707f, 0.707f)));
+			//var quat2 = quat;
+			QuaternionToEulerAngles(quat2, out var roll, 0);
+			QuaternionToEulerAngles(quat2, out var pitch, 1);
+			QuaternionToEulerAngles(quat2, out var yaw, 2);
+			roll = -roll / 180 * Math.PI;
+			return (float) roll;
 		}
 
 		private static void AppendNode(node parent, node child)
@@ -1207,6 +1542,29 @@ namespace TpacTool.IO
 			yield return matrix.M24;
 			yield return matrix.M34;
 			yield return matrix.M44;
+		}
+
+		private static Quaternion ConvertHand(Quaternion quat)
+		{
+			//  x  y  z
+			// -y -x -z
+			return new Quaternion(quat.X, quat.Y, quat.Z, quat.W);
+		}
+
+		private static void GetEularFromMatrix(Matrix4x4 matrix, out float x, out float y, out float z)
+		{
+			y = (float) Math.Asin(matrix.M13);
+
+			if (Math.Abs(matrix.M13) < 0.9999999f)
+			{
+				x = (float)Math.Atan2(-matrix.M23, matrix.M33);
+				z = (float)Math.Atan2(-matrix.M12, matrix.M11);
+			}
+			else
+			{
+				x = (float)Math.Atan2(matrix.M32, matrix.M22);
+				z = 0;
+			}
 		}
 
 		private enum TextureUsage : int

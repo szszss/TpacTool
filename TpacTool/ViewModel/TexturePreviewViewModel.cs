@@ -10,7 +10,7 @@ namespace TpacTool
 {
 	public class TexturePreviewViewModel : ViewModelBase
 	{
-		public static readonly Guid PreviewTextureEvent = Guid.NewGuid();
+		//public static readonly Guid PreviewTextureEvent = Guid.NewGuid();
 
 		public BitmapSource ImageSource { private set; get; }
 
@@ -20,7 +20,7 @@ namespace TpacTool
 		{
 			if (!IsInDesignMode)
 			{
-				MessengerInstance.Register<AssetItem>(this, AssetTreeViewModel.AssetSelectedEvent, OnSelectAsset);
+				/*MessengerInstance.Register<AssetItem>(this, AssetTreeViewModel.AssetSelectedEvent, OnSelectAsset);
 				MessengerInstance.Register<Texture>(this, PreviewTextureEvent, OnPreviewTexture);
 				MessengerInstance.Register<object>(this, MainViewModel.CleanupEvent, unused =>
 				{
@@ -28,7 +28,7 @@ namespace TpacTool
 					ImageSource = null;
 					RaisePropertyChanged("ImageSource");
 					RaisePropertyChanged("ImageText");
-				});
+				});*/
 			}
 		}
 

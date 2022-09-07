@@ -1,8 +1,9 @@
 ﻿namespace TpacTool
 {
+	// TODO: delete
 	internal static class TypeHelper
 	{
-		public static SharpDX.BoundingBox ToSharpDxBoundingBox(this TpacTool.Lib.BoundingBox bb)
+		/*public static SharpDX.BoundingBox ToSharpDxBoundingBox(this TpacTool.Lib.BoundingBox bb)
 		{
 			var min = bb.Min;
 			var max = bb.Max;
@@ -22,6 +23,6 @@
 		public static SharpDX.Vector3 ToVector3(this System.Windows.Media.Media3D.Point3D vec)
 		{
 			return new SharpDX.Vector3((float) vec.X, (float) vec.Y, (float) vec.Z);
-		}
+		}*/
 	}
 }

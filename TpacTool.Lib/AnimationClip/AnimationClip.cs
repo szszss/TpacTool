@@ -61,6 +61,13 @@ namespace TpacTool.Lib
 
 		public int UnknownInt { set; get; }
 
+		/// <summary>
+		/// Used by generated balanced animation (which has a numeric name like 10235460348483436133_3).
+		/// The value equals the postfix of name (3 for the above example).
+		/// -1 for non-generated animation clip.
+		/// </summary>
+		public sbyte GeneratedIndex { set; get; } = -1;
+
 		public uint UnknownUInt2 { set; get; }
 
 		public ushort UnknownUShort { set; get; }
@@ -113,6 +120,10 @@ namespace TpacTool.Lib
 				UnknownClipName = stream.ReadSizedString();
 				ClipSource1Name = stream.ReadSizedString();
 				ClipSource2Name = stream.ReadSizedString();
+				if (version >= 5)
+				{
+					GeneratedIndex = stream.ReadSByte();
+				}
 				UnknownUInt2 = stream.ReadUInt32();
 				UnknownUShort = stream.ReadUInt16();
 			}
@@ -120,6 +131,7 @@ namespace TpacTool.Lib
 			{
 				UnknownUInt2 = stream.ReadUInt32();
 			}
+
 			Flags = stream.ReadStringList();
 
 			var count = stream.ReadInt32();
@@ -179,7 +191,7 @@ namespace TpacTool.Lib
 
 		public override void WriteMetadata(BinaryWriter stream)
 		{
-			stream.Write(4);
+			stream.Write(5);
 			stream.Write(Duration);
 			stream.Write(Source1);
 			stream.Write(Source2);
@@ -204,6 +216,7 @@ namespace TpacTool.Lib
 			stream.WriteSizedString(UnknownClipName);
 			stream.WriteSizedString(ClipSource1Name);
 			stream.WriteSizedString(ClipSource2Name);
+			stream.Write(GeneratedIndex);
 			stream.Write(UnknownUInt2);
 			stream.Write(UnknownUShort);
 			stream.WriteStringList(Flags);

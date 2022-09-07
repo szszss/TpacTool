@@ -26,6 +26,8 @@ namespace TpacTool
 		internal static string CHANNEL_RGB = "RGB";
 		internal static string CHANNEL_RG = "RG";
 		internal static string CHANNEL_R = Resources.Texture_Preview_Channel_RGray;
+		internal static string CHANNEL_G = Resources.Texture_Preview_Channel_GGray;
+		internal static string CHANNEL_B = Resources.Texture_Preview_Channel_BGray;
 		internal static string CHANNEL_A = Resources.Texture_Preview_Channel_Alpha;
 
 		internal static string[] _clampItems = new[]
@@ -43,10 +45,14 @@ namespace TpacTool
 			CHANNEL_RGB,
 			CHANNEL_RG,
 			CHANNEL_R,
+			CHANNEL_G,
+			CHANNEL_B,
 			CHANNEL_A
 		};
 
 		private SaveFileDialog _saveFileDialog;
+
+		private Texture _asset;
 
 		public string[] ClampItems { private set; get; } = _clampItems;
 
@@ -57,7 +63,7 @@ namespace TpacTool
 			set
 			{
 				_clampMode = value;
-				MessengerInstance.Send((AssetItem)Asset, AssetTreeViewModel.AssetSelectedEvent);
+				MessengerInstance.Send(Asset, OglPreviewViewModel.PreviewTextureEvent);
 			}
 			get => _clampMode;
 		}
@@ -67,12 +73,20 @@ namespace TpacTool
 			set
 			{
 				_channelMode = value;
-				MessengerInstance.Send((AssetItem)Asset, AssetTreeViewModel.AssetSelectedEvent);
+				MessengerInstance.Send(Asset, OglPreviewViewModel.PreviewTextureEvent);
 			}
 			get => _channelMode;
 		}
 
-		public Texture Asset { private set; get; }
+		public Texture Asset
+		{
+			private set
+			{
+				_asset = value;
+				MessengerInstance.Send(Asset, OglPreviewViewModel.PreviewTextureEvent);
+			}
+			get => _asset;
+		}
 
 		public string SuggestedFormat { private set; get; }
 

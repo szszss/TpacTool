@@ -28,7 +28,7 @@
             ShowCoordinateSystem="{Binding ShowGridLines, Mode=OneWay}"
             CoordinateSystemHorizontalPosition="Right"
             CameraMode="Inspect"
-            CameraRotationMode="Turntable" Margin="0,0,0,26"
+            CameraRotationMode="Turntable" Margin="0,0,0,26" ChangeFieldOfViewCursor="ScrollNS" PanCursor="Hand" RotateCursor="SizeAll" ZoomCursor="SizeNS" ZoomRectangleCursor="ScrollSE"
             >
             <ModelVisual3D Content="{Binding Models, Mode=OneWay}" />
             <h:ClonedVisual3D Source="{Binding Light}"></h:ClonedVisual3D>
@@ -53,6 +53,9 @@
             <ToggleButton Content="{x:Static loc:Resources.Preview_Keepscale}" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding KeepScaleMode, Mode=TwoWay}" VerticalAlignment="Center" ToolTip="{x:Static loc:Resources.Preview_Keepscale_Tooltip}"/>
             <ToggleButton Content="{x:Static loc:Resources.Preview_Inertia}" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding EnableInertia, Mode=TwoWay}" VerticalAlignment="Center" ToolTip="{x:Static loc:Resources.Preview_Inertia_Tooltip}"/>
             <ToggleButton Content="{x:Static loc:Resources.Preview_Showgrid}" Height="21" Margin="5,0,0,0" Padding="3,1" IsChecked="{Binding ShowGridLines, Mode=TwoWay}" VerticalAlignment="Center" ToolTip="{x:Static loc:Resources.Preview_Showgrid_Tooltip}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="26" ScrollViewer.VerticalScrollBarVisibility="Disabled" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
+            <Label Content="WPF Mode" HorizontalAlignment="Right"/>
         </StackPanel>
     </Grid>
 </Page>

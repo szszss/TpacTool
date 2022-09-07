@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ModelPreviewPage">
-
+    <!-- Obsolete -->
     <Page.DataContext>
         <Binding Path="ModelPreview" Source="{StaticResource Locator}"/>
     </Page.DataContext>

@@ -132,6 +132,67 @@
   <data name="About_Website" xml:space="preserve">
     <value>Website:</value>
   </data>
+  <data name="Animation_Bones" xml:space="preserve">
+    <value>Bones:</value>
+  </data>
+  <data name="Animation_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Animation_Export_FrameRate" xml:space="preserve">
+    <value>Frame Rate</value>
+  </data>
+  <data name="Animation_Export_FR_1" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="Animation_Export_FR_1_Tooltip" xml:space="preserve">
+    <value>Export at one frame per second to ensure the modeling software won't miss any frames.</value>
+  </data>
+  <data name="Animation_Export_FR_24" xml:space="preserve">
+    <value>24</value>
+  </data>
+  <data name="Animation_Export_FR_24_Tooltip" xml:space="preserve">
+    <value>Export at 24 frames per second, the default frame rate of Maya and Blender.
+The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost.</value>
+  </data>
+  <data name="Animation_Export_FR_25" xml:space="preserve">
+    <value>25</value>
+  </data>
+  <data name="Animation_Export_FR_25_Tooltip" xml:space="preserve">
+    <value>Export at 25 frames per second, the frame rate of PAL standard.
+The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost.</value>
+  </data>
+  <data name="Animation_Export_FR_30" xml:space="preserve">
+    <value>30</value>
+  </data>
+  <data name="Animation_Export_FR_30_Tooltip" xml:space="preserve">
+    <value>Export at 30 frames per second, the default frame rate of 3ds Max.
+The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost.</value>
+  </data>
+  <data name="Animation_Export_FR_60" xml:space="preserve">
+    <value>60</value>
+  </data>
+  <data name="Animation_Export_FR_60_Tooltip" xml:space="preserve">
+    <value>Export at 60 frames per second. Most of animations in the game are at this frame rate.
+The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost.</value>
+  </data>
+  <data name="Animation_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Animation_Model" xml:space="preserve">
+    <value>Model:</value>
+  </data>
+  <data name="Animation_Model_FemaleHead" xml:space="preserve">
+    <value>Female Head</value>
+  </data>
+  <data name="Animation_Model_MaleHead" xml:space="preserve">
+    <value>Male Head</value>
+  </data>
+  <data name="Animation_Skeleton" xml:space="preserve">
+    <value>Skeleton:</value>
+  </data>
+  <data name="Animation_Skeleton_Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="AssetTree_FilterRemove_Tooltip" xml:space="preserve">
     <value>Clear filter pattern</value>
   </data>
@@ -270,6 +331,21 @@
   <data name="Model_Export" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="Model_Export_Lod" xml:space="preserve">
+    <value>LOD</value>
+  </data>
+  <data name="Model_Export_Lod_AllLods" xml:space="preserve">
+    <value>All LODs</value>
+  </data>
+  <data name="Model_Export_Lod_AllLods_Tooltip" xml:space="preserve">
+    <value>Export all LODs.</value>
+  </data>
+  <data name="Model_Export_Lod_Only0" xml:space="preserve">
+    <value>Only LOD 0</value>
+  </data>
+  <data name="Model_Export_Lod_Only0_Tooltip" xml:space="preserve">
+    <value>Only export LOD 0, the highest definition model.</value>
+  </data>
   <data name="Model_Export_Material" xml:space="preserve">
     <value>Material &amp; Texture</value>
   </data>
@@ -299,6 +375,18 @@
   </data>
   <data name="Model_Export_Misc" xml:space="preserve">
     <value>Misc</value>
+  </data>
+  <data name="Model_Export_Misc_FbxAsText" xml:space="preserve">
+    <value>FBX: Export as text</value>
+  </data>
+  <data name="Model_Export_Misc_FbxAsText_Tooltip" xml:space="preserve">
+    <value>Export models in readable text format. This option is not very useful because many software cannot import text-formatted FBX.</value>
+  </data>
+  <data name="Model_Export_Misc_FbxInMeters" xml:space="preserve">
+    <value>FBX: Export in meters</value>
+  </data>
+  <data name="Model_Export_Misc_FbxInMeters_Tooltip" xml:space="preserve">
+    <value>By default, FBX is in centimeters, but some software (such as Blender) imports models in meters. Check this option to export models in meters.</value>
   </data>
   <data name="Model_Export_Misc_FixBoneConnect" xml:space="preserve">
     <value>DAE: Fix the bone connections for Blender</value>
@@ -429,20 +517,51 @@
   <data name="Model_Preview_Show" xml:space="preserve">
     <value>Show</value>
   </data>
+  <data name="Msgbox_AnimationAssimpRequired" xml:space="preserve">
+    <value>Cannot export animation with Assimp.</value>
+  </data>
+  <data name="Msgbox_AssimpNotFound" xml:space="preserve">
+    <value>Cannot initialize Assimp. FBX exporting is unavailable.</value>
+  </data>
+  <data name="Msgbox_DefaultSkeletonNotFound" xml:space="preserve">
+    <value>Cannot find/load the default skeleton of this animation. </value>
+    
+  </data>
   <data name="Msgbox_DirNotExisting" xml:space="preserve">
     <value>The directory doesn't exist</value>
   </data>
   <data name="Msgbox_Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="Msgbox_FemaleHeadModelNotFound" xml:space="preserve">
+    <value>Cannot find female head model.</value>
+  </data>
+  <data name="Msgbox_HorseSkeletonNotFound" xml:space="preserve">
+    <value>Cannot find horse skeleton.</value>
+  </data>
+  <data name="Msgbox_HumanSkeletonNotFound" xml:space="preserve">
+    <value>Cannot find human skeleton.</value>
+  </data>
   <data name="Msgbox_Info" xml:space="preserve">
     <value>Info</value>
+  </data>
+  <data name="Msgbox_MaleHeadModelNotFound" xml:space="preserve">
+    <value>Cannot find male head model.</value>
+  </data>
+  <data name="Msgbox_ModelNotSelected" xml:space="preserve">
+    <value>You need to select a model from the combo box.</value>
   </data>
   <data name="Msgbox_NoFileLoaded" xml:space="preserve">
     <value>No file loaded. (No tpac file in any sub directory)</value>
   </data>
+  <data name="Msgbox_SkeletonNotSelected" xml:space="preserve">
+    <value>You need to select a skeleton from the combo box.</value>
+  </data>
   <data name="Msgbox_TpacNotFound" xml:space="preserve">
     <value>No tpac file found in the top directory. Go on? (Will search sub directories)</value>
+  </data>
+  <data name="Msgbox_Warning" xml:space="preserve">
+    <value>Warning</value>
   </data>
   <data name="Preview_Center" xml:space="preserve">
     <value>Focus:</value>
@@ -460,10 +579,10 @@
     <value>Set the focal point of rotation and scaling.</value>
   </data>
   <data name="Preview_Inertia" xml:space="preserve">
-    <value>Inertia</value>
+    <value>Mouse Inertia</value>
   </data>
   <data name="Preview_Inertia_Tooltip" xml:space="preserve">
-    <value>Enable inertia for rotation and scaling.</value>
+    <value>Enable inertia for mouse rotation and zoom.</value>
   </data>
   <data name="Preview_Keepscale" xml:space="preserve">
     <value>Keep Scale</value>
@@ -495,11 +614,23 @@
   <data name="Preview_Msg_TextureSizeTooLarge" xml:space="preserve">
     <value>Cannot preview this texture because of its size (&gt;100MB)</value>
   </data>
+  <data name="Preview_Scale_Inertia" xml:space="preserve">
+    <value>Scale Inertia</value>
+  </data>
+  <data name="Preview_Scale_Inertia_Tooltip" xml:space="preserve">
+    <value>Enable inertia for camera scaling when changing model.</value>
+  </data>
   <data name="Preview_Showgrid" xml:space="preserve">
     <value>Show Grid</value>
   </data>
   <data name="Preview_Showgrid_Tooltip" xml:space="preserve">
     <value>Show the grid of ground.</value>
+  </data>
+  <data name="Preview_Transition_Inertia" xml:space="preserve">
+    <value>Transition Inertia</value>
+  </data>
+  <data name="Preview_Transition_Inertia_Tooltip" xml:space="preserve">
+    <value>Enable inertia for camera transition when changing model.</value>
   </data>
   <data name="Texture_Dialog_SelectExportFile" xml:space="preserve">
     <value>Export texture to ...</value>
@@ -524,6 +655,12 @@
   </data>
   <data name="Texture_Preview_Channel_Auto" xml:space="preserve">
     <value>Auto</value>
+  </data>
+  <data name="Texture_Preview_Channel_BGray" xml:space="preserve">
+    <value>B as Gray</value>
+  </data>
+  <data name="Texture_Preview_Channel_GGray" xml:space="preserve">
+    <value>G as Gray</value>
   </data>
   <data name="Texture_Preview_Channel_RGray" xml:space="preserve">
     <value>R as Gray</value>

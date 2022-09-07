@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using JetBrains.Annotations;
 
 namespace TpacTool.Lib
@@ -8,6 +9,8 @@ namespace TpacTool.Lib
 	public class Metamesh : AssetItem
 	{
 		public static readonly Guid TYPE_GUID = Guid.Parse("a08f8b97-197c-4bea-b95b-53846cae834e");
+
+		public static Metamesh EmptyMesh { private set; get; }
 
 		/*
 		 * Version 1: Since 1.4.3. Added tangent space transform quaternion (a.k.a Q-Tangent) for the vertex stream data.
@@ -20,7 +23,7 @@ namespace TpacTool.Lib
 		public float UnknownFloat { set; get; }
 
 		[NotNull]
-		public string UnknownString { set; get; }
+		public string UnknownString { set; get; } = string.Empty;
 		/* Used by armors, and empty for others. These values are used:
 		   human_body
 		   head
@@ -54,6 +57,27 @@ namespace TpacTool.Lib
 
 		[CanBeNull]
 		public ExternalLoader<EditmodeMiscData> EditmodeMisc { set; get; }
+
+		static Metamesh()
+		{
+			EmptyMesh = new Metamesh() { Name = "empty_model" };
+			var mesh = new Mesh();
+			mesh.VertexStream = new ExternalLoader<VertexStreamData>(new VertexStreamData()
+			{
+				Positions = new Vector3[0],
+				Normals = new Vector3[0],
+				Tangents = new Vector4[0],
+				Indices = new int[0],
+				Uv1 = new Vector2[0],
+				Uv2 = new Vector2[0],
+				Colors1 = new AbstractMeshData.Color[0],
+				Colors2 = new AbstractMeshData.Color[0],
+				BoneIndices = new VertexStreamData.BoneIndex[0],
+				BoneWeights = new VertexStreamData.BoneWeight[0]
+			});
+			mesh.EditData = new ExternalLoader<MeshEditData>(new MeshEditData());
+			EmptyMesh.Meshes.Add(mesh);
+		}
 
 		public Metamesh() : base(TYPE_GUID)
 		{

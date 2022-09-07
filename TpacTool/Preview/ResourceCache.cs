@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using TpacTool.Lib;
-using BoundingBox = SharpDX.BoundingBox;
 
 namespace TpacTool
 {
@@ -15,14 +13,19 @@ namespace TpacTool
 		public const int CHANNEL_MODE_RGB = 2;
 		public const int CHANNEL_MODE_RG = 3;
 		public const int CHANNEL_MODE_R = 4;
-		public const int CHANNEL_MODE_ALPHA = 5;
+		public const int CHANNEL_MODE_G = 5;
+		public const int CHANNEL_MODE_B = 6;
+		public const int CHANNEL_MODE_ALPHA = 7;
 
 		private static int imageCacheCleanCounter = 0;
 		private static int modelCacheCleanCounter = 0;
 		private static Dictionary<Tuple<Texture, int, int>, WeakReference<BitmapSource>> imageCache = 
 							new Dictionary<Tuple<Texture, int, int>, WeakReference<BitmapSource>>();
+
 		private static Dictionary<Mesh, WeakReference<MeshBaker.BakedMesh>> modelCache =
 							new Dictionary<Mesh, WeakReference<MeshBaker.BakedMesh>>();
+		/*private static Dictionary<Mesh, WeakReference<MeshBaker.BakedMeshDx>> modelDxCache =
+							new Dictionary<Mesh, WeakReference<MeshBaker.BakedMeshDx>>();*/
 
 		public static MeshBaker.BakedMesh GetModel(Mesh mesh)
 		{
@@ -46,6 +49,29 @@ namespace TpacTool
 			}
 			return target;
 		}
+
+		/*public static MeshBaker.BakedMeshDx GetModelDx(Mesh mesh)
+		{
+			MeshBaker.BakedMeshDx target = null;
+			var key = mesh;
+			lock (modelDxCache)
+			{
+				if (!modelDxCache.TryGetValue(key, out var weakRef) || !weakRef.TryGetTarget(out target))
+				{
+					if (++modelCacheCleanCounter > 100)
+					{
+						modelCacheCleanCounter = 0;
+						var removed = modelDxCache.Where(pair => !pair.Value.TryGetTarget(out var unused)).ToArray();
+						foreach (var item in removed)
+							modelDxCache.Remove(item.Key);
+					}
+
+					target = MeshBaker.BakeMeshDx(mesh, true);
+					modelDxCache[key] = new WeakReference<MeshBaker.BakedMeshDx>(target);
+				}
+			}
+			return target;
+		}*/
 
 		public static BitmapSource GetImage(Texture texture, int clampSize, int mode)
 		{
@@ -91,6 +117,8 @@ namespace TpacTool
 							stride = width * 3;
 							break;
 						case CHANNEL_MODE_R:
+						case CHANNEL_MODE_G:
+						case CHANNEL_MODE_B:
 							pf = PixelFormats.Gray8;
 							stride = width * 1;
 							break;
@@ -103,7 +131,7 @@ namespace TpacTool
 					}
 					byte[] rawImage = new byte[stride * height];
 					var writer = new ImageWriter(rawImage, width, mode);
-					TextureUtil.DecodeTextureDataToWriter(rawData, width, height, texture.Format, writer);
+					TextureUtil.DecodeTextureDataToWriter(rawData, width, height, texture.Format, writer, true);
 					/*int length = width * height;
 					for (int i = 0; i < length; i++)
 					{
@@ -165,6 +193,12 @@ namespace TpacTool
 							break;
 						case CHANNEL_MODE_R:
 							buff[pointer++] = rgba8[j + 0];
+							break;
+						case CHANNEL_MODE_G:
+							buff[pointer++] = rgba8[j + 1];
+							break;
+						case CHANNEL_MODE_B:
+							buff[pointer++] = rgba8[j + 2];
 							break;
 						case CHANNEL_MODE_ALPHA:
 							buff[pointer++] = rgba8[j + 3];

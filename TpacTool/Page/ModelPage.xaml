@@ -12,6 +12,7 @@
       Title="ModelPage">
     <Page.Resources>
         <TpacTool:BooleanFlipConverter x:Key="BooleanFlipConverter"/>
+        <TpacTool:EnumEqualConverter x:Key="EnumEqualConverter"/>
     </Page.Resources>
     <Page.DataContext>
         <Binding Path="Model" Source="{StaticResource Locator}"/>
@@ -161,9 +162,9 @@
                         </GroupBox>
                         <GroupBox Header="{x:Static loc:Resources.Model_Export_Skeleton}">
                             <StackPanel>
-                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Human}" Margin="5,10,5,5" IsChecked="{Binding IsSkeletonHuman, Mode=OneWay}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Human" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
-                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Horse}" Margin="5" IsChecked="{Binding IsSkeletonHorse, Mode=OneWay}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Horse" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
-                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Other}" Margin="5" IsChecked="{Binding IsSkeletonOther, Mode=OneWay}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Other" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Human}" Margin="5,10,5,5" IsChecked="{Binding ExportSkeletonType, Mode=OneWay, Converter={StaticResource EnumEqualConverter}, ConverterParameter={x:Static TpacTool:SkeletonType.Human}}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Human" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Horse}" Margin="5" IsChecked="{Binding ExportSkeletonType, Mode=OneWay, Converter={StaticResource EnumEqualConverter}, ConverterParameter={x:Static TpacTool:SkeletonType.Horse}}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Horse" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
+                                <RadioButton Content="{x:Static loc:Resources.Model_Export_Skeleton_Other}" Margin="5" IsChecked="{Binding ExportSkeletonType, Mode=OneWay, Converter={StaticResource EnumEqualConverter}, ConverterParameter={x:Static TpacTool:SkeletonType.Other}}" Command="{Binding ChangeSkeletonCommand, Mode=OneWay}" CommandParameter="Other" IsEnabled="{Binding ExportAsRigged, Mode=OneWay}"/>
                                 <ComboBox Margin="5" IsEnabled="{Binding IsSkeletonOtherAndRigged, Mode=OneWay}" ItemsSource="{Binding Skeletons, Mode=OneWay}" SelectedIndex="{Binding SelectedSkeletonIndex, Mode=TwoWay}">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -179,6 +180,12 @@
                                 <RadioButton Content="{x:Static loc:Resources.Model_Export_Material_ExportSame}" ToolTip="{x:Static loc:Resources.Model_Export_Material_ExportSame_Tooltip}" Margin="5" IsChecked="{Binding IsMaterialExportToSameFolder, Mode=OneWay}" Command="{Binding ChangeMaterialCommand, Mode=OneWay}" CommandParameter="Export"/>
                                 <RadioButton Content="{x:Static loc:Resources.Model_Export_Material_ExportSub}" ToolTip="{x:Static loc:Resources.Model_Export_Material_ExportSub_Tooltip}" Margin="5" IsChecked="{Binding IsMaterialExportToSubFolder, Mode=OneWay}" Command="{Binding ChangeMaterialCommand, Mode=OneWay}" CommandParameter="ExportToSubFolder"/>
                                 <CheckBox Margin="5" Content="{x:Static loc:Resources.Model_Export_Material_DiffuseOnly}" ToolTip="{x:Static loc:Resources.Model_Export_Material_DiffuseOnly_Tooltip}" IsChecked="{Binding OnlyExportDiffuse, Mode=TwoWay}" IsEnabled="{Binding IsMaterialIgnored, Converter={StaticResource BooleanFlipConverter}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="{x:Static loc:Resources.Model_Export_Lod}">
+                            <StackPanel>
+                                <RadioButton Margin="5,10,5,5" Content="{x:Static loc:Resources.Model_Export_Lod_Only0}" ToolTip="{x:Static loc:Resources.Model_Export_Lod_Only0_Tooltip}" IsChecked="{Binding IsExportOnlyLod0, Mode=TwoWay}"/>
+                                <RadioButton Margin="5" Content="{x:Static loc:Resources.Model_Export_Lod_AllLods}" ToolTip="{x:Static loc:Resources.Model_Export_Lod_AllLods_Tooltip}" IsChecked="{Binding IsExportAllLods, Mode=TwoWay}"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="{x:Static loc:Resources.Model_Export_Misc}">

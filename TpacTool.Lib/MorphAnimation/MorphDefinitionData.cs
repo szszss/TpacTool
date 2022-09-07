@@ -41,6 +41,27 @@ namespace TpacTool.Lib
 			}
 		}
 
+		public Dictionary<int, List<Tuple<int, float>>> OrderByMorphShapes()
+		{
+			var targets = new Dictionary<int, List<Tuple<int, float>>>();
+			foreach (var pair in MorphFrame)
+			{
+				var frame = pair.Key;
+				foreach (var morphStatus in pair.Value)
+				{
+					var target = morphStatus.Target;
+					List<Tuple<int, float>> seq;
+					if (!targets.TryGetValue(target, out seq))
+					{
+						seq = new List<Tuple<int, float>>();
+						targets[target] = seq;
+					}
+					seq.Add(Tuple.Create(frame, morphStatus.Progress));
+				}
+			}
+			return targets;
+		}
+
 		public struct MorphStatus
 		{
 			public int Target;

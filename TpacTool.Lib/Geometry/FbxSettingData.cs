@@ -13,9 +13,12 @@ namespace TpacTool.Lib
 
 		public bool UnknownBool1 { set; get; }
 
+		[Obsolete]
 		public bool UnknownBool2 { set; get; }
 
-		public string UnknownString { set; get; }
+		public string BlendShapeImport { set; get; }
+
+		public string ConvertToUnit { set; get; }
 
 		[NotNull]
 		public GeometrySettingData GeometrySetting { set; get; }
@@ -27,10 +30,12 @@ namespace TpacTool.Lib
 
 		public override void ReadData(BinaryReader stream, IDictionary<object, object> userdata, int totalSize)
 		{
-			UnknownBool1 = stream.ReadBoolean();
+			/*UnknownBool1 = stream.ReadBoolean();
 			if (version >= 2)
-				UnknownBool2 = stream.ReadBoolean();
-			UnknownString = stream.ReadSizedString();
+				UnknownBool2 = stream.ReadBoolean();*/
+			BlendShapeImport = stream.ReadSizedString();
+			UnknownBool1 = stream.ReadBoolean();
+			ConvertToUnit = stream.ReadSizedString();
 			GeometrySetting.version = stream.ReadInt32();
 			GeometrySetting.ReadData(stream, userdata, totalSize);
 		}

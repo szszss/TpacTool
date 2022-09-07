@@ -33,6 +33,10 @@ namespace TpacTool.Lib
 			RegisterType(typeof(MorphDefinitionData));
 			RegisterType(typeof(AnimationDefinitionData));
 			RegisterType(typeof(ParticleEffectData));
+			RegisterType(typeof(OptimizedAnimation));
+			RegisterType(typeof(ShortenedOptimizedAnimation));
+			RegisterType(typeof(FbxSettingData));
+			RegisterType(typeof(GeometrySettingData));
 #endif
 		}
 
@@ -103,6 +107,14 @@ namespace TpacTool.Lib
 				result = new AnimationDefinitionData();
 			if (typeGuid == ParticleEffectData.TYPE_GUID)
 				result = new ParticleEffectData();
+			if (typeGuid == OptimizedAnimation.TYPE_GUID)
+				result = new OptimizedAnimation();
+			if (typeGuid == ShortenedOptimizedAnimation.TYPE_GUID)
+				result = new ShortenedOptimizedAnimation();
+			if (typeGuid == FbxSettingData.TYPE_GUID)
+				result = new FbxSettingData();
+			if (typeGuid == GeometrySettingData.TYPE_GUID)
+				result = new GeometrySettingData();
 			else
 			{
 				result = new ExternalData(typeGuid);

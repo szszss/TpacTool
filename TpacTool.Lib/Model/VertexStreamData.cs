@@ -8,6 +8,10 @@ using System.Text;
 using SystemHalf;
 using JetBrains.Annotations;
 
+#if NET5_0_OR_GREATER
+using Half = SystemHalf.Half;
+#endif
+
 namespace TpacTool.Lib
 {
 	public class VertexStreamData : AbstractMeshData

@@ -67,6 +67,13 @@ namespace TpacTool
 
 			if (!string.IsNullOrWhiteSpace(_filterText))
 				list = list.AsParallel().AsOrdered().Where(vm => vm.Filter(_filterText)).AsSequential();
+			else
+			{
+				foreach (var assetViewModel in list)
+				{
+					assetViewModel.ClearFilter();
+				}
+			}
 
 			TreeItemSource = list;
 			RaisePropertyChanged("TreeItemSource");

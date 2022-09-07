@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.779
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TpacTool.Lib", "TpacTool.Lib\TpacTool.Lib.csproj", "{0C383548-C203-4CF6-A221-FD524465F485}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TpacTool.IO", "TpacTool.IO\TpacTool.IO.csproj", "{8BDFF931-8D76-4D0C-B5BB-64F3970855E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TpacTool", "TpacTool\TpacTool.csproj", "{BC71C8E9-EBC6-4F2F-9450-00DFD835574F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TpacTool.IO.Assimp", "TpacTool.IO.Assimp\TpacTool.IO.Assimp.csproj", "{DBCC20DA-1375-4923-8530-21FC86D74892}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,11 +29,16 @@ Global
 		{BC71C8E9-EBC6-4F2F-9450-00DFD835574F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC71C8E9-EBC6-4F2F-9450-00DFD835574F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC71C8E9-EBC6-4F2F-9450-00DFD835574F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBCC20DA-1375-4923-8530-21FC86D74892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBCC20DA-1375-4923-8530-21FC86D74892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBCC20DA-1375-4923-8530-21FC86D74892}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBCC20DA-1375-4923-8530-21FC86D74892}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_Rules = {"EnabledRules":["StringFormat","WhiteSpaceLead","PunctuationLead"]}
 		SolutionGuid = {966D861B-A600-4B87-B2CD-339588EBEE62}
 		RESX_SortFileContentOnSave = True
 		RESX_SaveFilesImmediatelyUponChange = False

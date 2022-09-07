@@ -1,4 +1,4 @@
-#if !SYSTEM_NUMERICS
+#if NET35 || NET40
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -30,7 +30,7 @@ namespace System.Numerics
         /// </summary>
         public Single W;
 
-        #region Constructors
+#region Constructors
 
         /// <summary>
         /// Constructs a vector whose elements are all the single specified value.
@@ -83,9 +83,9 @@ namespace System.Numerics
             Z = value.Z;
             W = w;
         }
-        #endregion Constructors
+#endregion Constructors
 
-        #region Public Instance Methods
+#region Public Instance Methods
         /// <summary>
         /// Copies the contents of the vector into the given array.
         /// </summary>
@@ -138,9 +138,9 @@ namespace System.Numerics
                 && this.Z == other.Z
                 && this.W == other.W;
         }
-        #endregion Public Instance Methods
+#endregion Public Instance Methods
 
-        #region Public Static Methods
+#region Public Static Methods
         /// <summary>
         /// Returns the dot product of two vectors.
         /// </summary>
@@ -214,9 +214,9 @@ namespace System.Numerics
         {
             return new Vector4((Single)Math.Sqrt(value.X), (Single)Math.Sqrt(value.Y), (Single)Math.Sqrt(value.Z), (Single)Math.Sqrt(value.W));
         }
-        #endregion Public Static Methods
+#endregion Public Static Methods
 
-        #region Public static operators
+#region Public static operators
         /// <summary>
         /// Adds two vectors together.
         /// </summary>
@@ -349,7 +349,7 @@ namespace System.Numerics
         {
             return !(left == right);
         }
-        #endregion Public static operators
+#endregion Public static operators
     }
 }
 #endif

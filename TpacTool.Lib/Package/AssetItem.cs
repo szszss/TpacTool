@@ -78,6 +78,31 @@ namespace TpacTool.Lib
 				throw new NotImplementedException();
 		}
 
+		public virtual AssetItem Clone()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected void CloneDo(AssetItem parent)
+		{
+			this.Name = parent.Name;
+			this.Version = parent.Version;
+			this.Guid = parent.Guid;
+			this._temp_metadata = parent._temp_metadata;
+			foreach (var dependence in parent.UnknownDependences)
+			{
+				this.UnknownDependences.Add(dependence.Clone());
+			}
+		}
+
+		protected void SetDataSegment([CanBeNull] AbstractExternalLoader oldValue, [CanBeNull] AbstractExternalLoader newValue)
+		{
+			if (oldValue != null)
+				TypelessDataSegments.Remove(oldValue);
+			if (newValue != null)
+				TypelessDataSegments.Add(newValue);
+		}
+
 		public class UnknownDependence
 		{
 			public Guid UnknownGuid1 { set; get; } = System.Guid.Empty;
@@ -85,6 +110,16 @@ namespace TpacTool.Lib
 			public Guid UnknownGuid2 { set; get; } = System.Guid.Empty;
 
 			public Guid UnknownGuid3 { set; get; } = System.Guid.Empty;
+
+			public UnknownDependence Clone()
+			{
+				return new UnknownDependence()
+				{
+					UnknownGuid1 = this.UnknownGuid1,
+					UnknownGuid2 = this.UnknownGuid2,
+					UnknownGuid3 = this.UnknownGuid3
+				};
+			}
 		}
 	}
 }

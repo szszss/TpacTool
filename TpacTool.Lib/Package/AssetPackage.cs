@@ -212,6 +212,7 @@ namespace TpacTool.Lib
 
 			var saveTargetPath = string.IsNullOrWhiteSpace(newFilePath) ? File.FullName : newFilePath;
 			var saveTargetFi = new FileInfo(saveTargetPath + ".tmp");
+			Directory.CreateDirectory(saveTargetFi.DirectoryName);
 
 			using (var stream = new BinaryWriter(saveTargetFi.OpenWrite()))
 			{

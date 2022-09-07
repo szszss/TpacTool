@@ -40,11 +40,14 @@ namespace TpacTool.Lib
 			_strongRef = data;
 #endif
 			_file = null;
-			OwnerGuid = Guid.NewGuid();
+			//OwnerGuid = Guid.NewGuid(); // sz: don't assign a random guid for it makes no sense
+			OwnerGuid = Guid.Empty;
 			if (data.TypeGuid == Guid.Empty)
 			{
 				throw new ArgumentException("The data which were assigned to the loader must have a type guid.");
 			}
+
+			TypeGuid = data.TypeGuid;
 		}
 
 		private byte[] lz4decompress(byte[] input, int outLength)

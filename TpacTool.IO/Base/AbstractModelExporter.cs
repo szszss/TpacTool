@@ -16,6 +16,10 @@ namespace TpacTool.IO
 
 		public Metamesh Model { set; get; }
 
+		public SkeletalAnimation Animation { set; get; }
+
+		public MorphAnimation Morph { set; get; }
+
 		public bool FixBoneForBlender { set; get; } = true;
 
 		public bool IsLargerSize { set; get; } = false;
@@ -44,6 +48,19 @@ namespace TpacTool.IO
 
 		public abstract bool SupportsMorph { get; }
 
+		public abstract bool SupportsSkeletalAnimation { get; }
+
+		public abstract bool SupportMorphAnimation { get; }
+
+		public virtual float AnimationFrameRate { set; get; } = 24f;
+
+		public bool ForceExportWeight { set; get; } = false;
+
+		protected bool IgnoreScale { get => Skeleton?.UserData != null && 
+		                                    (Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HUMAN ||
+		                                     Skeleton.UserData.Data.Usage == SkeletonUserData.USAGE_HORSE);
+		}
+
 		protected AbstractModelExporter()
 		{
 			TexturePathMapping = new Dictionary<Texture, string>();
@@ -51,7 +68,9 @@ namespace TpacTool.IO
 
 		public virtual void Export(string path)
 		{
-			Directory.CreateDirectory(Directory.GetParent(path).FullName);
+			var parentPath = Directory.GetParent(path);
+			if (parentPath != null)
+				Directory.CreateDirectory(parentPath.FullName);
 			using (var stream = File.Create(path, 4096))
 			{
 				Export(stream);

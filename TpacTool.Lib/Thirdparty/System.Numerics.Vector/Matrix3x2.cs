@@ -1,4 +1,4 @@
-#if !SYSTEM_NUMERICS
+#if NET35 || NET40
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -11,7 +11,7 @@ namespace System.Numerics
     /// </summary>
     public struct Matrix3x2 : IEquatable<Matrix3x2>
     {
-        #region Public Fields
+#region Public Fields
         /// <summary>
         /// The first element of the first row
         /// </summary>
@@ -36,7 +36,7 @@ namespace System.Numerics
         /// The second element of the third row
         /// </summary>
         public float M32;
-        #endregion Public Fields
+#endregion Public Fields
 
         private static readonly Matrix3x2 _identity = new Matrix3x2
         (

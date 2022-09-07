@@ -31,6 +31,17 @@ namespace TpacTool.Lib
 			stream.Write(_unknownRawData);
 		}
 
+		public virtual ExternalData Clone()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected void CloneDo(ExternalData parent)
+		{
+			this.TypeGuid = parent.TypeGuid;
+			this._unknownRawData = parent._unknownRawData;
+		}
+
 		protected bool HasUserdata(IDictionary<object, object> userdata, [NotNull] object key, [CanBeNull] object value)
 		{
 			if (userdata == null)

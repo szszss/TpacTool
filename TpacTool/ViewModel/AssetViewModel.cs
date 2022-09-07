@@ -29,6 +29,10 @@ namespace TpacTool
 
 		public abstract bool Filter(string filterText);
 
+		public virtual void ClearFilter()
+		{
+		}
+
 		protected AssetViewModel(AssetTreeViewModel parentVm)
 		{
 			_parentVM = parentVm;
@@ -73,6 +77,11 @@ namespace TpacTool
 			{
 				_filteredChildren = _children.Where(vm => vm.Filter(filterText)).AsEnumerable();
 				return _filteredChildren.Any();
+			}
+
+			public override void ClearFilter()
+			{
+				_filteredChildren = _children;
 			}
 
 			/*private bool Equals(Package other)

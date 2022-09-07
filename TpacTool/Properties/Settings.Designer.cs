@@ -12,7 +12,7 @@ namespace TpacTool.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -103,6 +103,126 @@ namespace TpacTool.Properties {
             }
             set {
                 this["PreviewShowGrid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ExportModelTexture {
+            get {
+                return ((int)(this["ExportModelTexture"]));
+            }
+            set {
+                this["ExportModelTexture"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportModelDiffuseOnly {
+            get {
+                return ((bool)(this["ExportModelDiffuseOnly"]));
+            }
+            set {
+                this["ExportModelDiffuseOnly"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportModelLargerScale {
+            get {
+                return ((bool)(this["ExportModelLargerScale"]));
+            }
+            set {
+                this["ExportModelLargerScale"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ExportModelNegYForward {
+            get {
+                return ((bool)(this["ExportModelNegYForward"]));
+            }
+            set {
+                this["ExportModelNegYForward"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportModelObjYUp {
+            get {
+                return ((bool)(this["ExportModelObjYUp"]));
+            }
+            set {
+                this["ExportModelObjYUp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportModelFbxAscii {
+            get {
+                return ((bool)(this["ExportModelFbxAscii"]));
+            }
+            set {
+                this["ExportModelFbxAscii"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("24")]
+        public float ExportAnimationFrameRate {
+            get {
+                return ((float)(this["ExportAnimationFrameRate"]));
+            }
+            set {
+                this["ExportAnimationFrameRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportModelAllLods {
+            get {
+                return ((bool)(this["ExportModelAllLods"]));
+            }
+            set {
+                this["ExportModelAllLods"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PreviewTransitionInertia {
+            get {
+                return ((bool)(this["PreviewTransitionInertia"]));
+            }
+            set {
+                this["PreviewTransitionInertia"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PreviewScaleInertia {
+            get {
+                return ((bool)(this["PreviewScaleInertia"]));
+            }
+            set {
+                this["PreviewScaleInertia"] = value;
             }
         }
     }

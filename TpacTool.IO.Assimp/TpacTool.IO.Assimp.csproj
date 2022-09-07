@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+		<Company />
+		<Authors>szszss</Authors>
+		<Copyright>Copyright © 2020</Copyright>
+		<PackageId>TpacTool.IO.Assimp</PackageId>
+		<AssemblyName>TpacTool.IO.Assimp</AssemblyName>
+		<PackageProjectUrl>https://github.com/szszss/TpacTool</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>Mount,Blade,Bannerlord,Tpac</PackageTags>
+		<Version>0.1.0</Version>
+		<AssemblyVersion>0.1.0</AssemblyVersion>
+		<FileVersion>0.1.0</FileVersion>
+		<Platforms>AnyCPU</Platforms>
+	</PropertyGroup>
+	<!-- Release version will be patched by Appveyor -->
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<DefineConstants>DEBUG</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2019.1.3">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>	
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\TpacTool.Lib\TpacTool.Lib.csproj" />
+	  <ProjectReference Include="..\TpacTool.IO\TpacTool.IO.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+		<PackageReference Include="UkooLabs.FbxSharpie" Version="1.0.99" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Model\" />
+	</ItemGroup>
+</Project>

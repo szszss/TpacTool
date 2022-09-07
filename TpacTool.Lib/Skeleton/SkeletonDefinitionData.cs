@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Numerics;
 using JetBrains.Annotations;
 
 namespace TpacTool.Lib
@@ -20,6 +22,75 @@ namespace TpacTool.Lib
 			this.Name = String.Empty;
 			Bones = new List<BoneNode>();
 		}
+
+		public int GetBoneId(BoneNode bone)
+		{
+			return bone == null ? -1 : Bones.FindIndex(node => node == bone);
+		}
+
+		public int[] CreateParentLookup()
+		{
+			var map = new int[Bones.Count];
+			for (var i = 0; i < Bones.Count; i++)
+			{
+				map[i] = GetBoneId(Bones[i].Parent);
+			}
+
+			return map;
+		}
+
+		public Matrix4x4[] CreateBoneMatrices(bool ignoreM44 = false)
+		{
+			var parents = CreateParentLookup();
+			var matrices = new Matrix4x4[Bones.Count];
+			for (var i = 0; i < Bones.Count; i++)
+			{
+				var parent = parents[i];
+				var parentMat = Matrix4x4.Identity;
+				if (parent >= 0)
+				{
+					parentMat = matrices[parent];
+				}
+
+				var mat = Bones[i].RestFrame;
+				if (ignoreM44)
+					mat.M44 = 1f;
+
+				matrices[i] = mat * parentMat;
+			}
+
+			return matrices;
+		}
+
+		/*public int[] CreateUpdatingOrder()
+		{
+			var bones = new List<BoneNode>(Bones);
+			bones.Sort((left, right) =>
+			{
+				var leftDepsRight = false;
+				var parent = left.Parent;
+				while (parent != null)
+				{
+					if (parent == right)
+					{
+						leftDepsRight = true;
+						break;
+					}
+
+					parent = parent.Parent;
+				}
+
+				return leftDepsRight ? 1 : 0;
+			});
+
+			var order = new int[bones.Count];
+			for (var i = 0; i < order.Length; i++)
+			{
+				order[i] = GetBoneId(bones[i]);
+			}
+
+			return order;
+		}*/
 
 		public override void ReadData(BinaryReader stream, IDictionary<object, object> userdata, int totalSize)
 		{
@@ -60,6 +131,25 @@ namespace TpacTool.Lib
 				stream.Write(parentIndex);
 				stream.Write(bone.RestFrame);
 			}
+		}
+
+		public override ExternalData Clone()
+		{
+			var clone = new SkeletonDefinitionData()
+			{
+				Name = this.Name
+			};
+			clone.CloneDo(this);
+			clone.Bones.Capacity = this.Bones.Count;
+			for (var i = 0; i < this.Bones.Count; i++)
+			{
+				var parentBone = this.Bones[i].Parent;
+				if (parentBone != null)
+					parentBone = clone.Bones[this.GetBoneId(parentBone)];
+				var cloneBone = this.Bones[i].Clone(parentBone);
+				clone.Bones.Add(cloneBone);
+			}
+			return clone;
 		}
 	}
 }

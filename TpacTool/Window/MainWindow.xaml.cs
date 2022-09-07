@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GalaSoft.MvvmLight.Messaging;
 using TpacTool.Properties;
 using TabControl = BetterWpfControls.TabControl;
 using TabItem = BetterWpfControls.TabItem;
@@ -23,9 +24,15 @@ namespace TpacTool
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public static Guid MouseMoveUserEvent = Guid.NewGuid();
+
+		public static Guid MouseUpUserEvent = Guid.NewGuid();
+
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			Messenger.Default.Register<Cursor>(this, OglPreviewPage.ChangeCursorEvent, cursor => Cursor = cursor);
 		}
 
 		private void TabControl_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -60,6 +67,16 @@ namespace TpacTool
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			Settings.Default.Save();
+		}
+
+		private void Window_MouseMove(object sender, MouseEventArgs e)
+		{
+			Messenger.Default.Send<Point>(e.GetPosition(this), MouseMoveUserEvent);
+		}
+
+		private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			Messenger.Default.Send<(MouseButton, Point)>((e.ChangedButton, e.GetPosition(this)), MouseUpUserEvent);
 		}
 	}
 }

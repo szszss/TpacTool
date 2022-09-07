@@ -1,4 +1,4 @@
-#if !SYSTEM_NUMERICS
+#if NET35 || NET40
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 

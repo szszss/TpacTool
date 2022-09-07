@@ -8,7 +8,7 @@
         xmlns:loc="clr-namespace:TpacTool.Properties"
         xmlns:Custom="BetterWpfControls" x:Class="TpacTool.MainWindow"
         mc:Ignorable="d"
-        Title="TpacTool" Height="600" Width="1000" DataContext="{Binding Main, Source={StaticResource Locator}}" Closing="Window_Closing">
+        Title="TpacTool" Height="600" Width="1000" DataContext="{Binding Main, Source={StaticResource Locator}}" Closing="Window_Closing" MouseMove="Window_MouseMove" MouseUp="Window_MouseUp">
     <Window.Resources>
         <local:StringEqualConverter x:Key="StringEqualConverter"/>
         <local:ArrayGetterConverter x:Key="ArrayGetterConverter"/>

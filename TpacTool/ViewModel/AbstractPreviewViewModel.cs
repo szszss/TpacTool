@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Windows.Documents;
 using System.Windows.Media.Media3D;
 using GalaSoft.MvvmLight;
@@ -11,6 +12,10 @@ namespace TpacTool
 	public abstract class AbstractPreviewViewModel : ViewModelBase
 	{
 		public static readonly Guid PreviewAssetEvent = Guid.NewGuid();
+
+		public static bool SupportDx { set; get; }
+
+		public static Uri ModelPreviewUri { set; get; }
 
 		protected const float MAX_GRID_LENGTH = 256;
 
@@ -63,6 +68,16 @@ namespace TpacTool
 
 		public virtual string[] KeepScaleModeItems => _keepScaleModeItems;
 
+		public BoundingBox ModelBoundingBox { get; set; } = new BoundingBox();
+
+		protected Point3D CenterOfMass { get; set; } = new Point3D();
+
+		protected Point3D CenterOfGeometry { get; set; } = new Point3D();
+
+		public Point3D CameraTarget { protected set; get; } = new Point3D(0, 0, 0);
+
+		public double ReferenceScale { protected set; get; } = 1;
+
 		public int LightMode
 		{
 			set
@@ -90,7 +105,7 @@ namespace TpacTool
 			set
 			{
 				_keepScaleMode = value;
-				RaisePropertyChanged("KeepScaleMode");
+				RaisePropertyChanged(nameof(KeepScaleMode));
 				Settings.Default.PreviewKeepScale = _keepScaleMode;
 			}
 			get => _keepScaleMode;
@@ -101,7 +116,7 @@ namespace TpacTool
 			set
 			{
 				_enableInertia = value;
-				RaisePropertyChanged("EnableInertia");
+				RaisePropertyChanged(nameof(EnableInertia));
 				Settings.Default.PreviewInertia = _enableInertia;
 			}
 			get => _enableInertia;
@@ -112,7 +127,7 @@ namespace TpacTool
 			set
 			{
 				_showGridLines = value;
-				RaisePropertyChanged("ShowGridLines");
+				RaisePropertyChanged(nameof(ShowGridLines));
 				Settings.Default.PreviewShowGrid = _showGridLines;
 			}
 			get => _showGridLines;
@@ -130,10 +145,64 @@ namespace TpacTool
 			}
 		}
 
-		protected abstract void OnPreviewModel(List<Mesh> meshes);
+		protected virtual void OnPreviewModel(List<Mesh> meshes)
+		{
+			// TODO: a better fix. use edit data rather than vertex stream
+			try
+			{
+				SetRenderMeshes(meshes.ToArray());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				SetRenderMeshes();
+			}
+		}
 
-		protected abstract void RefocusCenter();
+		public virtual void SetRenderMetamesh(Metamesh metamesh, int lod = 0)
+		{
+			try
+			{
+				var meshes = metamesh.Meshes.FindAll(mesh => { return mesh.Lod == lod; });
+				SetRenderMeshes(meshes.ToArray());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				SetRenderMeshes();
+			}
+		}
+
+		public abstract void SetRenderMeshes(params Mesh[] meshes);
+
+		protected virtual void RefocusCenter()
+		{
+			switch (CenterMode)
+			{
+				case 1: // mass
+					CameraTarget = CenterOfMass;
+					break;
+				case 2: // geo
+					CameraTarget = CenterOfGeometry;
+					break;
+				default:
+					CameraTarget = new Point3D();
+					break;
+			}
+			RaisePropertyChanged(nameof(CameraTarget));
+		}
 
 		protected abstract void UpdateLights();
+
+		protected void ClampBoundingBox(ref BoundingBox bb)
+		{
+			bb.Min = Vector3.Max(bb.Min, new Vector3(-MAX_GRID_LENGTH));
+			bb.Max = Vector3.Min(bb.Max, new Vector3(MAX_GRID_LENGTH));
+		}
+
+		protected double CalculateReferenceScale(BoundingBox bb)
+		{
+			return Math.Max(bb.BoundingSphereRadius, 0.001);
+		}
 	}
 }

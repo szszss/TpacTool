@@ -4,8 +4,12 @@ using System.Runtime.InteropServices;
 using SystemHalf;
 using JetBrains.Annotations;
 
-#if !NETSTANDARD
+#if NETFRAMEWORK
 using System.Drawing.Imaging;
+#endif
+
+#if NET5_0_OR_GREATER
+using Half = SystemHalf.Half;
 #endif
 
 namespace TpacTool.Lib
@@ -387,7 +391,7 @@ namespace TpacTool.Lib
 			}
 		}
 
-#if !NETSTANDARD
+#if NETFRAMEWORK
 		public static PixelFormat GetBestBitmapFormat(this TextureFormat format)
         {
             switch (format)
@@ -458,35 +462,54 @@ namespace TpacTool.Lib
 #pragma warning disable 612
 
 		public static void DecodeTextureDataToWriter(byte[] data, int width, int height, TextureFormat format,
-													PipelineWriter writer)
+													PipelineWriter writer, bool silentlyFail = false)
 		{
 			if (!format.IsSupported())
-				throw new FormatException("Unsupported format: " + format.ToString());
-			PipelineReader reader = null;
-			switch (format)
 			{
-				case TextureFormat.DXT1:
-					reader = new DXT1Reader(data, format, width, height);
-					break;
-				case TextureFormat.DXT2:
-				case TextureFormat.DXT3:
-					reader = new DXT3Reader(data, format, width, height);
-					break;
-				case TextureFormat.DXT4:
-				case TextureFormat.DXT5:
-					reader = new DXT5Reader(data, format, width, height);
-					break;
-				case TextureFormat.BC4:
-					reader = new BC4Reader(data, format, width, height);
-					break;
-				case TextureFormat.BC5:
-					reader = new BC5Reader(data, format, width, height);
-					break;
-				default:
-					reader = new DefaultReader(data, format, width, height);
-					break;
+				if (!silentlyFail)
+					throw new FormatException("Unsupported format: " + format.ToString());
+				byte[] byteBuffer = new byte[width * 4];
+				for (int x = 0; x < width; x++)
+				{
+					int i = x * 4;
+					byteBuffer[i] = 160;
+					byteBuffer[i + 1] = 160;
+					byteBuffer[i + 2] = 160;
+					byteBuffer[i + 3] = 255;
+				}
+				for (int y = 0; y < height; y++)
+				{
+					writer.WriteLine(byteBuffer, true);
+				}
 			}
-			reader.Read(writer);
+			else
+			{
+				PipelineReader reader = null;
+				switch (format)
+				{
+					case TextureFormat.DXT1:
+						reader = new DXT1Reader(data, format, width, height);
+						break;
+					case TextureFormat.DXT2:
+					case TextureFormat.DXT3:
+						reader = new DXT3Reader(data, format, width, height);
+						break;
+					case TextureFormat.DXT4:
+					case TextureFormat.DXT5:
+						reader = new DXT5Reader(data, format, width, height);
+						break;
+					case TextureFormat.BC4:
+						reader = new BC4Reader(data, format, width, height);
+						break;
+					case TextureFormat.BC5:
+						reader = new BC5Reader(data, format, width, height);
+						break;
+					default:
+						reader = new DefaultReader(data, format, width, height);
+						break;
+				}
+				reader.Read(writer);
+			}
 		}
 
 		[Obsolete]
@@ -499,7 +522,7 @@ namespace TpacTool.Lib
 			return result;
 		}
 
-#if !NETSTANDARD
+#if NETFRAMEWORK
 		public static System.Drawing.Bitmap DecodeTextureDataToBitmap(byte[] data, int width, int height, TextureFormat format)
 		{
 			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height,

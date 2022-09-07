@@ -132,6 +132,67 @@
   <data name="About_Website" xml:space="preserve">
     <value>网站:</value>
   </data>
+  <data name="Animation_Bones" xml:space="preserve">
+    <value>骨头数量:</value>
+  </data>
+  <data name="Animation_Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="Animation_Export_FrameRate" xml:space="preserve">
+    <value>帧率</value>
+  </data>
+  <data name="Animation_Export_FR_1" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="Animation_Export_FR_1_Tooltip" xml:space="preserve">
+    <value>导出为每秒一帧，以确保建模软件在导入时不会遗漏任何帧。</value>
+  </data>
+  <data name="Animation_Export_FR_24" xml:space="preserve">
+    <value>24</value>
+  </data>
+  <data name="Animation_Export_FR_24_Tooltip" xml:space="preserve">
+    <value>导出为每秒24帧，此为Maya和Blender的默认帧率。
+导出的帧率应该与你使用的建模软件的帧率相匹配，导出帧率高于软件帧率会导致一些动作帧被丢失。</value>
+  </data>
+  <data name="Animation_Export_FR_25" xml:space="preserve">
+    <value>25</value>
+  </data>
+  <data name="Animation_Export_FR_25_Tooltip" xml:space="preserve">
+    <value>导出为每秒25帧，此为PAL规范的帧率。
+导出的帧率应该与你使用的建模软件的帧率相匹配，导出帧率高于软件帧率会导致一些动作帧被丢失。</value>
+  </data>
+  <data name="Animation_Export_FR_30" xml:space="preserve">
+    <value>30</value>
+  </data>
+  <data name="Animation_Export_FR_30_Tooltip" xml:space="preserve">
+    <value>导出为每秒30帧，此为3ds Max的默认帧率。
+导出的帧率应该与你使用的建模软件的帧率相匹配，导出帧率高于软件帧率会导致一些动作帧被丢失。</value>
+  </data>
+  <data name="Animation_Export_FR_60" xml:space="preserve">
+    <value>60</value>
+  </data>
+  <data name="Animation_Export_FR_60_Tooltip" xml:space="preserve">
+    <value>导出为每秒60帧，游戏中的大部分动作都以这个帧率播放。
+导出的帧率应该与你使用的建模软件的帧率相匹配，导出帧率高于软件帧率会导致一些动作帧被丢失。</value>
+  </data>
+  <data name="Animation_Info" xml:space="preserve">
+    <value>摘要</value>
+  </data>
+  <data name="Animation_Model" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="Animation_Model_FemaleHead" xml:space="preserve">
+    <value>女性头部</value>
+  </data>
+  <data name="Animation_Model_MaleHead" xml:space="preserve">
+    <value>男性头部</value>
+  </data>
+  <data name="Animation_Skeleton" xml:space="preserve">
+    <value>骨骼:</value>
+  </data>
+  <data name="Animation_Skeleton_Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
   <data name="AssetTree_FilterRemove_Tooltip" xml:space="preserve">
     <value>取消检索</value>
   </data>
@@ -270,6 +331,21 @@
   <data name="Model_Export" xml:space="preserve">
     <value>导出</value>
   </data>
+  <data name="Model_Export_Lod" xml:space="preserve">
+    <value>LOD</value>
+  </data>
+  <data name="Model_Export_Lod_AllLods" xml:space="preserve">
+    <value>导出全部Lod</value>
+  </data>
+  <data name="Model_Export_Lod_AllLods_Tooltip" xml:space="preserve">
+    <value>导出所有Lod。</value>
+  </data>
+  <data name="Model_Export_Lod_Only0" xml:space="preserve">
+    <value>只导出Lod0</value>
+  </data>
+  <data name="Model_Export_Lod_Only0_Tooltip" xml:space="preserve">
+    <value>只导出高模Lod 0。</value>
+  </data>
   <data name="Model_Export_Material" xml:space="preserve">
     <value>材质与纹理</value>
   </data>
@@ -299,6 +375,18 @@
   </data>
   <data name="Model_Export_Misc" xml:space="preserve">
     <value>杂项</value>
+  </data>
+  <data name="Model_Export_Misc_FbxAsText" xml:space="preserve">
+    <value>FBX: 导出为文本</value>
+  </data>
+  <data name="Model_Export_Misc_FbxAsText_Tooltip" xml:space="preserve">
+    <value>以可读的文本格式导出模型，很多软件并不支持载入文本格式的FBX的，因此这个选项用途不大。</value>
+  </data>
+  <data name="Model_Export_Misc_FbxInMeters" xml:space="preserve">
+    <value>FBX: 以米为单位</value>
+  </data>
+  <data name="Model_Export_Misc_FbxInMeters_Tooltip" xml:space="preserve">
+    <value>默认情况下，FBX以厘米为单位，但一些软件（比如Blender）是以米为单位来导入模型。打开这个选项将以米为单位导出模型。</value>
   </data>
   <data name="Model_Export_Misc_FixBoneConnect" xml:space="preserve">
     <value>DAE: 为Blender修复骨骼连接</value>
@@ -429,20 +517,50 @@
   <data name="Model_Preview_Show" xml:space="preserve">
     <value>显示</value>
   </data>
+  <data name="Msgbox_AnimationAssimpRequired" xml:space="preserve">
+    <value>无法在缺少Assimp组件的情况下导出动作。</value>
+  </data>
+  <data name="Msgbox_AssimpNotFound" xml:space="preserve">
+    <value>未能初始化Assimp，将无法导出FBX格式。</value>
+  </data>
+  <data name="Msgbox_DefaultSkeletonNotFound" xml:space="preserve">
+    <value>未能找到/加载当前动作的默认骨骼。</value>
+  </data>
   <data name="Msgbox_DirNotExisting" xml:space="preserve">
     <value>目录不存在</value>
   </data>
   <data name="Msgbox_Error" xml:space="preserve">
     <value>错误</value>
   </data>
+  <data name="Msgbox_FemaleHeadModelNotFound" xml:space="preserve">
+    <value>无法找到女性头部模型。</value>
+  </data>
+  <data name="Msgbox_HorseSkeletonNotFound" xml:space="preserve">
+    <value>无法找到马匹骨骼。</value>
+  </data>
+  <data name="Msgbox_HumanSkeletonNotFound" xml:space="preserve">
+    <value>无法找到人类骨骼。</value>
+  </data>
   <data name="Msgbox_Info" xml:space="preserve">
     <value>提示</value>
+  </data>
+  <data name="Msgbox_MaleHeadModelNotFound" xml:space="preserve">
+    <value>无法找到男性头部模型。</value>
+  </data>
+  <data name="Msgbox_ModelNotSelected" xml:space="preserve">
+    <value>你需要从下拉框中选择一个模型。</value>
   </data>
   <data name="Msgbox_NoFileLoaded" xml:space="preserve">
     <value>没有加载任何文件。 (子目录下没有tpac文件)</value>
   </data>
+  <data name="Msgbox_SkeletonNotSelected" xml:space="preserve">
+    <value>你需要从下拉框中选择一个骨骼。</value>
+  </data>
   <data name="Msgbox_TpacNotFound" xml:space="preserve">
     <value>目录内不存在tpac文件，是否继续？ (将会搜索子目录)</value>
+  </data>
+  <data name="Msgbox_Warning" xml:space="preserve">
+    <value>警告</value>
   </data>
   <data name="Preview_Center" xml:space="preserve">
     <value>焦点：</value>
@@ -460,7 +578,7 @@
     <value>设置镜头旋转与缩放的焦点。</value>
   </data>
   <data name="Preview_Inertia" xml:space="preserve">
-    <value>惯性</value>
+    <value>鼠标惯性</value>
   </data>
   <data name="Preview_Inertia_Tooltip" xml:space="preserve">
     <value>启用镜头的惯性旋转与缩放。</value>
@@ -495,11 +613,23 @@
   <data name="Preview_Msg_TextureSizeTooLarge" xml:space="preserve">
     <value>纹理体积过大，无法预览 (&gt;100MB)</value>
   </data>
+  <data name="Preview_Scale_Inertia" xml:space="preserve">
+    <value>体积惯性</value>
+  </data>
+  <data name="Preview_Scale_Inertia_Tooltip" xml:space="preserve">
+    <value>启用切换模型时镜头缩放的惯性。</value>
+  </data>
   <data name="Preview_Showgrid" xml:space="preserve">
     <value>显示网格</value>
   </data>
   <data name="Preview_Showgrid_Tooltip" xml:space="preserve">
     <value>显示地面网格。</value>
+  </data>
+  <data name="Preview_Transition_Inertia" xml:space="preserve">
+    <value>平移惯性</value>
+  </data>
+  <data name="Preview_Transition_Inertia_Tooltip" xml:space="preserve">
+    <value>启用变换原点时镜头移动的惯性。</value>
   </data>
   <data name="Texture_Dialog_SelectExportFile" xml:space="preserve">
     <value>将纹理导出到 ...</value>
@@ -524,6 +654,12 @@
   </data>
   <data name="Texture_Preview_Channel_Auto" xml:space="preserve">
     <value>自动</value>
+  </data>
+  <data name="Texture_Preview_Channel_BGray" xml:space="preserve">
+    <value>B (显示为灰度)</value>
+  </data>
+  <data name="Texture_Preview_Channel_GGray" xml:space="preserve">
+    <value>G (显示为灰度)</value>
   </data>
   <data name="Texture_Preview_Channel_RGray" xml:space="preserve">
     <value>R (显示为灰度)</value>

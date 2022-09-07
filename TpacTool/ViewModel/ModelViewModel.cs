@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -9,6 +10,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using TpacTool.IO;
+using TpacTool.IO.Assimp;
 using TpacTool.Lib;
 using TpacTool.Properties;
 using Material = TpacTool.Lib.Material;
@@ -19,11 +21,13 @@ namespace TpacTool
 	{
 		public static readonly Guid UpdateSkeletonListEvent = Guid.NewGuid();
 
-		internal static List<Skeleton> _skeletons = new List<Skeleton>();
+		public static readonly Guid UpdateModelListEvent = Guid.NewGuid();
 
-		internal static Skeleton _human_skeleton;
+		private List<Skeleton> _skeletons = new List<Skeleton>();
 
-		internal static Skeleton _horse_skeleton;
+		private Skeleton _human_skeleton;
+
+		private Skeleton _horse_skeleton;
 
 		internal static bool _model_exporter_unavailable = false;
 
@@ -31,57 +35,43 @@ namespace TpacTool
 
 		public Metamesh Asset { private set; get; }
 
-		private SkeletonType skeletonType = SkeletonType.Human;
+		private SkeletonType _skeletonType = SkeletonType.Human;
 
-		private MaterialExportSetting materialExport = MaterialExportSetting.Export;
+		//private MaterialExportSetting materialExport = MaterialExportSetting.Export;
 		private int _selectedLod = 0;
 		private int _selectedMeshIndex;
 		private Mesh _selectedMesh;
 		private bool _isRigged;
 
-		public bool IsSkeletonHuman
+		public SkeletonType ExportSkeletonType
 		{
-			get => skeletonType == SkeletonType.Human;
+			set => _skeletonType = value;
+			get => _skeletonType;
 		}
 
-		public bool IsSkeletonHorse
+		public bool IsExportOnlyLod0
 		{
-			get => skeletonType == SkeletonType.Horse;
+			set => Settings.Default.ExportModelAllLods = !value;
+			get => !Settings.Default.ExportModelAllLods;
 		}
 
-		public bool IsSkeletonOther
+		public bool IsExportAllLods
 		{
-			get => skeletonType == SkeletonType.Other;
+			set => Settings.Default.ExportModelAllLods = value;
+			get => Settings.Default.ExportModelAllLods;
 		}
 
-		public bool IsSkeletonOtherAndRigged
-		{
-			get => IsSkeletonOther && ExportAsRigged;
-		}
+		public bool IsSkeletonOtherAndRigged => _skeletonType == SkeletonType.Other && ExportAsRigged;
 
-		public bool IsMaterialIgnored
-		{
-			get => materialExport == MaterialExportSetting.None;
-		}
+		public bool IsMaterialIgnored => Settings.Default.ExportModelTexture == (int)MaterialExportSetting.None;
 
-		public bool IsMaterialExportToSameFolder
-		{
-			get => materialExport == MaterialExportSetting.Export;
-		}
+		public bool IsMaterialExportToSameFolder => Settings.Default.ExportModelTexture == (int) MaterialExportSetting.Export;
 
-		public bool IsMaterialExportToSubFolder
-		{
-			get => materialExport == MaterialExportSetting.ExportToSubFolder;
-		}
+		public bool IsMaterialExportToSubFolder => Settings.Default.ExportModelTexture == (int)MaterialExportSetting.ExportToSubFolder;
 
 		public string[] PreferredFormatItems => MaterialViewModel._preferredFormatItems;
 
 		public int PreferredFormat { set; get; } = 0;
-
-		// some stub data
-		//public int MinLod { private set; get; } = 0;
-
-		//public int MaxLod { private set; get; } = 1;
 
 		public int SelectedLod
 		{
@@ -175,13 +165,29 @@ namespace TpacTool
 
 		public bool FixBlenderBone { set; get; } = false;
 
-		public bool OnlyExportDiffuse { set; get; } = false;
+		public bool OnlyExportDiffuse
+		{
+			set => Settings.Default.ExportModelDiffuseOnly = value;
+			get => Settings.Default.ExportModelDiffuseOnly;
+		}
 
-		public bool UseLargerScale { set; get; } = false;
+		public bool UseLargerScale
+		{
+			set => Settings.Default.ExportModelLargerScale = value;
+			get => Settings.Default.ExportModelLargerScale;
+		}
 
-		public bool UseNegYForwardAxis { set; get; } = true;
+		public bool UseNegYForwardAxis
+		{
+			set => Settings.Default.ExportModelNegYForward = value;
+			get => Settings.Default.ExportModelNegYForward;
+		}
 
-		public bool UseYUpAxis { set; get; } = false;
+		public bool UseYUpAxis
+		{
+			set => Settings.Default.ExportModelObjYUp = value;
+			get => Settings.Default.ExportModelObjYUp;
+		}
 
 		public ICommand ChangeSkeletonCommand { private set; get; }
 
@@ -206,14 +212,28 @@ namespace TpacTool
 				_saveFileDialog.CreatePrompt = false;
 				_saveFileDialog.OverwritePrompt = true;
 				_saveFileDialog.AddExtension = true;
-				_saveFileDialog.Filter = "Wavefront OBJ (*.obj)|*.obj|" +
-										"COLLADA (*.dae)|*.dae";
+				if (AssimpModelExporter.IsAssimpAvailable())
+				{
+					_saveFileDialog.Filter = "Wavefront OBJ (*.obj)|*.obj|" +
+					                         "Autodesk FBX (*.fbx)|*.fbx|" +
+					                         "COLLADA (*.dae)|*.dae";
+					_saveFileDialog.FilterIndex = 2;
+				}
+				else
+				{
+					MessageBox.Show(Resources.Msgbox_AssimpNotFound, Resources.Msgbox_Warning,
+						MessageBoxButton.OK, MessageBoxImage.Warning);
+
+					_saveFileDialog.Filter = "Wavefront OBJ (*.obj)|*.obj|" +
+					                         "COLLADA (*.dae)|*.dae";
+					_saveFileDialog.FilterIndex = 2;
+				}
 				_saveFileDialog.Title = Resources.Model_Dialog_SelectExportFile;
 
 				ChangeSkeletonCommand = new RelayCommand<string>(arg =>
 				{
 					SkeletonType.TryParse(arg, true, out SkeletonType result);
-					skeletonType = result;
+					_skeletonType = result;
 					RaisePropertyChanged("IsSkeletonHuman");
 					RaisePropertyChanged("IsSkeletonHorse");
 					RaisePropertyChanged("IsSkeletonOther");
@@ -223,7 +243,7 @@ namespace TpacTool
 				ChangeMaterialCommand = new RelayCommand<string>(arg =>
 				{
 					MaterialExportSetting.TryParse(arg, true, out MaterialExportSetting result);
-					materialExport = result;
+					Settings.Default.ExportModelTexture = (int) result;
 					RaisePropertyChanged("IsMaterialIgnored");
 					RaisePropertyChanged("IsMaterialExportToSameFolder");
 					RaisePropertyChanged("IsMaterialExportToSubFolder");
@@ -243,10 +263,6 @@ namespace TpacTool
 				{
 					_skeletons.Clear();
 					_skeletons.AddRange(skeletons);
-					_skeletons.Sort((left, right) =>
-						{
-							return StringComparer.OrdinalIgnoreCase.Compare(left.Name, right.Name);
-						});
 					foreach (var skeleton in _skeletons)
 					{
 						if (skeleton.Name == "human_skeleton")
@@ -260,6 +276,7 @@ namespace TpacTool
 				});
 				MessengerInstance.Register<object>(this, MainViewModel.CleanupEvent, unused =>
 				{
+					_skeletons.Clear();
 					_human_skeleton = null;
 					_horse_skeleton = null;
 					SelectedMesh = null;
@@ -304,20 +321,32 @@ namespace TpacTool
 
 			if (IsSkeletonOtherAndRigged && SelectedSkeletonIndex < 0)
 			{
-				MessageBox.Show("You need to select a skeleton from the combo box.",
-					"Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+				MessageBox.Show(Resources.Msgbox_SkeletonNotSelected,
+					Resources.Msgbox_Error, MessageBoxButton.OK, MessageBoxImage.Stop);
 				return;
 			}
 
 			Skeleton skeleton = null;
 			if (ExportAsRigged)
 			{
-				switch (skeletonType)
+				switch (_skeletonType)
 				{
 					case SkeletonType.Human:
+						if (_human_skeleton == null)
+						{
+							MessageBox.Show(Resources.Msgbox_HumanSkeletonNotFound,
+								Resources.Msgbox_Error, MessageBoxButton.OK, MessageBoxImage.Stop);
+							return;
+						}
 						skeleton = _human_skeleton;
 						break;
 					case SkeletonType.Horse:
+						if (_horse_skeleton == null)
+						{
+							MessageBox.Show(Resources.Msgbox_HorseSkeletonNotFound,
+								Resources.Msgbox_Error, MessageBoxButton.OK, MessageBoxImage.Stop);
+							return;
+						}
 						skeleton = _horse_skeleton;
 						break;
 					case SkeletonType.Other:
@@ -336,9 +365,9 @@ namespace TpacTool
 				option |= ModelExporter.ModelExportOption.YAxisUp;
 			if (FixBlenderBone)
 				option |= ModelExporter.ModelExportOption.FixBoneForBlender;
-			if (materialExport == MaterialExportSetting.Export)
+			if (IsMaterialExportToSameFolder)
 				option |= ModelExporter.ModelExportOption.ExportTextures;
-			if (materialExport == MaterialExportSetting.ExportToSubFolder)
+			else if (IsMaterialExportToSubFolder)
 				option |= ModelExporter.ModelExportOption.ExportTexturesSubFolder;
 			if (OnlyExportDiffuse)
 				option |= ModelExporter.ModelExportOption.ExportDiffuseOnly;
@@ -349,23 +378,19 @@ namespace TpacTool
 				var path = _saveFileDialog.FileName;
 
 				MessengerInstance.Send(string.Format("Export {0} ...", Asset.Name), MainViewModel.StatusEvent);
-				ModelExporter.ExportToFile(path, Asset, skeleton, option);
+				if (AssimpModelExporter.IsAssimpAvailable())
+					AssimpModelExporter.ExportToFile(path, Asset, skeleton, option);
+				else
+					ModelExporter.ExportToFile(path, Asset, skeleton, option);
 				MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
 			}
 		}
 
-		private enum SkeletonType
-		{
-			Human,
-			Horse,
-			Other
-		}
-
 		private enum MaterialExportSetting
 		{
-			None,
-			Export,
-			ExportToSubFolder
+			None = 0,
+			Export = 1,
+			ExportToSubFolder = 2
 		}
 	}
 }

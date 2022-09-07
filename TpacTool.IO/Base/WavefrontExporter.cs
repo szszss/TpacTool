@@ -21,6 +21,10 @@ namespace TpacTool.IO
 
 		public override bool SupportsMorph => false;
 
+		public override bool SupportsSkeletalAnimation => false;
+
+		public override bool SupportMorphAnimation => false;
+
 		public override void Export(Stream writeStream)
 		{
 			bool largeSize = IsLargerSize;

@@ -1,4 +1,4 @@
-#if !SYSTEM_NUMERICS
+#if NET35 || NET40
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -11,7 +11,7 @@ namespace System.Numerics
     /// </summary>
     public struct Matrix4x4 : IEquatable<Matrix4x4>
     {
-        #region Public Fields
+#region Public Fields
         /// <summary>
         /// Value at row 1, column 1 of the matrix.
         /// </summary>
@@ -79,7 +79,7 @@ namespace System.Numerics
         /// Value at row 4, column 4 of the matrix.
         /// </summary>
         public float M44;
-        #endregion Public Fields
+#endregion Public Fields
 
         private static readonly Matrix4x4 _identity = new Matrix4x4
         (
@@ -1532,7 +1532,7 @@ namespace System.Numerics
                     scale.Z = pVectorBasis[2]->Length();
 
                     uint a, b, c;
-                    #region Ranking
+#region Ranking
                     float x = pfScales[0], y = pfScales[1], z = pfScales[2];
                     if (x < y)
                     {
@@ -1582,7 +1582,7 @@ namespace System.Numerics
                             }
                         }
                     }
-                    #endregion
+#endregion
 
                     if (pfScales[a] < EPSILON)
                     {
@@ -1600,7 +1600,7 @@ namespace System.Numerics
                         fAbsY = (float)Math.Abs(pVectorBasis[a]->Y);
                         fAbsZ = (float)Math.Abs(pVectorBasis[a]->Z);
 
-                        #region Ranking
+#region Ranking
                         if (fAbsX < fAbsY)
                         {
                             if (fAbsY < fAbsZ)
@@ -1637,7 +1637,7 @@ namespace System.Numerics
                                 }
                             }
                         }
-                        #endregion
+#endregion
 
                         *pVectorBasis[b] = Vector3.Cross(*pVectorBasis[a], *(pCanonicalBasis + cc));
                     }

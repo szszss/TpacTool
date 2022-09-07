@@ -19,7 +19,7 @@ namespace TpacTool.Properties {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -47,8 +47,8 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         public static global::System.Globalization.CultureInfo Culture {
@@ -102,6 +102,181 @@ namespace TpacTool.Properties {
         public static string About_Website {
             get {
                 return ResourceManager.GetString("About_Website", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Bones: 的本地化字符串。
+        /// </summary>
+        public static string Animation_Bones {
+            get {
+                return ResourceManager.GetString("Animation_Bones", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export {
+            get {
+                return ResourceManager.GetString("Animation_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 1 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_1 {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export at one frame per second to ensure the modeling software won&apos;t miss any frames. 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_1_Tooltip {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_1_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 24 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_24 {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_24", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export at 24 frames per second, the default frame rate of Maya and Blender.
+        ///The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost. 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_24_Tooltip {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_24_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 25 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_25 {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export at 25 frames per second, the frame rate of PAL standard.
+        ///The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost. 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_25_Tooltip {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_25_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 30 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_30 {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_30", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export at 30 frames per second, the default frame rate of 3ds Max.
+        ///The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost. 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_30_Tooltip {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_30_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 60 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_60 {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_60", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export at 60 frames per second. Most of animations in the game are at this frame rate.
+        ///The exporting frame rate should match the frame rate of the modeling software you are using. Exporting at a higher frame rate than the software will cause some animation frames to be lost. 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FR_60_Tooltip {
+            get {
+                return ResourceManager.GetString("Animation_Export_FR_60_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Frame Rate 的本地化字符串。
+        /// </summary>
+        public static string Animation_Export_FrameRate {
+            get {
+                return ResourceManager.GetString("Animation_Export_FrameRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Info 的本地化字符串。
+        /// </summary>
+        public static string Animation_Info {
+            get {
+                return ResourceManager.GetString("Animation_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Model: 的本地化字符串。
+        /// </summary>
+        public static string Animation_Model {
+            get {
+                return ResourceManager.GetString("Animation_Model", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Female Head 的本地化字符串。
+        /// </summary>
+        public static string Animation_Model_FemaleHead {
+            get {
+                return ResourceManager.GetString("Animation_Model_FemaleHead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Male Head 的本地化字符串。
+        /// </summary>
+        public static string Animation_Model_MaleHead {
+            get {
+                return ResourceManager.GetString("Animation_Model_MaleHead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Skeleton: 的本地化字符串。
+        /// </summary>
+        public static string Animation_Skeleton {
+            get {
+                return ResourceManager.GetString("Animation_Skeleton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Default 的本地化字符串。
+        /// </summary>
+        public static string Animation_Skeleton_Default {
+            get {
+                return ResourceManager.GetString("Animation_Skeleton_Default", resourceCulture);
             }
         }
         
@@ -520,6 +695,51 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 LOD 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Lod {
+            get {
+                return ResourceManager.GetString("Model_Export_Lod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 All LODs 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Lod_AllLods {
+            get {
+                return ResourceManager.GetString("Model_Export_Lod_AllLods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export all LODs. 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Lod_AllLods_Tooltip {
+            get {
+                return ResourceManager.GetString("Model_Export_Lod_AllLods_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Only LOD 0 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Lod_Only0 {
+            get {
+                return ResourceManager.GetString("Model_Export_Lod_Only0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Only export LOD 0, the highest definition model. 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Lod_Only0_Tooltip {
+            get {
+                return ResourceManager.GetString("Model_Export_Lod_Only0_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Material &amp; Texture 的本地化字符串。
         /// </summary>
         public static string Model_Export_Material {
@@ -606,6 +826,42 @@ namespace TpacTool.Properties {
         public static string Model_Export_Misc {
             get {
                 return ResourceManager.GetString("Model_Export_Misc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 FBX: Export as text 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Misc_FbxAsText {
+            get {
+                return ResourceManager.GetString("Model_Export_Misc_FbxAsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Export models in readable text format. This option is not very useful because many software cannot import text-formatted FBX. 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Misc_FbxAsText_Tooltip {
+            get {
+                return ResourceManager.GetString("Model_Export_Misc_FbxAsText_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 FBX: Export in meters 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Misc_FbxInMeters {
+            get {
+                return ResourceManager.GetString("Model_Export_Misc_FbxInMeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 By default, FBX is in centimeters, but some software (such as Blender) imports models in meters. Check this option to export models in meters. 的本地化字符串。
+        /// </summary>
+        public static string Model_Export_Misc_FbxInMeters_Tooltip {
+            get {
+                return ResourceManager.GetString("Model_Export_Misc_FbxInMeters_Tooltip", resourceCulture);
             }
         }
         
@@ -997,6 +1253,33 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Cannot export animation with Assimp. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_AnimationAssimpRequired {
+            get {
+                return ResourceManager.GetString("Msgbox_AnimationAssimpRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cannot initialize Assimp. FBX exporting is unavailable. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_AssimpNotFound {
+            get {
+                return ResourceManager.GetString("Msgbox_AssimpNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cannot find/load the default skeleton of this animation.  的本地化字符串。
+        /// </summary>
+        public static string Msgbox_DefaultSkeletonNotFound {
+            get {
+                return ResourceManager.GetString("Msgbox_DefaultSkeletonNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 The directory doesn&apos;t exist 的本地化字符串。
         /// </summary>
         public static string Msgbox_DirNotExisting {
@@ -1015,11 +1298,56 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Cannot find female head model. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_FemaleHeadModelNotFound {
+            get {
+                return ResourceManager.GetString("Msgbox_FemaleHeadModelNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cannot find horse skeleton. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_HorseSkeletonNotFound {
+            get {
+                return ResourceManager.GetString("Msgbox_HorseSkeletonNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cannot find human skeleton. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_HumanSkeletonNotFound {
+            get {
+                return ResourceManager.GetString("Msgbox_HumanSkeletonNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Info 的本地化字符串。
         /// </summary>
         public static string Msgbox_Info {
             get {
                 return ResourceManager.GetString("Msgbox_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cannot find male head model. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_MaleHeadModelNotFound {
+            get {
+                return ResourceManager.GetString("Msgbox_MaleHeadModelNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 You need to select a model from the combo box. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_ModelNotSelected {
+            get {
+                return ResourceManager.GetString("Msgbox_ModelNotSelected", resourceCulture);
             }
         }
         
@@ -1033,11 +1361,29 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 You need to select a skeleton from the combo box. 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_SkeletonNotSelected {
+            get {
+                return ResourceManager.GetString("Msgbox_SkeletonNotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 No tpac file found in the top directory. Go on? (Will search sub directories) 的本地化字符串。
         /// </summary>
         public static string Msgbox_TpacNotFound {
             get {
                 return ResourceManager.GetString("Msgbox_TpacNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Warning 的本地化字符串。
+        /// </summary>
+        public static string Msgbox_Warning {
+            get {
+                return ResourceManager.GetString("Msgbox_Warning", resourceCulture);
             }
         }
         
@@ -1087,7 +1433,7 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Inertia 的本地化字符串。
+        ///   查找类似 Mouse Inertia 的本地化字符串。
         /// </summary>
         public static string Preview_Inertia {
             get {
@@ -1096,7 +1442,7 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Enable inertia for rotation and scaling. 的本地化字符串。
+        ///   查找类似 Enable inertia for mouse rotation and zoom. 的本地化字符串。
         /// </summary>
         public static string Preview_Inertia_Tooltip {
             get {
@@ -1195,6 +1541,24 @@ namespace TpacTool.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Scale Inertia 的本地化字符串。
+        /// </summary>
+        public static string Preview_Scale_Inertia {
+            get {
+                return ResourceManager.GetString("Preview_Scale_Inertia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enable inertia for camera scaling when changing model. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Scale_Inertia_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Scale_Inertia_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Show Grid 的本地化字符串。
         /// </summary>
         public static string Preview_Showgrid {
@@ -1209,6 +1573,24 @@ namespace TpacTool.Properties {
         public static string Preview_Showgrid_Tooltip {
             get {
                 return ResourceManager.GetString("Preview_Showgrid_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Transition Inertia 的本地化字符串。
+        /// </summary>
+        public static string Preview_Transition_Inertia {
+            get {
+                return ResourceManager.GetString("Preview_Transition_Inertia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enable inertia for camera transition when changing model. 的本地化字符串。
+        /// </summary>
+        public static string Preview_Transition_Inertia_Tooltip {
+            get {
+                return ResourceManager.GetString("Preview_Transition_Inertia_Tooltip", resourceCulture);
             }
         }
         
@@ -1281,6 +1663,24 @@ namespace TpacTool.Properties {
         public static string Texture_Preview_Channel_Auto {
             get {
                 return ResourceManager.GetString("Texture_Preview_Channel_Auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 B as Gray 的本地化字符串。
+        /// </summary>
+        public static string Texture_Preview_Channel_BGray {
+            get {
+                return ResourceManager.GetString("Texture_Preview_Channel_BGray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 G as Gray 的本地化字符串。
+        /// </summary>
+        public static string Texture_Preview_Channel_GGray {
+            get {
+                return ResourceManager.GetString("Texture_Preview_Channel_GGray", resourceCulture);
             }
         }
         

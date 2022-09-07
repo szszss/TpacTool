@@ -1,4 +1,4 @@
-#if !SYSTEM_NUMERICS
+#if NET35 || NET40
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -13,7 +13,7 @@ namespace System.Numerics
     /// </summary>
     public partial struct Vector2 : IEquatable<Vector2>, IFormattable
     {
-        #region Public Static Properties
+#region Public Static Properties
         /// <summary>
         /// Returns the vector (0,0).
         /// </summary>
@@ -30,9 +30,9 @@ namespace System.Numerics
         /// Returns the vector (0,1).
         /// </summary>
         public static Vector2 UnitY { get { return new Vector2(0.0f, 1.0f); } }
-        #endregion Public Static Properties
+#endregion Public Static Properties
 
-        #region Public instance methods
+#region Public instance methods
         /// <summary>
         /// Returns the hash code for this instance.
         /// </summary>
@@ -131,9 +131,9 @@ namespace System.Numerics
                 return X * X + Y * Y;
             }
         }
-        #endregion Public Instance Methods
+#endregion Public Instance Methods
 
-        #region Public Static Methods
+#region Public Static Methods
         /// <summary>
         /// Returns the Euclidean distance between the two given points.
         /// </summary>
@@ -347,9 +347,9 @@ namespace System.Numerics
                 value.X * (1.0f - yy2 - zz2) + value.Y * (xy2 - wz2),
                 value.X * (xy2 + wz2) + value.Y * (1.0f - xx2 - zz2));
         }
-        #endregion Public Static Methods
+#endregion Public Static Methods
 
-        #region Public operator methods
+#region Public operator methods
         // all the below methods should be inlined as they are 
         // implemented over JIT intrinsics
 
@@ -447,7 +447,7 @@ namespace System.Numerics
         {
             return -value;
         }
-        #endregion Public operator methods
+#endregion Public operator methods
     }
 }
 #endif

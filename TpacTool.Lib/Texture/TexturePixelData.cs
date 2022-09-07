@@ -93,5 +93,28 @@ namespace TpacTool.Lib
 			RawImage = raw;
 			PrimaryRawImage = raw[0][0];
 		}
+
+		public override void WriteData(BinaryWriter stream, IDictionary<object, object> userdata)
+		{
+			int array = 1, mipmap = 1;
+			if (userdata.TryGetValue(KEY_ARRAY, out var arrayObj))
+			{
+				array = (int)arrayObj;
+			}
+			if (userdata.TryGetValue(KEY_MIPMAP, out var mipmapObj))
+			{
+				mipmap = (int)mipmapObj;
+			}
+
+			for (int a = 0; a < array; a++)
+			{
+				var raw = RawImage[a];
+
+				for (int m = 0; m < mipmap; m++)
+				{
+					stream.Write(raw[m]);
+				}
+			}
+		}
 	}
 }
