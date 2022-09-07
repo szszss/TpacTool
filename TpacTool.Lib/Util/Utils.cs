@@ -43,8 +43,10 @@ namespace TpacTool.Lib
 
 		public static Quaternion ReadQuat(this BinaryReader stream)
 		{
+			// wtf math
+			var w = stream.ReadSingle();
 			return new Quaternion(stream.ReadSingle(), stream.ReadSingle(),
-				stream.ReadSingle(), stream.ReadSingle());
+				stream.ReadSingle(), w);
 		}
 
 		public static Matrix4x4 ReadMat4(this BinaryReader stream)
@@ -157,10 +159,10 @@ namespace TpacTool.Lib
 
 		public static void Write(this BinaryWriter stream, Quaternion value)
 		{
+			stream.Write(value.W);
 			stream.Write(value.X);
 			stream.Write(value.Y);
 			stream.Write(value.Z);
-			stream.Write(value.W);
 		}
 
 		public static void Write(this BinaryWriter stream, Matrix4x4 value)
