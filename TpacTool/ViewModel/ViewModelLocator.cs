@@ -55,36 +55,14 @@ namespace TpacTool
 
 			SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<LoadingViewModel>();
-            //SimpleIoc.Default.Register<TexturePreviewViewModel>();
 			SimpleIoc.Default.Register<ModelViewModel>();
 			SimpleIoc.Default.Register<TextureViewModel>();
 			SimpleIoc.Default.Register<MaterialViewModel>();
 			SimpleIoc.Default.Register<AnimationViewModel>();
-			//SimpleIoc.Default.Register<WpfPreviewViewModel>();
 			SimpleIoc.Default.Register<OglPreviewViewModel>();
+			
 			ViewModelBase unused = null;
 			// force init preview and panel
-			/*try
-			{
-				SimpleIoc.Default.Register<DxPreviewViewModel>();
-				unused = DxPreview;
-				AbstractPreviewViewModel.SupportDx = true;
-				AbstractPreviewViewModel.ModelPreviewUri = DxPreview.PageUri;
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				AbstractPreviewViewModel.SupportDx = false;
-				SimpleIoc.Default.Register<WpfPreviewViewModel>();
-				unused = WpfPreview;
-				AbstractPreviewViewModel.ModelPreviewUri = WpfPreview.PageUri;
-			}*/
-
-			//AbstractPreviewViewModel.SupportDx = false;
-			//unused = WpfPreview;
-			//AbstractPreviewViewModel.ModelPreviewUri = WpfPreview.PageUri;
-			AbstractPreviewViewModel.ModelPreviewUri = OglPreview.PageUri;
-
 			unused = OglPreview;
 			unused = Model;
 			unused = Texture;
@@ -95,28 +73,8 @@ namespace TpacTool
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
         public LoadingViewModel Loading => ServiceLocator.Current.GetInstance<LoadingViewModel>();
-
-		/*public ModelPreviewViewModel ModelPreview
-		{
-			get
-			{
-				return ServiceLocator.Current.GetInstance<ModelPreviewViewModel>();
-			}
-		}*/
-
-		/*public DxPreviewViewModel DxPreview
-		{
-			get
-			{
-				return ServiceLocator.Current.GetInstance<DxPreviewViewModel>();
-			}
-		}*/
-
-		public WpfPreviewViewModel WpfPreview => ServiceLocator.Current.GetInstance<WpfPreviewViewModel>();
-
+		
 		public OglPreviewViewModel OglPreview => ServiceLocator.Current.GetInstance<OglPreviewViewModel>();
-
-		public AbstractPreviewViewModel ModelPreview => throw new NotImplementedException();
 
 		public ModelViewModel Model => ServiceLocator.Current.GetInstance<ModelViewModel>();
 

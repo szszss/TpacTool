@@ -155,10 +155,6 @@
     <Compile Include="Page\OglPreviewPage.xaml.cs">
       <DependentUpon>OglPreviewPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page\WpfPreviewPage.xaml.cs">
-      <DependentUpon>WpfPreviewPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Preview\ResourceCache.cs" />
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="UserControl\Vec4Box.xaml.cs">
       <DependentUpon>Vec4Box.xaml</DependentUpon>
@@ -169,21 +165,17 @@
     <Compile Include="Util\EnumEqualConverter.cs" />
     <Compile Include="Util\FloatEqualConverter.cs" />
     <Compile Include="Util\IntThresholdConverter.cs" />
-    <Compile Include="Preview\MeshBaker.cs" />
     <Compile Include="Util\ModelType.cs" />
     <Compile Include="Util\SkeletonType.cs" />
     <Compile Include="Util\StringEqualConverter.cs" />
     <Compile Include="Util\TypeHelper.cs" />
-    <Compile Include="ViewModel\AbstractPreviewViewModel.cs" />
     <Compile Include="ViewModel\AnimationViewModel.cs" />
     <Compile Include="ViewModel\AssetTreeViewModel.cs" />
     <Compile Include="ViewModel\AssetViewModel.cs" />
     <Compile Include="ViewModel\OglPreviewViewModel.cs" />
-    <Compile Include="ViewModel\WpfPreviewViewModel.cs" />
     <Compile Include="ViewModel\LoadingViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MaterialViewModel.cs" />
-    <Compile Include="ViewModel\ModelPreviewViewModel.cs" />
     <Compile Include="ViewModel\ModelViewModel.cs" />
     <Compile Include="ViewModel\TextureViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -205,9 +197,6 @@
     <Compile Include="Page\ModelPage.xaml.cs">
       <DependentUpon>ModelPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page\ModelPreviewPage.xaml.cs">
-      <DependentUpon>ModelPreviewPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Page\TexturePage.xaml.cs">
       <DependentUpon>TexturePage.xaml</DependentUpon>
     </Compile>
@@ -227,10 +216,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Page\OglPreviewPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Page\WpfPreviewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -271,10 +256,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Page\ModelPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Page\ModelPreviewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

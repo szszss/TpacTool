@@ -176,9 +176,9 @@ namespace TpacTool
 
 		public static readonly DependencyProperty CameraTargetProperty =
 			DependencyProperty.Register(
-				nameof(CameraTarget), typeof(Point3D),
+				nameof(CameraTarget), typeof(Vector3),
 				typeof(OglPreviewPage),
-				new UIPropertyMetadata(new Point3D(), OnCameraTargetChanged));
+				new UIPropertyMetadata(new Vector3(), OnCameraTargetChanged));
 
 		private static void OnCameraTargetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -186,9 +186,9 @@ namespace TpacTool
 			obj._configChanged = true;
 		}
 
-		public Point3D CameraTarget
+		public Vector3 CameraTarget
 		{
-			get => (Point3D)GetValue(CameraTargetProperty);
+			get => (Vector3)GetValue(CameraTargetProperty);
 			set => SetValue(CameraTargetProperty, value);
 		}
 

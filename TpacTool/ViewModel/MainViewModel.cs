@@ -34,11 +34,9 @@ namespace TpacTool
 
 		private static readonly Uri Uri_Page_Model = new Uri("../Page/ModelPage.xaml", UriKind.Relative);
 
-		//private static readonly Uri Uri_Page_ModelPreview = new Uri("../Page/ModelPreviewPage.xaml", UriKind.Relative);
-
 		private static readonly Uri Uri_Page_Texture = new Uri("../Page/TexturePage.xaml", UriKind.Relative);
 
-		private static readonly Uri Uri_Page_TexturePreview = new Uri("../Page/OglPreviewPage.xaml", UriKind.Relative);
+		private static readonly Uri Uri_Page_OglPreview = new Uri("../Page/OglPreviewPage.xaml", UriKind.Relative);
 
 		private static readonly Uri Uri_Page_Material = new Uri("../Page/MaterialPage.xaml", UriKind.Relative);
 
@@ -251,7 +249,6 @@ namespace TpacTool
 
 		private void BeforeLoad()
 		{
-			ResourceCache.Cleanup();
 			MessengerInstance.Send<object>(null, CleanupEvent);
 			foreach (var tabItem in TabPages)
 			{
@@ -408,7 +405,7 @@ namespace TpacTool
 				if (AssetPanelUri != Uri_Page_Model)
 				{
 					AssetPanelUri = Uri_Page_Model;
-					AssetPreviewUri = AbstractPreviewViewModel.ModelPreviewUri;
+					AssetPreviewUri = Uri_Page_OglPreview;
 				}
 				hasContent = true;
 			}
@@ -419,7 +416,7 @@ namespace TpacTool
 				if (AssetPanelUri != Uri_Page_Texture)
 				{
 					AssetPanelUri = Uri_Page_Texture;
-					AssetPreviewUri = Uri_Page_TexturePreview;
+					AssetPreviewUri = Uri_Page_OglPreview;
 				}
 				hasContent = true;
 			}
@@ -430,7 +427,7 @@ namespace TpacTool
 				if (AssetPanelUri != Uri_Page_Material)
 				{
 					AssetPanelUri = Uri_Page_Material;
-					AssetPreviewUri = Uri_Page_TexturePreview;
+					AssetPreviewUri = Uri_Page_OglPreview;
 				}
 				hasContent = true;
 			}

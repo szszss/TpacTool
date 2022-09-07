@@ -12,26 +12,148 @@ using System.Windows.Media.Media3D;
 using OpenTK;
 using TpacTool.Lib;
 using TpacTool.Properties;
+using GalaSoft.MvvmLight;
 
 namespace TpacTool
 {
-	public sealed class OglPreviewViewModel : AbstractPreviewViewModel
+	public sealed class OglPreviewViewModel : ViewModelBase
 	{
+		public static readonly Guid PreviewAssetEvent = Guid.NewGuid();
+
 		public static readonly Guid PreviewTextureEvent = Guid.NewGuid();
 
+		public const float MAX_GRID_LENGTH = 256;
+
+		public const int CHANNEL_MODE_RGBA = 1;
+
+		public const int CHANNEL_MODE_RGB = 2;
+
+		public const int CHANNEL_MODE_RG = 3;
+
+		public const int CHANNEL_MODE_R = 4;
+
+		public const int CHANNEL_MODE_G = 5;
+
+		public const int CHANNEL_MODE_B = 6;
+
+		public const int CHANNEL_MODE_ALPHA = 7;
+
+		internal static string LIGHTMODE_SUN = Resources.Preview_Lights_Single;
+		internal static string LIGHTMODE_THREEPOINTS = Resources.Preview_Lights_Tri;
+		internal static string LIGHTMODE_DEFAULT = Resources.Preview_Lights_Quad;
+
+		internal static string CENTERMODE_ORIGIN = Resources.Preview_Center_Origin;
+		//internal static string CENTERMODE_BOUNDINGBOX = "Center of Bounding Box";
+		internal static string CENTERMODE_MASS = Resources.Preview_Center_Mass;
+		internal static string CENTERMODE_CENTER = Resources.Preview_Center_Geometry;
+
+		internal static string KEEPSCALEMODE_OFF = "Off";
+		internal static string KEEPSCALEMODE_ON = "On";
+		internal static string KEEPSCALEMODE_ON_INERTIAL = "On, inertial";
+
+		internal static string[] _lightModeItems = new[]
+		{
+			LIGHTMODE_SUN,
+			LIGHTMODE_THREEPOINTS,
+			LIGHTMODE_DEFAULT
+		};
+
+		internal static string[] _centerModeItems = new[]
+		{
+			CENTERMODE_ORIGIN,
+			//CENTERMODE_BOUNDINGBOX,
+			CENTERMODE_MASS,
+			CENTERMODE_CENTER
+		};
+
+		internal static string[] _keepScaleModeItems = new[]
+		{
+			KEEPSCALEMODE_OFF,
+			KEEPSCALEMODE_ON,
+			//KEEPSCALEMODE_ON_INERTIAL
+		};
+
 		private static Mesh[] emptyMeshes = new Mesh[0];
+
+		private int _lightMode = Settings.Default.PreviewLight;
+
+		private int _centerMode = Settings.Default.PreviewCenter;
+
+		private bool _keepScaleMode = Settings.Default.PreviewKeepScale;
+
+		private bool _enableInertia = Settings.Default.PreviewInertia;
+
+		private bool _showGridLines = Settings.Default.PreviewShowGrid;
 
 		private bool _enableTransitionInertia = Settings.Default.PreviewTransitionInertia;
 
 		private bool _enableScaleInertia = Settings.Default.PreviewScaleInertia;
 
-		public override Uri PageUri { get; } = new Uri("../Page/OglPreviewPage.xaml", UriKind.Relative);
+		public string[] LightModeItems => _lightModeItems;
+
+		public string[] CenterModeItems => _centerModeItems;
+
+		public string[] KeepScaleModeItems => _keepScaleModeItems;
+
+		public BoundingBox ModelBoundingBox { get; set; } = new BoundingBox();
+
+		public Vector3 CenterOfMass { get; set; } = new Vector3();
+
+		public Vector3 CenterOfGeometry { get; set; } = new Vector3();
+
+		public Vector3 CameraTarget { protected set; get; } = new Vector3(0, 0, 0);
+
+		public double ReferenceScale { protected set; get; } = 1;
 
 		public OglPreviewPage.Mode PreviewTarget { private set; get; } = OglPreviewPage.Mode.Model;
 
 		public bool IsModelMode => PreviewTarget == OglPreviewPage.Mode.Model;
 
 		public bool IsImageMode => PreviewTarget == OglPreviewPage.Mode.Image;
+
+		public int LightMode
+		{
+			set
+			{
+				_lightMode = value;
+				RaisePropertyChanged(nameof(LightMode));
+				Settings.Default.PreviewLight = _lightMode;
+			}
+			get => _lightMode;
+		}
+
+		public int CenterMode
+		{
+			set
+			{
+				_centerMode = value;
+				RefocusCenter();
+				Settings.Default.PreviewCenter = _centerMode;
+			}
+			get => _centerMode;
+		}
+
+		public bool KeepScaleMode
+		{
+			set
+			{
+				_keepScaleMode = value;
+				RaisePropertyChanged(nameof(KeepScaleMode));
+				Settings.Default.PreviewKeepScale = _keepScaleMode;
+			}
+			get => _keepScaleMode;
+		}
+
+		public bool EnableInertia
+		{
+			set
+			{
+				_enableInertia = value;
+				RaisePropertyChanged(nameof(EnableInertia));
+				Settings.Default.PreviewInertia = _enableInertia;
+			}
+			get => _enableInertia;
+		}
 
 		public bool EnableTransitionInertia
 		{
@@ -53,6 +175,17 @@ namespace TpacTool
 				Settings.Default.PreviewScaleInertia = _enableScaleInertia;
 			}
 			get => _enableScaleInertia;
+		}
+
+		public bool ShowGridLines
+		{
+			set
+			{
+				_showGridLines = value;
+				RaisePropertyChanged(nameof(ShowGridLines));
+				Settings.Default.PreviewShowGrid = _showGridLines;
+			}
+			get => _showGridLines;
 		}
 
 		public bool ClearOnNextTick { set; get; }
@@ -85,7 +218,7 @@ namespace TpacTool
 		{
 			if (!IsInDesignMode)
 			{
-				UpdateLights();
+				MessengerInstance.Register<List<Mesh>>(this, PreviewAssetEvent, OnPreviewModel);
 				MessengerInstance.Register<Texture>(this, PreviewTextureEvent, SetRenderTexture);
 				MessengerInstance.Register<object>(this, MainViewModel.CleanupEvent, OnCleanup);
 			}
@@ -93,23 +226,48 @@ namespace TpacTool
 
 		private void OnCleanup(object unused = null)
 		{
-			//Models.Children.Clear();
-			//RaisePropertyChanged("Models");
+			ClearOnNextTick = true;
 			ImageText = string.Empty;
 			Texture = null;
 			RaisePropertyChanged(nameof(ImageText));
 			RaisePropertyChanged(nameof(Texture));
 		}
 
-		public override void SetRenderMeshes(params Mesh[] meshes)
+		private void OnPreviewModel(List<Mesh> meshes)
+		{
+			// TODO: a better fix. use edit data rather than vertex stream
+			try
+			{
+				SetRenderMeshes(meshes.ToArray());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				SetRenderMeshes();
+			}
+		}
+
+		private void SetRenderMetamesh(Metamesh metamesh, int lod = 0)
+		{
+			try
+			{
+				var meshes = metamesh.Meshes.FindAll(mesh => { return mesh.Lod == lod; });
+				SetRenderMeshes(meshes.ToArray());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				SetRenderMeshes();
+			}
+		}
+
+		public void SetRenderMeshes(params Mesh[] meshes)
 		{
 			SetPreviewTarget(OglPreviewPage.Mode.Model);
 			Meshes = meshes;
 
 			bool firstMesh = true;
 			BoundingBox bb = new BoundingBox();
-			CenterOfMass = new Point3D();
-			CenterOfGeometry = new Point3D();
 
 			foreach (var mesh in meshes)
 			{
@@ -147,7 +305,7 @@ namespace TpacTool
 					}
 				}
 
-				CenterOfMass = Point3D.Add(CenterOfMass, new Vector3D(comX, comY, comZ));
+				CenterOfMass += new Vector3((float) comX, (float) comY, (float) comZ);
 				if (firstMesh)
 				{
 					bb = mesh.BoundingBox;
@@ -161,16 +319,13 @@ namespace TpacTool
 
 			if (meshes.Length > 0)
 			{
-				CenterOfMass = new Point3D(
-					CenterOfMass.X / meshes.Length,
-					CenterOfMass.Y / meshes.Length,
-					CenterOfMass.Z / meshes.Length);
+				CenterOfMass /= meshes.Length;
 			}
 
 			ClampBoundingBox(ref bb);
 			ModelBoundingBox = bb;
 			var center = ModelBoundingBox.Center;
-			CenterOfGeometry = new Point3D(center.X, center.Y, center.Z);
+			CenterOfGeometry = new Vector3(center.X, center.Y, center.Z);
 			ReferenceScale = CalculateReferenceScale(ModelBoundingBox);
 			GridLineX = (int) bb.Width + 16;
 			GridLineY = (int) bb.Depth + 16;
@@ -181,11 +336,6 @@ namespace TpacTool
 			RefocusCenter();
 			RaisePropertyChanged(nameof(ReferenceScale));
 			RaisePropertyChanged(nameof(ModelBoundingBox));
-		}
-
-		protected override void UpdateLights()
-		{
-			RaisePropertyChanged(nameof(LightMode));
 		}
 
 		public void SetRenderTexture(Texture texture)
@@ -237,27 +387,27 @@ namespace TpacTool
 					switch (texture.Format.GetColorChannel())
 					{
 						case 4:
-							textureChannelMode = ResourceCache.CHANNEL_MODE_RGBA; break;
+							textureChannelMode = CHANNEL_MODE_RGBA; break;
 						case 3:
-							textureChannelMode = ResourceCache.CHANNEL_MODE_RGB; break;
+							textureChannelMode = CHANNEL_MODE_RGB; break;
 						case 2:
-							textureChannelMode = ResourceCache.CHANNEL_MODE_RG; break;
+							textureChannelMode = CHANNEL_MODE_RG; break;
 						case 1:
-							textureChannelMode = ResourceCache.CHANNEL_MODE_R; break;
+							textureChannelMode = CHANNEL_MODE_R; break;
 					}
 				}
 
 				EnableAlpha = false;
 				switch (textureChannelMode)
 				{
-					case ResourceCache.CHANNEL_MODE_RGBA:
+					case CHANNEL_MODE_RGBA:
 						ImageColorMask = Matrix4.Identity;
 						EnableAlpha = true;
 						break;
-					case ResourceCache.CHANNEL_MODE_RGB:
+					case CHANNEL_MODE_RGB:
 						ImageColorMask = Matrix4.Identity;
 						break;
-					case ResourceCache.CHANNEL_MODE_RG:
+					case CHANNEL_MODE_RG:
 						ImageColorMask = new Matrix4(
 							1, 0, 0, 0,
 							0, 1, 0, 0,
@@ -265,7 +415,7 @@ namespace TpacTool
 							0, 0, 0, 0
 							);
 						break;
-					case ResourceCache.CHANNEL_MODE_R:
+					case CHANNEL_MODE_R:
 						ImageColorMask = new Matrix4(
 							1, 1, 1, 0,
 							0, 0, 0, 0,
@@ -273,7 +423,7 @@ namespace TpacTool
 							0, 0, 0, 0
 						);
 						break;
-					case ResourceCache.CHANNEL_MODE_G:
+					case CHANNEL_MODE_G:
 						ImageColorMask = new Matrix4(
 							0, 0, 0, 0,
 							1, 1, 1, 0,
@@ -281,7 +431,7 @@ namespace TpacTool
 							0, 0, 0, 0
 						);
 						break;
-					case ResourceCache.CHANNEL_MODE_B:
+					case CHANNEL_MODE_B:
 						ImageColorMask = new Matrix4(
 							0, 0, 0, 0,
 							0, 0, 0, 0,
@@ -289,7 +439,7 @@ namespace TpacTool
 							0, 0, 0, 0
 						);
 						break;
-					case ResourceCache.CHANNEL_MODE_ALPHA:
+					case CHANNEL_MODE_ALPHA:
 						ImageColorMask = new Matrix4(
 							0, 0, 0, 0,
 							0, 0, 0, 0,
@@ -317,6 +467,34 @@ namespace TpacTool
 				RaisePropertyChanged(nameof(IsModelMode));
 				RaisePropertyChanged(nameof(IsImageMode));
 			}
+		}
+
+		private void RefocusCenter()
+		{
+			switch (CenterMode)
+			{
+				case 1: // mass
+					CameraTarget = CenterOfMass;
+					break;
+				case 2: // geo
+					CameraTarget = CenterOfGeometry;
+					break;
+				default:
+					CameraTarget = new Vector3();
+					break;
+			}
+			RaisePropertyChanged(nameof(CameraTarget));
+		}
+
+		private void ClampBoundingBox(ref BoundingBox bb)
+		{
+			bb.Min = System.Numerics.Vector3.Max(bb.Min, new System.Numerics.Vector3(-MAX_GRID_LENGTH));
+			bb.Max = System.Numerics.Vector3.Min(bb.Max, new System.Numerics.Vector3(MAX_GRID_LENGTH));
+		}
+
+		private double CalculateReferenceScale(BoundingBox bb)
+		{
+			return Math.Max(bb.BoundingSphereRadius, 0.001);
 		}
 	}
 }

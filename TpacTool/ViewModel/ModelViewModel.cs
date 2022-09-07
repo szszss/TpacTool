@@ -80,7 +80,7 @@ namespace TpacTool
 				_selectedLod = value;
 				int lod = LodSteps[_selectedLod];
 				MessengerInstance.Send(Asset.Meshes.FindAll(mesh => mesh.Lod == lod),
-					AbstractPreviewViewModel.PreviewAssetEvent);
+					OglPreviewViewModel.PreviewAssetEvent);
 				RaisePropertyChanged("SelectedLodValue");
 			}
 			get => _selectedLod;
