@@ -437,7 +437,7 @@ namespace TpacTool
 				if (AssetPanelUri != Uri_Page_Animation)
 				{
 					AssetPanelUri = Uri_Page_Animation;
-					//AssetPreviewUri = AbstractPreviewViewModel.ModelPreviewUri;
+					AssetPreviewUri = Uri_Page_BlankPreview;
 				}
 				hasContent = true;
 			}
@@ -447,7 +447,7 @@ namespace TpacTool
 				if (AssetPanelUri != Uri_Page_Morph)
 				{
 					AssetPanelUri = Uri_Page_Morph;
-					//AssetPreviewUri = AbstractPreviewViewModel.ModelPreviewUri;
+					AssetPreviewUri = Uri_Page_BlankPreview;
 				}
 				hasContent = true;
 			}
