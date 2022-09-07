@@ -1,8 +1,8 @@
-version: 0.3.2.{build}
+version: 0.4.0.{build}
 
 environment:
-  exe_version: 0.3.2
-  lib_version: 0.3.2
+  exe_version: 0.4.0
+  lib_version: 0.4.0
   github_token:
     secure: jOTXxzUtlwQDuTuXm9bA/ZKqWOAsu8aiEkBZIor/Fh4j6I9SULqFq9uTCkFDNuh1
   appveyor_token:
