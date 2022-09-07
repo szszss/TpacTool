@@ -4,7 +4,7 @@ environment:
   exe_version: 0.4.0
   lib_version: 0.4.0
   github_token:
-    secure: jOTXxzUtlwQDuTuXm9bA/ZKqWOAsu8aiEkBZIor/Fh4j6I9SULqFq9uTCkFDNuh1
+    secure: TXxOh3NI3UV0tNKI9snSVmZPFKvpqfhJgDpr7M9GDLS9DSX32P9NGdjIWVwYX+Mc
   appveyor_token:
     secure: IV7vyJWe55+8yxcfF7+dUEHN2b4yGL0RDsgH9T7kZQE=
 
