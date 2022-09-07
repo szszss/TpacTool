@@ -25,14 +25,14 @@ assembly_info:
 
 dotnet_csproj:
   patch: true
-  file: '**\TpacTool.Lib.csproj;**\TpacTool.IO.csproj'
+  file: '**\TpacTool.Lib.csproj;**\TpacTool.IO.csproj;**\TpacTool.IO.Assimp.csproj'
   version: $(lib_version)
   package_version: $(lib_version)
   assembly_version: $(lib_version)
   file_version: $(lib_version)
   informational_version: $(lib_version)
 
-image: Visual Studio 2017
+image: Visual Studio 2022
 configuration: Release
 platform: Any CPU
 

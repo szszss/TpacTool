@@ -1,14 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Ink;
-using System.Windows.Media;
-using HelixToolkit.Wpf;
-using System.Windows.Media.Media3D;
 using OpenTK;
 using TpacTool.Lib;
 using TpacTool.Properties;
