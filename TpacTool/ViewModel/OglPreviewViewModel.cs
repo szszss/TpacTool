@@ -92,9 +92,9 @@ namespace TpacTool
 
 		public Vector3 CenterOfGeometry { get; set; } = new Vector3();
 
-		public Vector3 CameraTarget { protected set; get; } = new Vector3(0, 0, 0);
+		public Vector3 CameraTarget { set; get; } = new Vector3(0, 0, 0);
 
-		public double ReferenceScale { protected set; get; } = 1;
+		public double ReferenceScale { set; get; } = 1;
 
 		public OglPreviewPage.Mode PreviewTarget { private set; get; } = OglPreviewPage.Mode.Model;
 
@@ -229,20 +229,6 @@ namespace TpacTool
 			// TODO: a better fix. use edit data rather than vertex stream
 			try
 			{
-				SetRenderMeshes(meshes.ToArray());
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				SetRenderMeshes();
-			}
-		}
-
-		private void SetRenderMetamesh(Metamesh metamesh, int lod = 0)
-		{
-			try
-			{
-				var meshes = metamesh.Meshes.FindAll(mesh => { return mesh.Lod == lod; });
 				SetRenderMeshes(meshes.ToArray());
 			}
 			catch (Exception e)

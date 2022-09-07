@@ -194,9 +194,6 @@
     <Compile Include="Page\TexturePage.xaml.cs">
       <DependentUpon>TexturePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\SourceRelocateWindow.xaml.cs">
-      <DependentUpon>SourceRelocateWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="Page\AnimationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -254,10 +251,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Page\TexturePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window\SourceRelocateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

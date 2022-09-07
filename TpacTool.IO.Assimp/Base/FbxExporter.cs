@@ -304,8 +304,8 @@ namespace TpacTool.IO.Assimp
 				var geoSet = new HashSet<long>();
 				FbxNode animationStackNode = null;
 				FbxNode animationLayerNode = null;
-				var animationStackUid = 0l;
-				var animationLayerUid = 0l;
+				var animationStackUid = 0L;
+				var animationLayerUid = 0L;
 				var originMeshLookup = new Dictionary<long, string>();
 				var geoUidLookup = new Dictionary<string, long>();
 
