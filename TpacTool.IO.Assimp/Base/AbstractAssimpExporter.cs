@@ -15,9 +15,7 @@ using Quaternion = Assimp.Quaternion;
 namespace TpacTool.IO.Assimp
 {
 	public abstract class AbstractAssimpExporter : AbstractModelExporter
-	{
-		//private static AssimpContext _assimpContext;
-
+	{ 
 		public abstract string AssimpFormatId { get; }
 
 		public abstract bool SupportTRSInAnimation { get; }
@@ -27,20 +25,6 @@ namespace TpacTool.IO.Assimp
 			var parentPath = Directory.GetParent(path);
 			if (parentPath != null)
 				Directory.CreateDirectory(parentPath.FullName);
-			
-			/*AssimpLibrary.Instance.Resolver.SetProbingPaths32(
-				Path.Combine(Environment.CurrentDirectory, "bin\\win-x86\\native\\"));
-			AssimpLibrary.Instance.Resolver.SetProbingPaths64(
-				Path.Combine(Environment.CurrentDirectory, "bin\\win-x64\\native\\"));
-			AssimpLibrary.Instance.Resolver.SetFallbackLibraryNames32("Assimp32.dll");
-			AssimpLibrary.Instance.Resolver.SetFallbackLibraryNames64("Assimp64.dll");*/
-			//AssimpLibrary.Instance.LoadLibrary();
-			/*LogStream logStream = new LogStream((msg, data) =>
-			{
-				Console.WriteLine(msg);
-			});
-			logStream.Attach();*/
-			//AssimpLibrary.Instance.AttachLogStream();
 
 			using (AssimpContext assctx = new AssimpContext())
 			{
@@ -93,11 +77,6 @@ namespace TpacTool.IO.Assimp
 
 				SetupScene(scene);
 
-				/*FbxBinaryReader reader = new FbxBinaryReader(File.OpenRead("E:\\Touhou\\morph_test.fbx"));
-				var doc = reader.Read();
-				FbxAsciiWriter writer = new FbxAsciiWriter(File.OpenWrite("E:\\Touhou\\morph_test_ascii.fbx"));
-				writer.Write(doc);*/
-
 				var blob = assctx.ExportToBlob(scene, AssimpFormatId, PostProcessSteps.None);
 				var data = PostProcess(scene, blob.Data);
 
@@ -124,7 +103,7 @@ namespace TpacTool.IO.Assimp
 
 		protected virtual List<TpacTool.Lib.Mesh> GetAllMeshes()
 		{
-			if (Model != null/* && Model.Meshes.Count > 0 && Model.Meshes.Any(mesh => mesh.FaceCount > 0)*/)
+			if (Model != null)
 			{
 				return Model.Meshes.FindAll(mesh => mesh.Lod == SelectedLod);
 			}
@@ -287,12 +266,7 @@ namespace TpacTool.IO.Assimp
 						{
 							assBone.Name = skelDate.Bones[i].Name;
 
-							/*var restMatrix = skelDate.Bones[i].RestFrame.ToAssimpMatrix();
-							if (IgnoreScale)
-							{
-								restMatrix.D4 = 1f;
-							}*/
-							var restMatrix = /*System.Numerics.Matrix4x4.Transpose*/(invBindMatrices[i]).ToAssimpMatrix();
+							var restMatrix = invBindMatrices[i].ToAssimpMatrix();
 							assBone.OffsetMatrix = restMatrix;
 						}
 						else
@@ -611,14 +585,10 @@ namespace TpacTool.IO.Assimp
 					var restMatrix = Skeleton.Definition.Data.Bones[i].RestFrame;
 					if (IgnoreScale)
 						restMatrix.M44 = 1;
-					//System.Numerics.Matrix4x4.Invert(restMatrix, out restMatrix);
-					System.Numerics.Matrix4x4.Decompose(restMatrix, out var scale,
-						out var rot,
-						out var trans);
-					var assInvRot = System.Numerics.Quaternion.Inverse(rot).ToAssimpQuaternion();
 
-					//if (Skeleton.Definition.Data.Bones[i].Parent == null)
-					//	assInvRot = assInvRot * new Quaternion(0.707f, 0, -0.707f, 0);
+					System.Numerics.Matrix4x4.Decompose(restMatrix, out _,
+						out _,
+						out var trans);
 
 					var posList = channel.PositionKeys;
 					for (var j = 0; j < posList.Count; j++)
@@ -634,7 +604,6 @@ namespace TpacTool.IO.Assimp
 					for (var j = 0; j < rotList.Count; j++)
 					{
 						var quat = rotList[j].Value;
-						//quat = quat * new Quaternion(0.707f, 0, 0.707f, 0) * quat * assInvRot * new Quaternion(0.707f, 0, -0.707f, 0);
 						rotList[j] = new QuaternionKey(rotList[j].Time, quat);
 					}
 
@@ -643,20 +612,6 @@ namespace TpacTool.IO.Assimp
 			}
 
 			return assAnim;
-		}
-
-		private System.Numerics.Matrix4x4 AccumulateBoneMatrix(BoneNode bone)
-		{
-			var mat = GetBoneRestFrame(bone);
-			BoneNode parent = null;
-
-			while ((parent = bone.Parent) != null)
-			{
-				mat = System.Numerics.Matrix4x4.Multiply(mat, GetBoneRestFrame(parent));
-				bone = parent;
-			}
-
-			return mat;
 		}
 
 		private System.Numerics.Matrix4x4 GetBoneRestFrame(BoneNode bone)

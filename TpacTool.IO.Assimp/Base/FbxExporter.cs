@@ -56,21 +56,6 @@ namespace TpacTool.IO.Assimp
 			return _lastUsedUid++;
 		}
 
-		protected override void SetupScene(Scene scene)
-		{
-			base.SetupScene(scene);
-			//scene.Metadata["OriginalUpAxis"] = new Metadata.Entry(MetaDataType.Int32, -1);
-			/*foreach (var child in scene.RootNode.Children)
-			{
-				var transform = child.Transform;
-				transform = transform * Matrix4x4.FromScaling(new Vector3D(100, 100, 100));
-				if (IsNegYAxisForward)
-					transform = transform * Matrix4x4.FromRotationZ((float)Math.PI);
-				transform = transform * Matrix4x4.FromRotationX((float) (-Math.PI / 2));
-				child.Transform = transform;
-			}*/
-		}
-
 		protected override byte[] PostProcess(Scene scene, byte[] data)
 		{
 			data = base.PostProcess(scene, data);
@@ -322,7 +307,6 @@ namespace TpacTool.IO.Assimp
 				var animationStackUid = 0l;
 				var animationLayerUid = 0l;
 				var originMeshLookup = new Dictionary<long, string>();
-				var modelUidLookup = new Dictionary<string, long>();
 				var geoUidLookup = new Dictionary<string, long>();
 
 				foreach (var child in objects.Nodes)
@@ -339,7 +323,6 @@ namespace TpacTool.IO.Assimp
 					{
 						var uid = uidToken.Value;
 						var meshName = nameToken.Value.Substring("Model::".Length);
-						modelUidLookup[meshName] = uid;
 						originMeshLookup[uid] = meshName;
 					}
 					else if (child.Identifier.Value == "Geometry" &&
