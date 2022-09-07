@@ -86,7 +86,6 @@ namespace TpacTool
 			AbstractPreviewViewModel.ModelPreviewUri = OglPreview.PageUri;
 
 			unused = OglPreview;
-			//unused = TexturePreview;
 			unused = Model;
 			unused = Texture;
 			unused = Material;
@@ -104,8 +103,6 @@ namespace TpacTool
 				return ServiceLocator.Current.GetInstance<ModelPreviewViewModel>();
 			}
 		}*/
-
-		public TexturePreviewViewModel TexturePreview => ServiceLocator.Current.GetInstance<TexturePreviewViewModel>();
 
 		/*public DxPreviewViewModel DxPreview
 		{
@@ -126,7 +123,6 @@ namespace TpacTool
 		public TextureViewModel Texture => ServiceLocator.Current.GetInstance<TextureViewModel>();
 
 		public MaterialViewModel Material => ServiceLocator.Current.GetInstance<MaterialViewModel>();
-
 
 		public AnimationViewModel Animation => ServiceLocator.Current.GetInstance<AnimationViewModel>();
 

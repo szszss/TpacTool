@@ -185,7 +185,6 @@
     <Compile Include="ViewModel\MaterialViewModel.cs" />
     <Compile Include="ViewModel\ModelPreviewViewModel.cs" />
     <Compile Include="ViewModel\ModelViewModel.cs" />
-    <Compile Include="ViewModel\TexturePreviewViewModel.cs" />
     <Compile Include="ViewModel\TextureViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Window\AboutWindow.xaml.cs">
@@ -211,9 +210,6 @@
     </Compile>
     <Compile Include="Page\TexturePage.xaml.cs">
       <DependentUpon>TexturePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Page\TexturePreviewPage.xaml.cs">
-      <DependentUpon>TexturePreviewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window\SourceRelocateWindow.xaml.cs">
       <DependentUpon>SourceRelocateWindow.xaml</DependentUpon>
@@ -283,10 +279,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Page\TexturePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Page\TexturePreviewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
