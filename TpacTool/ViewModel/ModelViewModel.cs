@@ -371,6 +371,8 @@ namespace TpacTool
 				option |= ModelExporter.ModelExportOption.ExportTexturesSubFolder;
 			if (OnlyExportDiffuse)
 				option |= ModelExporter.ModelExportOption.ExportDiffuseOnly;
+			if (IsExportAllLods)
+				option |= ModelExporter.ModelExportOption.ExportAllLod;
 
 			_saveFileDialog.FileName = Asset.Name;
 			if (_saveFileDialog.ShowDialog().GetValueOrDefault(false))

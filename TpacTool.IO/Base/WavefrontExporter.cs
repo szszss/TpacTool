@@ -41,11 +41,7 @@ namespace TpacTool.IO
 			{
 				stream.Write("# Exported by TpacTool.IO\n\n");
 
-				stream.Write("s ");
-				stream.Write(Model.Name);
-				stream.Write('\n');
-
-				var meshes = Model.Meshes.FindAll(mesh => mesh.Lod == 0);
+				var meshes = Model.Meshes.FindAll(mesh => (LodMask & (1 << mesh.Lod)) > 0);
 				var definedMats = new HashSet<Material>();
 				foreach (var mesh in meshes)
 				{
@@ -60,90 +56,105 @@ namespace TpacTool.IO
 				}
 
 				int offsetPos = 1, offsetNormal = 1;
+				var meshesByLod = SortMeshesByLOD(meshes);
 
-				foreach (var mesh in meshes)
+				foreach (var pair in meshesByLod)
 				{
-					if (mesh.Material.TryGetItem(out var mat))
+					var lod = pair.Key;
+					var meshesInCurLod = pair.Value;
+
+					stream.Write("o ");
+					stream.Write(Model.Name);
+					if (lod > 0)
+						stream.Write($".lod{lod}");
+					stream.Write('\n');
+
+					foreach (var mesh in meshesInCurLod)
 					{
-						stream.Write("usemtl ");
-						stream.Write(mat.Name);
-						stream.Write('\n');
-					}
+						stream.Write("s 1\n");
 
-					MeshEditData med = mesh.EditData != null ? mesh.EditData.Data : null;
-
-					if (med != null)
-					{
-						int[] posPointer = new int[mesh.VertexCount];
-
-						foreach (var position in med.Positions)
+						if (mesh.Material.TryGetItem(out var mat))
 						{
-							var vec = position;
-							if (isNegYForward)
-								vec = Vector4.Transform(vec, negYMatrix);
-							if (isYUp)
-								vec = Vector4.Transform(vec, yUpMatrix);
-							if (largeSize)
-								vec = Vector4.Multiply(vec, ResizeFactor);
-							stream.Write("v ");
-							stream.Write(vec.X);
-							stream.Write(' ');
-							stream.Write(vec.Y);
-							stream.Write(' ');
-							stream.Write(vec.Z);
+							stream.Write("usemtl ");
+							stream.Write(mat.Name);
 							stream.Write('\n');
 						}
 
-						for (var i = 0; i < med.Vertices.Length; i++)
-						{
-							var vertex = med.Vertices[i];
-							var vec = vertex.Normal;
-							if (isNegYForward)
-								vec = Vector4.Transform(vec, negYMatrix);
-							if (isYUp)
-								vec = Vector4.Transform(vec, yUpMatrix);
-							posPointer[i] = (int)vertex.PositionIndex;
-							stream.Write("vn ");
-							stream.Write(vec.X);
-							stream.Write(' ');
-							stream.Write(vec.Y);
-							stream.Write(' ');
-							stream.Write(vec.Z);
-							stream.Write('\n');
-							stream.Write("vt ");
-							stream.Write(vertex.Uv.X);
-							stream.Write(' ');
-							stream.Write(vertex.Uv.Y);
-							stream.Write('\n');
-						}
+						MeshEditData med = mesh.EditData != null ? mesh.EditData.Data : null;
 
-						foreach (var face in med.Faces)
+						if (med != null)
 						{
-							stream.Write("f");
-							for (int i = 0; i < 3; i++)
+							int[] posPointer = new int[mesh.VertexCount];
+
+							foreach (var position in med.Positions)
 							{
-								int index = face[i];
-								int posIndex = posPointer[index] + offsetPos;
-								int normalIndex = index + offsetNormal;
+								var vec = position;
+								if (isNegYForward)
+									vec = Vector4.Transform(vec, negYMatrix);
+								if (isYUp)
+									vec = Vector4.Transform(vec, yUpMatrix);
+								if (largeSize)
+									vec = Vector4.Multiply(vec, ResizeFactor);
+								stream.Write("v ");
+								stream.Write(vec.X);
 								stream.Write(' ');
-								stream.Write(posIndex);
-								stream.Write('/');
-								stream.Write(normalIndex);
-								stream.Write('/');
-								stream.Write(normalIndex);
-
+								stream.Write(vec.Y);
+								stream.Write(' ');
+								stream.Write(vec.Z);
+								stream.Write('\n');
 							}
-							stream.Write('\n');
-						}
-					}
-					else
-					{
-						// TODO: use vertex data stream
-						throw new Exception("Cannot find the edit data of " + mesh.Name);
-					}
 
-					offsetPos += mesh.PositionCount;
-					offsetNormal += mesh.VertexCount;
+							for (var i = 0; i < med.Vertices.Length; i++)
+							{
+								var vertex = med.Vertices[i];
+								var vec = vertex.Normal;
+								if (isNegYForward)
+									vec = Vector4.Transform(vec, negYMatrix);
+								if (isYUp)
+									vec = Vector4.Transform(vec, yUpMatrix);
+								posPointer[i] = (int)vertex.PositionIndex;
+								stream.Write("vn ");
+								stream.Write(vec.X);
+								stream.Write(' ');
+								stream.Write(vec.Y);
+								stream.Write(' ');
+								stream.Write(vec.Z);
+								stream.Write('\n');
+								stream.Write("vt ");
+								stream.Write(vertex.Uv.X);
+								stream.Write(' ');
+								stream.Write(vertex.Uv.Y);
+								stream.Write('\n');
+							}
+
+							foreach (var face in med.Faces)
+							{
+								stream.Write("f");
+								for (int i = 0; i < 3; i++)
+								{
+									int index = face[i];
+									int posIndex = posPointer[index] + offsetPos;
+									int normalIndex = index + offsetNormal;
+									stream.Write(' ');
+									stream.Write(posIndex);
+									stream.Write('/');
+									stream.Write(normalIndex);
+									stream.Write('/');
+									stream.Write(normalIndex);
+
+								}
+								stream.Write('\n');
+							}
+						}
+						else
+						{
+							// TODO: use vertex data stream
+							throw new Exception("Cannot find the edit data of " + mesh.Name);
+						}
+
+						offsetPos += mesh.PositionCount;
+						offsetNormal += mesh.VertexCount;
+					}
 				}
 #if NET40
 				memStream.WriteTo(writeStream);
@@ -157,8 +168,10 @@ namespace TpacTool.IO
 			stream.Write(material.Name);
 			stream.Write('\n');
 			stream.Write("Ka 1.000 1.000 1.000\n");
-			stream.Write("Kd 1.000 1.000 1.000\n");
 			stream.Write("Ks 0.000 0.000 0.000\n");
+			stream.Write("Kd 1.000 1.000 1.000\n");
+			if (material.Textures.TryGetValue(0, out var texDep) && texDep.TryGetItem(out var texture))
+				stream.Write($"map_Kd {texture.Name}.png\n");
 		}
 	}
 }

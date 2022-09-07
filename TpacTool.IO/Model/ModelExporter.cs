@@ -55,7 +55,13 @@ namespace TpacTool.IO
 
 			var dirPath = Path.GetDirectoryName(path) + "/";
 
-			var exportedMeshes = model.Meshes.FindAll(mesh => mesh.Lod == 0);
+			var exportedMeshes = model.Meshes;
+			var lodMask = int.MaxValue;
+			if (!option.HasFlag(ModelExportOption.ExportAllLod))
+			{
+				lodMask = 1;
+				exportedMeshes = exportedMeshes.FindAll(mesh => mesh.Lod == 0);
+			}
 			HashSet<Texture> textures = new HashSet<Texture>();
 			foreach (var mesh in exportedMeshes)
 			{
@@ -95,6 +101,7 @@ namespace TpacTool.IO
 			exporter.Skeleton = skeleton;
 			exporter.Animation = animation;
 			exporter.Morph = morph;
+			exporter.LodMask = lodMask;
 			exporter.FixBoneForBlender = option.HasFlag(ModelExportOption.FixBoneForBlender);
 			exporter.IsNegYAxisForward = option.HasFlag(ModelExportOption.NegYAxisForward);
 			exporter.IsYAxisUp = option.HasFlag(ModelExportOption.YAxisUp);
@@ -123,8 +130,9 @@ namespace TpacTool.IO
 			ExportTexturesSubFolder = 0x2000,
 			ExportDiffuseOnly = 0x4000,
 			FixBoneForBlender = 0x10000,
-			PreferPng = 0x100000,
-			PreferDds = 0x200000
+			PreferPng = 0x20000,
+			PreferDds = 0x40000,
+			ExportAllLod = 0x100000
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace TpacTool.IO
 			//asset.up_axis = IsYAxisUp ? UpAxisType.Y_UP : UpAxisType.Z_UP;
 			asset.up_axis = UpAxisType.Z_UP;
 
-			var meshes = Model.Meshes.FindAll(mesh => mesh.Lod == SelectedLod);
+			var meshes = Model.Meshes.FindAll(mesh => (LodMask & (1 << mesh.Lod)) > 0);
 			CollectUniqueMaterialsAndTextures(meshes, out var materialSet, out var textureSet);
 			var images = new library_images();
 			var imageList = new List<image>();
@@ -89,7 +89,7 @@ namespace TpacTool.IO
 				var mesh = unprocessedMeshes.First();
 				//processingMeshes.Add(mesh);
 				List<Mesh> processingMeshes = unprocessedMeshes.Where(
-											meshB => HasSameMorphFrames(mesh, meshB)).ToList();
+											meshB => HasSameMorphFrames(mesh, meshB) && mesh.Lod == meshB.Lod).ToList();
 				unprocessedMeshes.RemoveWhere(meshB => processingMeshes.Contains(meshB));
 
 				var id = GetGeoId(geoId++);

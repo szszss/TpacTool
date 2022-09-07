@@ -32,7 +32,7 @@ namespace TpacTool.IO.Assimp
 				string nodeName = Skeleton != null ? Skeleton.Name : Model != null ? Model.Name : "empty_model";
 
 				var meshes = GetAllMeshes();
-				CollectUniqueMaterialsAndTextures(meshes, out var materials, out var textures, SelectedLod);
+				CollectUniqueMaterialsAndTextures(meshes, out var materials, out var textures);
 				var matMapping = ExportMaterials(materials, scene.Materials);
 				var meshMapping = ExportMeshes(meshes, matMapping, scene.Meshes);
 
@@ -63,7 +63,8 @@ namespace TpacTool.IO.Assimp
 					}
 				}
 
-				Node modelNode = new Node(Model != null ? Model.Name : "empty_model");
+				Node modelNode = scene.Meshes.Count == 1 ? new Node(Model.Name) :
+					new Node(Model != null ? $"{Model.Name}_node" : "empty_model");
 				skeletonNode.Children.Add(modelNode);
 				for (var i = 0; i < scene.Meshes.Count; i++)
 				{
@@ -105,7 +106,7 @@ namespace TpacTool.IO.Assimp
 		{
 			if (Model != null)
 			{
-				return Model.Meshes.FindAll(mesh => mesh.Lod == SelectedLod);
+				return Model.Meshes.FindAll(mesh => (LodMask & (1 << mesh.Lod)) > 0);
 			}
 			return new List<TpacTool.Lib.Mesh>(0);
 		}
