@@ -32,9 +32,6 @@
 	
 	<Choose>
 		<When Condition="'$(TargetFramework)'!='net35' And '$(TargetFramework)'!='net40' And '$(TargetFramework)'!='net45' And '$(TargetFramework)'!='net451'">
-			<ItemGroup>
-				<PackageReference Include="UkooLabs.FbxSharpie" Version="1.0.99" />
-			</ItemGroup>
 			<PropertyGroup>
 				<DefineConstants>$(DefineConstants);FBX_SHARPIE</DefineConstants>
 			</PropertyGroup>
